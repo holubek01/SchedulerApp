@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:07" hostname="DESKTOP-DVH4IG9" time="5.635">
+  <properties/>
+  <testcase name="roomsUploadFromFileTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.791"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.753"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.711"/>
+  <testcase name="checkDBAddAndEditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="1.014"/>
+  <testcase name="removeDuplicatesAndAddRoomsTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.864"/>
+  <testcase name="createFormeditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.71"/>
+  <testcase name="createUpdateButtonTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.783"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

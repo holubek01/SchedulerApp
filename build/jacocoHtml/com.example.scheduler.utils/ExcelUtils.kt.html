@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExcelUtils.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.utils</a> &gt; <span class="el_source">ExcelUtils.kt</span></div><h1>ExcelUtils.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.utils
+
+import com.example.scheduler.controller.exceptions.IllegalValueException
+import com.example.scheduler.objects.Subject
+import io.github.palexdev.materialfx.controls.MFXRectangleToggleNode
+import io.github.palexdev.materialfx.controls.MFXTableView
+import javafx.stage.FileChooser
+import javafx.stage.Stage
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.ss.util.RegionUtil
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.lang.IllegalStateException
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.time.LocalDate
+import java.util.*
+
+/**
+ * Klasa narzędziowa zawierająca metody do operacji na arkuszach Excel, takie jak wczytywanie,
+ * tworzenie i formatowanie arkuszy, a także przetwarzanie danych z plików Excel.
+ */
+object ExcelUtils {
+
+    /**
+     * Wczytuje właściwości z pliku konfiguracyjnego.
+     *
+     * @return Obiekt Properties zawierający wczytane właściwości.
+     */
+    fun loadConfigProps(): Properties {
+<span class="fc" id="L36">        val prop = Properties()</span>
+<span class="fc" id="L37">        val configFile = Paths.get(&quot;&quot;).toAbsolutePath().resolve(&quot;config.properties&quot;)</span>
+<span class="pc" id="L38">        Files.newInputStream(configFile).use { input -&gt; prop.load(input)}</span>
+<span class="fc" id="L39">        return prop</span>
+    }
+
+    /**
+     * Metoda tworząca nowy lub wczytująca istniejący arkusz Excel na podstawie ścieżki do pliku.
+     *
+     * @param filePath Ścieżka do pliku Excel.
+     * @return Obiekt XSSFWorkbook reprezentujący arkusz Excel.
+     */
+    fun createWorkbook(filePath: String): XSSFWorkbook {
+<span class="fc" id="L49">        val file = File(filePath)</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        return if (file.exists()) {</span>
+<span class="fc" id="L52">            val fis = FileInputStream(file)</span>
+<span class="fc" id="L53">            XSSFWorkbook(fis)</span>
+        } else {
+<span class="fc" id="L55">            XSSFWorkbook()</span>
+        }
+    }
+
+
+    /**
+     * Metoda tworząca styl dla nagłówków w arkuszu Excel.
+     *
+     * @param workbook Obiekt XSSFWorkbook, do którego zostanie dodany styl.
+     * @return Obiekt XSSFCellStyle reprezentujący styl nagłówków.
+     */
+    fun createHeaderStyle(workbook: XSSFWorkbook): XSSFCellStyle {
+
+<span class="fc" id="L68">        val headerFont: Font = workbook.createFont()</span>
+<span class="fc" id="L69">        headerFont.bold = true</span>
+<span class="fc" id="L70">        headerFont.fontHeightInPoints = 12.toShort()</span>
+<span class="fc" id="L71">        headerFont.color = IndexedColors.BLACK.getIndex()</span>
+
+<span class="fc" id="L73">        val headerCellStyle = workbook.createCellStyle()</span>
+<span class="fc" id="L74">        headerCellStyle.fillForegroundColor = IndexedColors.AQUA.getIndex()</span>
+<span class="fc" id="L75">        headerCellStyle.fillPattern = FillPatternType.SOLID_FOREGROUND</span>
+<span class="fc" id="L76">        headerCellStyle.fillBackgroundColor = IndexedColors.LIGHT_BLUE.index</span>
+<span class="fc" id="L77">        headerCellStyle.setFont(headerFont)</span>
+<span class="fc" id="L78">        headerCellStyle.borderBottom = BorderStyle.THIN</span>
+<span class="fc" id="L79">        headerCellStyle.borderTop = BorderStyle.THIN</span>
+<span class="fc" id="L80">        headerCellStyle.borderLeft = BorderStyle.THIN</span>
+<span class="fc" id="L81">        headerCellStyle.borderRight = BorderStyle.THIN</span>
+<span class="fc" id="L82">        headerCellStyle.verticalAlignment = VerticalAlignment.CENTER</span>
+<span class="fc" id="L83">        headerCellStyle.alignment = HorizontalAlignment.CENTER</span>
+<span class="fc" id="L84">        headerCellStyle.dataFormat = workbook.createDataFormat().getFormat(&quot;@&quot;)</span>
+
+<span class="fc" id="L86">        return headerCellStyle</span>
+    }
+
+    /**
+     * Metoda tworząca styl dla komórek w arkuszu Excel.
+     *
+     * @param workBook Obiekt XSSFWorkbook, do którego zostanie dodany styl.
+     * @return Obiekt XSSFCellStyle reprezentujący styl komórek.
+     */
+    fun createCellStyle(workBook: XSSFWorkbook): XSSFCellStyle {
+<span class="fc" id="L96">        val style = workBook.createCellStyle()</span>
+<span class="fc" id="L97">        style.borderTop = BorderStyle.THIN</span>
+<span class="fc" id="L98">        style.borderBottom = BorderStyle.THIN</span>
+<span class="fc" id="L99">        style.borderLeft = BorderStyle.THIN</span>
+<span class="fc" id="L100">        style.borderRight = BorderStyle.THIN</span>
+
+<span class="fc" id="L102">        return style</span>
+    }
+
+
+    /**
+     * Metoda tworząca nazwę planu (nazwę zakładki) na podstawie podanej daty.
+     *
+     * @param day Data, na podstawie której ma być utworzona nazwa planu.
+     * @return Nazwa planu w formacie plan_dd.MM-dd.MM&quot;
+     */
+    fun createPlanName(day: LocalDate): String {
+
+<span class="fc" id="L114">        val start = CommonUtils.getPlanStartDay(day)</span>
+<span class="fc" id="L115">        val end = start.plusDays(2)</span>
+
+<span class="fc" id="L117">        val startMonth = String.format(&quot;%02d&quot;, start.monthValue)</span>
+<span class="fc" id="L118">        val endMonth = String.format(&quot;%02d&quot;, end.monthValue)</span>
+<span class="fc" id="L119">        val startDay = String.format(&quot;%02d&quot;, start.dayOfMonth)</span>
+<span class="fc" id="L120">        val endDay = String.format(&quot;%02d&quot;, end.dayOfMonth)</span>
+
+<span class="fc" id="L122">        return &quot;${startDay}.${startMonth}-${endDay}.${endMonth}&quot;</span>
+    }
+
+
+    /**
+     * Metoda tworząca nowy lub usuwająca i tworząca nowy arkusz o określonej nazwie w pliku Excel.
+     *
+     * @param workbook Obiekt XSSFWorkbook, w którym ma być utworzony arkusz.
+     * @param planName Nazwa arkusza.
+     * @return Obiekt XSSFSheet reprezentujący arkusz.
+     */
+    fun createSheet(workbook: XSSFWorkbook, planName: String): XSSFSheet {
+        val sheet: XSSFSheet?
+<span class="fc" id="L135">        val sheetIndex = workbook.getSheetIndex(planName)</span>
+
+        //zakładka nie istnieje
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        sheet = if (sheetIndex == -1) {</span>
+<span class="fc" id="L139">            workbook.createSheet(planName)</span>
+        } else {
+            //usuwa i tworzy
+<span class="fc" id="L142">            workbook.removeSheetAt(sheetIndex)</span>
+<span class="fc" id="L143">            workbook.createSheet(planName)</span>
+        }
+
+<span class="fc" id="L146">        return sheet</span>
+    }
+
+
+    /**
+     * Metoda tworząca arkusz o określonej nazwie w pliku Excel lub pobierająca istniejący arkusz o tej nazwie.
+     *
+     * @param workbook Obiekt XSSFWorkbook, w którym ma być utworzony arkusz.
+     * @param planName Nazwa arkusza.
+     * @return Obiekt XSSFSheet reprezentujący arkusz.
+     */
+    fun createOrGetSheet(workbook: XSSFWorkbook, planName: String): XSSFSheet {
+        val sheet: XSSFSheet?
+<span class="fc" id="L159">        val sheetIndex = workbook.getSheetIndex(planName)</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        sheet = if (sheetIndex == -1) {</span>
+<span class="fc" id="L162">            workbook.createSheet(planName)</span>
+        } else {
+<span class="fc" id="L164">            workbook.getSheet(planName)</span>
+        }
+
+<span class="fc" id="L167">        return sheet</span>
+    }
+
+    /**
+     * Metoda wyszukująca odpowiednie miejsce dla grupy w arkuszu Excel.
+     * Plany dla grup są posortowane rosnąco semestrami a następnie alfabetycznie po oznaczeniach grup (IA,IB,IIA itp)
+     *
+     * @param sheet Arkusz Excel, w którym jest szukane odpowiednie miejsce.
+     * @param group Nazwa grupy, dla której szukane jest odpowiednie miejsce.
+     * @return Para, która zawiera indeks wiersza, gdzie należy umieścić plan dla grupy oraz flagę informującą, czy grupa została znaleziona w arkuszu.
+     */
+    fun findCorrectPlaceForGroup(sheet: XSSFSheet, group: String): Pair&lt;Int, Boolean&gt;
+    {
+<span class="fc" id="L180">        val startRow = 2</span>
+<span class="fc" id="L181">        val startCell = 1</span>
+
+<span class="fc bfc" id="L183" title="All 4 branches covered.">        for (i in startRow..sheet.lastRowNum)</span>
+        {
+<span class="fc bfc" id="L185" title="All 2 branches covered.">            if (sheet.getRow(i) == null) continue</span>
+<span class="fc" id="L186">            val value = sheet.getRow(i).getCell(startCell).stringCellValue</span>
+
+            //Pominięcie nie nagłówków
+<span class="pc bpc" id="L189" title="2 of 6 branches missed.">            if (!value.startsWith(&quot;I&quot;) &amp;&amp; !value.startsWith(&quot;V&quot;) &amp;&amp; !value.startsWith(&quot;X&quot;)) continue</span>
+
+<span class="fc" id="L191">            val insertedGroupSem = CommonUtils.romanToInt(group.dropLast(1))</span>
+<span class="fc" id="L192">            val currentGroupSem = CommonUtils.romanToInt(value.split(&quot; &quot;)[0].dropLast(1))</span>
+
+<span class="fc" id="L194">            val insertedGroupSign = group.last()</span>
+<span class="fc" id="L195">            val currentGroupSign = value.split(&quot; &quot;)[0].last()</span>
+
+            //Nie znaleziono grupy w pliku ale znaleziono odpowiednie miejsce do wstawienia planu
+<span class="pc bpc" id="L198" title="2 of 6 branches missed.">            if ((insertedGroupSign &lt; currentGroupSign &amp;&amp; insertedGroupSem&lt;=currentGroupSem)|| insertedGroupSem &lt; currentGroupSem)</span>
+            {
+<span class="fc" id="L200">                return Pair(sheet.getRow(i).getCell(startCell).rowIndex-1, false)</span>
+            }
+
+            //Znaleziono plan grupy w pliku (nadpisz go)
+<span class="pc bpc" id="L204" title="1 of 4 branches missed.">            else if (insertedGroupSign == currentGroupSign &amp;&amp; insertedGroupSem == currentGroupSem)</span>
+            {
+<span class="fc" id="L206">                return Pair(sheet.getRow(i).getCell(startCell).rowIndex, true)</span>
+            }
+        }
+
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        return if (sheet.lastRowNum == -1) Pair(2, false)       //gdy pusty plik to lastRowNum=-1</span>
+<span class="fc" id="L211">        else Pair(sheet.lastRowNum+3, false)</span>
+    }
+
+
+    /**
+     * Metoda znajdująca istniejący merged region dla określonego wiersza w arkuszu Excel.
+     *
+     * @param sheet Arkusz Excel.
+     * @param row Indeks wiersza.
+     * @return Obiekt CellRangeAddress reprezentujący istniejący merged region lub null, jeśli nie istnieje.
+     */
+    fun findExistingMergedRegion(sheet: XSSFSheet, row: Int): CellRangeAddress? {
+<span class="fc" id="L223">        val numMergedRegions = sheet.numMergedRegions</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        for (i in 0 until numMergedRegions) {</span>
+<span class="fc" id="L225">            val mergedRegion = sheet.getMergedRegion(i)</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">            if (mergedRegion.isInRange(row, 1)) {</span>
+<span class="fc" id="L227">                return mergedRegion</span>
+            }
+        }
+<span class="fc" id="L230">        return null</span>
+    }
+
+
+    /**
+     * Metoda zliczająca liczbę semestrów w arkuszu Excel.
+     *
+     * @param sheet Arkusz Excel.
+     * @return Liczba semestrów na kierunku.
+     */
+    private fun countSemestersNumber(sheet: Sheet): Int
+    {
+<span class="fc" id="L242">        val startRowNr = 3</span>
+<span class="fc" id="L243">        var startCellNr = 3</span>
+<span class="fc" id="L244">        var counter = 0</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        while (sheet.getRow(startRowNr).getCell(startCellNr).stringCellValue.contains(&quot;sem&quot;))</span>
+        {
+<span class="fc" id="L247">            counter++</span>
+<span class="fc" id="L248">            startCellNr++</span>
+        }
+<span class="fc" id="L250">        return counter</span>
+    }
+
+
+    /**
+     * Funkcja umożliwiająca załadowanie pliku Excel.
+     *
+     * @param uploadSPNToggle Przycisk służący do załadowania i wyświetlania ścieżki do wybranego pliku.
+     * @param stage           Główna scena aplikacji.
+     */
+    fun searchFile(uploadSPNToggle: MFXRectangleToggleNode, stage: Stage)
+    {
+<span class="nc" id="L262">        uploadSPNToggle.text = &quot;&quot;</span>
+<span class="nc" id="L263">        val fileChooser = FileChooser()</span>
+<span class="nc" id="L264">        fileChooser.extensionFilters.addAll(</span>
+<span class="nc" id="L265">            FileChooser.ExtensionFilter(MessageBundle.getMess(&quot;label.OnlyXLSX&quot;), &quot;*.xlsx&quot;),</span>
+            //FileChooser.ExtensionFilter(MessageBundle.getMess(&quot;label.OnlyXLS&quot;), &quot;*.xls&quot;)
+        )
+<span class="nc" id="L268">        val selectedFile = fileChooser.showOpenDialog(stage)</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (selectedFile!=null)</span>
+        {
+<span class="nc" id="L271">            uploadSPNToggle.text = selectedFile.toString()</span>
+<span class="nc" id="L272">            uploadSPNToggle.isSelected = true</span>
+        }
+<span class="nc" id="L274">    }</span>
+
+    /**
+     * Metoda służąca do wczytywania szkolnego planu nauczania.
+     * Wczytuje dane z pliku Excel i dodaje je do listy obiektów typu Subject.
+     *
+     * @param filePath       Ścieżka do pliku Excel, który ma zostać wczytany.
+     * @param subjectsToAdd  Lista, do której zostaną dodane obiekty Subject.
+     */
+    fun uploadSingleSPN(filePath: String, subjectsToAdd: MutableList&lt;Subject&gt;)
+    {
+<span class="fc" id="L285">        val file = File(filePath)</span>
+<span class="fc" id="L286">        var fis:FileInputStream?=null</span>
+<span class="fc" id="L287">        var myWorkBook: XSSFWorkbook?=null</span>
+
+<span class="fc" id="L289">        try {</span>
+<span class="fc" id="L290">            fis = FileInputStream(file)</span>
+<span class="fc" id="L291">            myWorkBook = XSSFWorkbook(fis)</span>
+<span class="fc" id="L292">            val sheet = myWorkBook.getSheetAt(0)</span>
+
+<span class="fc" id="L294">            val semCount = countSemestersNumber(sheet)</span>
+<span class="fc" id="L295">            var startRowNr = 4</span>
+<span class="fc" id="L296">            var startCellNr = 2</span>
+
+<span class="pc bpc" id="L298" title="1 of 4 branches missed.">            while (sheet.getRow(startRowNr) != null &amp;&amp; sheet.getRow(startRowNr).getCell(startCellNr)!=null)</span>
+            {
+<span class="fc" id="L300">                val subject = sheet.getRow(startRowNr).getCell(startCellNr).stringCellValue</span>
+<span class="pc bpc" id="L301" title="1 of 4 branches missed.">                for (sem in 1..semCount)</span>
+                {
+<span class="fc" id="L303">                    startCellNr++</span>
+
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">                    val hoursWeekly = when (sheet.getRow(startRowNr).getCell(startCellNr).cellType) {</span>
+<span class="pc bpc" id="L306" title="1 of 2 branches missed.">                        CellType.NUMERIC -&gt; sheet.getRow(startRowNr).getCell(startCellNr).numericCellValue.toInt()</span>
+<span class="nc" id="L307">                        else -&gt; throw IllegalStateException()   //Jeśli napis zamiast liczby godzin</span>
+                    }
+
+                    //Ujemna liczba godzin
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">                    if (hoursWeekly &lt; 0) throw IllegalValueException(MessageBundle.getMess(&quot;warning.shouldBeGreaterThanZero&quot;))</span>
+<span class="fc bfc" id="L312" title="All 2 branches covered.">                    if(hoursWeekly != 0) subjectsToAdd.add(Subject(subject,sem, hoursWeekly))</span>
+                }
+<span class="fc" id="L314">                startCellNr = 2</span>
+<span class="fc" id="L315">                startRowNr++</span>
+            }
+        }
+<span class="nc" id="L318">        catch (e: IllegalValueException)</span>
+        {
+<span class="nc" id="L320">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.readError&quot;), e.message!!)</span>
+<span class="nc" id="L321">            subjectsToAdd.clear()</span>
+        }
+<span class="nc" id="L323">        catch (e: IllegalStateException)</span>
+        {
+<span class="nc" id="L325">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.readError&quot;), MessageBundle.getMess(&quot;warning.incorrectExcelForm&quot;))</span>
+<span class="nc" id="L326">            subjectsToAdd.clear()</span>
+        }
+<span class="nc" id="L328">        catch (e: IOException) {</span>
+<span class="nc" id="L329">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.readError&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L330">            subjectsToAdd.clear()</span>
+        }
+        finally {
+<span class="pc" id="L333">            myWorkBook!!.close()</span>
+<span class="pc" id="L334">            fis!!.close()</span>
+<span class="fc" id="L335">        }</span>
+<span class="fc" id="L336">    }</span>
+
+
+    /**
+     * Metoda tworząca tytuł planu wraz z nadaniem stylu w arkuszu Excel.
+     *
+     * @param sheet           Arkusz Excel.
+     * @param headerCellStyle Obiekt reprezentujący styl nagłówka.
+     * @param title           Tytuł, który ma być wyświetlony jako nagłówek.
+     * @param columnsNumber   Liczba kolumn, na których ma być wyświetlony tytuł.
+     * @param startNr         Numer wiersza, w którym ma być wyświetlony tytuł.
+     */
+<span class="fc" id="L348">    fun createTitle(sheet: XSSFSheet, headerCellStyle: XSSFCellStyle, title: String, columnsNumber: Int, startNr: Int = 2)</span>
+    {
+<span class="fc bfc" id="L350" title="All 2 branches covered.">        val startRow = if (startNr == 2) startNr else startNr</span>
+<span class="fc" id="L351">        val mergedRow = sheet.createRow(startRow)</span>
+<span class="fc" id="L352">        val startCell = 1</span>
+
+<span class="fc" id="L354">        val existingMergedRegion = findExistingMergedRegion(sheet, startRow)</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        if (existingMergedRegion != null) {</span>
+<span class="fc" id="L356">            val regionIndex = sheet.getMergedRegions().indexOf(existingMergedRegion)</span>
+<span class="fc" id="L357">            sheet.removeMergedRegion(regionIndex)</span>
+        }
+
+<span class="fc" id="L360">        val mergedCell = mergedRow.createCell(startCell)</span>
+
+<span class="fc" id="L362">        val mergedRegion = CellRangeAddress(startRow,startRow , startCell, columnsNumber)</span>
+<span class="fc" id="L363">        mergedCell.cellStyle =  headerCellStyle</span>
+
+<span class="fc" id="L365">        RegionUtil.setBorderTop(BorderStyle.THIN, mergedRegion, sheet)</span>
+<span class="fc" id="L366">        RegionUtil.setBorderBottom(BorderStyle.THIN, mergedRegion, sheet)</span>
+<span class="fc" id="L367">        RegionUtil.setBorderLeft(BorderStyle.THIN, mergedRegion, sheet)</span>
+<span class="fc" id="L368">        RegionUtil.setBorderRight(BorderStyle.THIN, mergedRegion, sheet)</span>
+
+<span class="fc" id="L370">        sheet.addMergedRegion(CellRangeAddress(startRow,startRow , startCell, columnsNumber))</span>
+<span class="fc" id="L371">        mergedCell.setCellValue(title)</span>
+<span class="fc" id="L372">    }</span>
+
+
+    /**
+     * Metoda wypełniająca nagłówki w arkuszu Excel odpowiednimi danymi.
+     *
+     * @param sheet       Arkusz Excel.
+     * @param headerStyle Obiekt reprezentujący styl nagłówka.
+     * @param tableView   Tabela w aplikacji, z której zczytywane są dane do arkusza Excel.
+     * @param startNr     Numer wiersza, w którym mają zostać wypełnione nagłówki.
+     */
+<span class="fc" id="L383">    fun fillHeaders(sheet: XSSFSheet, headerStyle: XSSFCellStyle, tableView: MFXTableView&lt;*&gt;, startNr: Int=3) {</span>
+<span class="fc bfc" id="L384" title="All 2 branches covered.">        val startRow = if(startNr==3) startNr else startNr</span>
+<span class="fc" id="L385">        val headerRow = sheet.createRow(startRow)</span>
+
+<span class="fc bfc" id="L387" title="All 2 branches covered.">        for (j in tableView.tableColumns.indices) {</span>
+<span class="fc" id="L388">            headerRow.createCell(j + 1).setCellValue(tableView.tableColumns[j].text)</span>
+<span class="fc" id="L389">            headerRow.getCell(j+1).cellStyle = headerStyle</span>
+<span class="fc" id="L390">            sheet.addIgnoredErrors(CellRangeAddress(startRow,startRow , 0, tableView.tableColumns.size),IgnoredErrorType.NUMBER_STORED_AS_TEXT)</span>
+        }
+<span class="fc" id="L392">    }</span>
+
+    /**
+     * Metoda ustawiająca szerokość kolumn w arkuszu Excel.
+     *
+     * @param sheet       Arkusz Excel.
+     * @param tableView   Obiekt klasy MFXTableView reprezentujący tabelę w aplikacji.
+     */
+    fun setColumnsSize(sheet: XSSFSheet, tableView: MFXTableView&lt;*&gt;) {
+<span class="fc bfc" id="L401" title="All 2 branches covered.">        for (j in tableView.tableColumns.indices) {</span>
+<span class="fc" id="L402">            val columnWidth = 256</span>
+<span class="fc" id="L403">            sheet.setColumnWidth(j + 1, columnWidth)</span>
+        }
+
+<span class="fc bfc" id="L406" title="All 2 branches covered.">        for (i in 0 until tableView.tableColumns.size + 2) {</span>
+<span class="fc" id="L407">            sheet.autoSizeColumn(i)</span>
+        }
+<span class="fc" id="L409">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

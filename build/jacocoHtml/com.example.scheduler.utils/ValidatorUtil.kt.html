@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidatorUtil.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.utils</a> &gt; <span class="el_source">ValidatorUtil.kt</span></div><h1>ValidatorUtil.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.utils
+
+import io.github.palexdev.materialfx.validation.Constraint
+import javafx.beans.binding.Bindings
+import javafx.beans.property.StringProperty
+
+/**
+ * Klasa zawierająca narzędzia do tworzenia różnych rodzajów walidatorów, używanych do walidacji pól tekstowych.
+ * Walidatory są wykorzystywane do sprawdzania i zapewniania poprawności danych wprowadzanych przez użytkownika
+ * w formularzach dodawania i edytowania obiektów.
+ */
+object ValidatorUtil {
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość rozpoczyna się z dużą literą.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createFirstLetterBigConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L21">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L22">            Bindings.createBooleanBinding(</span>
+<span class="fc bfc" id="L23" title="All 6 branches covered.">                { property.value.let {it.isNotEmpty() &amp;&amp; it[0].isUpperCase()}},</span>
+<span class="fc" id="L24">                property</span>
+            ))
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy wszystkie litery właściwości poza pierwszą są małe.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createLettersSmallExceptFirstConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L36">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L37">            Bindings.createBooleanBinding(</span>
+<span class="fc bfc" id="L38" title="All 6 branches covered.">                { property.value.let {it.isNotEmpty() &amp;&amp; it.substring(1).lowercase() == it.substring(1) } },</span>
+<span class="fc" id="L39">                property</span>
+            ))
+    }
+
+    /**
+     * Tworzy ograniczenie sprawdzające, czy hasło i jego powtórzenie są identyczne.
+     *
+     * @param propertyPassword       Właściwość typu StringProperty reprezentująca hasło.
+     * @param propertyPasswordRepeat Właściwość typu StringProperty reprezentująca powtórzenie hasła.
+     * @param errorMessage           Komunikat błędu wyświetlany, gdy hasła nie są identyczne.
+     * @return Ograniczenie Constraint sprawdzające, czy hasło i jego powtórzenie są identyczne.
+     */
+    fun createEqualPasswordConstraint(propertyPassword: StringProperty,propertyPasswordRepeat: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L52">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L53">            Bindings.createBooleanBinding(</span>
+                {
+<span class="fc" id="L55">                    propertyPassword.value == propertyPasswordRepeat.value },</span>
+<span class="fc" id="L56">                propertyPasswordRepeat</span>
+            ))
+    }
+
+    /**
+     * Tworzy ograniczenie sprawdzające, czy dany ciąg znaków zawiera co najmniej jedną cyfrę.
+     *
+     * @param property     Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie Constraint sprawdzające, czy dany ciąg znaków zawiera co najmniej cyfrę.
+     */
+    fun createContainsDigitConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L68">        val regex = Regex(&quot;[0-9]&quot;)</span>
+
+<span class="fc" id="L70">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L71">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L72">                { regex.containsMatchIn(property.value) },</span>
+<span class="fc" id="L73">                property</span>
+            ))
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość składa się jedynie z wielkich liter.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createOnlyBigLettersConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L85">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L86">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L87">                { property.value.matches(&quot;[A-ZÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ]+&quot;.toRegex()) },</span>
+<span class="fc" id="L88">                property</span>
+            ))
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość zawiera jedynie cyfry.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createOnlyDigitsAllowedConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L100">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L101">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L102">                { property.value.matches(Regex(&quot;[0-9]+&quot;)) },</span>
+<span class="fc" id="L103">                property</span>
+            ))
+    }
+
+
+    /**
+     * Tworzy ograniczenie, które sprawdza, czy właściwość jest poprawnym adresem e-mail.
+     * Adres e-mail musi spełniać następujące kryteria:
+     * - Zawiera dokładnie jeden znak &quot;@&quot;
+     * - Nie zawiera spacji
+     * - Zawiera kropkę po znaku &quot;@&quot;
+     * - Znak &quot;@&quot; nie jest pierwszym znakiem
+     * - Po znaku &quot;@&quot; znajdują się znaki inne niż spacja
+     * - Zawiera kropkę przed końcem adresu e-mail
+     * - Kropka nie jest ostatnim znakiem adresu e-mail
+     *
+     * @param property    Właściwość typu StringProperty do walidacji.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createIncorrectEmailConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L124">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L125">            Bindings.createBooleanBinding(</span>
+                {
+<span class="fc" id="L127">                    val email = property.value</span>
+<span class="fc" id="L128">                    val atIndex = email.indexOf(&quot;@&quot;)</span>
+<span class="fc" id="L129">                    val dotIndex = email.lastIndexOf(&quot;.&quot;)</span>
+<span class="fc bfc" id="L130" title="All 6 branches covered.">                    val hasExactlyOneAt = email.count{it == '@'} == 1</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">                    val hasNoSpace = !email.contains(&quot; &quot;)</span>
+<span class="fc" id="L132">                    val containsDot = email.contains(&quot;.&quot;)</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">                    val atIsNotFirstChar = email.indexOf(&quot;@&quot;) &gt;1</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                    val containsDotAfterAt = dotIndex &gt; atIndex</span>
+<span class="pc bpc" id="L135" title="1 of 4 branches missed.">                    val containsCharBetweenDotAndAt = if (containsDotAfterAt) email.substring(atIndex+1,dotIndex).isNotEmpty() else false</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                    val dotIsNotLastCharacter = dotIndex != email.length-1</span>
+
+<span class="fc" id="L138">                    property.value.let {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">                    hasExactlyOneAt &amp;&amp;</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">                    hasNoSpace &amp;&amp;</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">                    containsDot &amp;&amp;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">                    atIsNotFirstChar &amp;&amp;</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">                    containsCharBetweenDotAndAt &amp;&amp;</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">                    containsDotAfterAt &amp;&amp;</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                    dotIsNotLastCharacter</span>
+                     }},
+<span class="fc" id="L147">                property</span>
+            ))
+    }
+
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość nie jest pusta.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createNotEmptyConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L160">        return Constraint.of(errorMessage, property.isNotEmpty)</span>
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość ma dokładnie 9 znaków.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createExactlyNineDigitsConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L171">        return Constraint.of(errorMessage,property.length().isEqualTo(9))</span>
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość jest nie dłuższa niź 6 znaków.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createNoLongerThanSixLettersConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L182">        return Constraint.of(errorMessage, property.length().lessThanOrEqualTo(6))</span>
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość jest nie dłuższa niź 30 znaków.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createNoLongerThanThirtyLettersConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L193">        return Constraint.of(errorMessage, property.length().lessThanOrEqualTo(30))</span>
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość ma co najmniej 1 znak.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createMoreThanOneLetterConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L204">        return Constraint.of(errorMessage, property.length().greaterThan(1))</span>
+    }
+
+
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość pasuje do podanego wzorca (Nie zawiera innych znaków).
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createNoSpecialCharsConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L217">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L218">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L219">                { property.value.matches(&quot;[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùżźśúûüųūÿýñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð'-]+&quot;.toRegex()) },</span>
+<span class="fc" id="L220">                property</span>
+            ))
+    }
+
+    fun createNoSpecialCharsConstraintSpceAllowed(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L225">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L226">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L227">                { property.value.matches(&quot;[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùżźśúûüųūÿýñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð '-]+&quot;.toRegex()) },</span>
+<span class="fc" id="L228">                property</span>
+            ))
+    }
+
+    /**
+     * Tworzy ograniczenie sprawdzające, czy dany ciąg znaków nie zawiera żadnych znaków specjalnych, z wyjątkiem cyfr.
+     *
+     * @param property     Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie Constraint sprawdzające, czy dany ciąg znaków nie zawiera żadnych znaków specjalnych, z wyjątkiem cyfr.
+     */
+    fun createNoSpecialCharsExceptDigitsConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L240">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L241">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L242">                { property.value.matches(&quot;[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùżźśúûüųūÿýñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð'0-9]+&quot;.toRegex()) },</span>
+<span class="fc" id="L243">                property</span>
+            ))
+    }
+
+
+    /**
+     * Tworzy ograniczenie sprawdzające, czy dany ciąg znaków zawiera co najmniej jedną wielką literę.
+     *
+     * @param property     Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie Constraint sprawdzające, czy dany ciąg znaków zawiera co najmniej jedną wielką literę.
+     */
+    fun createContainsBigLetterConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L256">        val regex = Regex(&quot;[A-ZÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð]&quot;)</span>
+
+<span class="fc" id="L258">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L259">            Bindings.createBooleanBinding(</span>
+<span class="fc" id="L260">                { regex.containsMatchIn(property.value) },</span>
+<span class="fc" id="L261">                property</span>
+            ))
+    }
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość ma co najmniej 5 znaków.
+     *
+     * @param property    Właściwość typu StringProperty do zwalidowania.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createMoreThanFiveLetterConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L273">        return Constraint.of(errorMessage, property.length().greaterThan(5))</span>
+    }
+
+
+    /**
+     * Metoda tworząca walidator, który sprawdza, czy właściwość pasuje do wzorca kodu pocztowego XX-XXX gdzie X-cyfra.
+     *
+     * @param property    Właściwość typu StringProperty do walidacji.
+     * @param errorMessage Komunikat błędu wyświetlany, gdy walidacja nie powiedzie się.
+     * @return Ograniczenie typu Constraint.
+     */
+    fun createPostalCodeConstraint(property: StringProperty, errorMessage: String): Constraint {
+<span class="fc" id="L285">        return Constraint.of(errorMessage,</span>
+<span class="fc" id="L286">            Bindings.createBooleanBinding({ property.value.matches(Regex(&quot;\\d{2}-\\d{3}&quot;)) },</span>
+<span class="fc" id="L287">                property</span>
+            )
+        )
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

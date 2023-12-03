@@ -1,0 +1,49 @@
+/**
+Plik css definiujący niestandardowe style
+ */
+
+@import '../fonts/Fonts.css';
+@import 'MFXColors.css';
+@import 'Buttons.css';
+@import 'ComboBoxes.css';
+@import 'TabPanes.css';
+@import 'TableViews.css';
+@import 'Labels.css';
+@import 'TextFields.css';
+@import 'SideMenu.css';
+
+/* Tło */
+.root {
+    /*Obraz autorstwa coolvector na Freepik*/
+    -fx-background-image: url("../photos/bg.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-attachment: fixed;
+}
+
+.stepper{
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+}
+
+/* Styl dla zablokowanych dat */
+.disabled-date {
+    -fx-background-color: #FF9999;
+    -fx-background-radius: 10;
+    -fx-label-padding: 5;
+}
+
+/* Styl dla dat do wybrania */
+.enabled-date {
+    -fx-background-color: #99FF99;
+    -fx-background-radius: 10;
+    -fx-label-padding: 5;
+}
+
+/* Styl dla dat, dla których plan już istnieje */
+.plan-exists-date {
+    -fx-background-color: #f5eb37;
+    -fx-background-radius: 10;
+    -fx-label-padding: 5;
+}

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupsModuleController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">GroupsModuleController.kt</span></div><h1>GroupsModuleController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+import com.example.scheduler.controller.observers.AdminTabsObserver
+import com.example.scheduler.controller.observers.FieldsObserver
+import com.example.scheduler.controller.observers.TabsObserver
+import com.example.scheduler.models.FieldsModel
+import com.example.scheduler.objects.Field
+import com.example.scheduler.objects.Group
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.*
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import io.github.palexdev.mfxresources.fonts.MFXFontIcon
+import javafx.collections.FXCollections
+import javafx.fxml.FXML
+import javafx.scene.paint.Color
+import javafx.stage.Stage
+import java.sql.SQLException
+
+
+/**
+ * Klasa kontrolera modułu GroupsModule do zarządzania grupami
+ */
+<span class="fc" id="L23">class GroupsModuleController: IGroupsModuleController, FieldsObserver, AdminTabsObserver, TabsObserver {</span>
+
+    /**
+     * Lista służąca do wyświetlania grup na danym kierunku i semestrze
+     */
+    @FXML
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">    lateinit var groupsListView: MFXListView&lt;String&gt;</span>
+
+    /**
+     * Pomocnicze okno dialogowe
+     */
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">    lateinit var dialog: MFXStageDialog</span>
+
+    /**
+     * Przycisk służący do wyświetlania listy grup na danym kierunku i semestrze.
+     */
+    @FXML
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">    lateinit var showGroupsButton: MFXButton</span>
+
+    /**
+     * Przycisk dodawania grupy do wybranego semestru na danym kierunku.
+     */
+    @FXML
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    lateinit var addGroupButton: MFXButton</span>
+
+    /**
+     * Kontrolka przechowująca listę wszystkich kierunków
+     */
+    @FXML
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">    lateinit var fieldChoiceBox: MFXComboBox&lt;String&gt;</span>
+
+    /**
+     * Kontrolka przechowująca listę semestrów na wybranym kierunku
+     */
+    @FXML
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">    lateinit var semesterChoiceBox: MFXComboBox&lt;Int&gt;</span>
+
+
+    /**
+     * Menu kontekstowe wyświetlające się po kliknięciu na grupę na liście
+     */
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    lateinit var menu: MFXContextMenu</span>
+
+    /**
+     * Flaga informująca o chęci usunięcia grupy
+     */
+<span class="pc" id="L69">    var wantToDelete = false</span>
+
+<span class="pc" id="L71">    val fieldsModel = FieldsModel()</span>
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize(){
+<span class="fc" id="L78">        AdminTabObserver.addObserver(this)</span>
+<span class="fc" id="L79">        TabObserver.addObserver(this)</span>
+<span class="fc" id="L80">        FieldsModel.addObserver(this)</span>
+<span class="fc" id="L81">        getFields()</span>
+<span class="fc" id="L82">        setTexts()</span>
+<span class="fc" id="L83">        setListeners()</span>
+<span class="fc" id="L84">        menu = MFXContextMenu(groupsListView)</span>
+<span class="pc" id="L85">        showGroupsButton.setOnAction{ showGroups() }</span>
+<span class="pc" id="L86">        addGroupButton.setOnAction { addGroup() }</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * Ustawia nasłuchiwanie dla kontrolek
+     */
+    override fun setListeners()
+    {
+<span class="fc" id="L94">        fieldChoiceBox.valueProperty().addListener { _, _, new -&gt;</span>
+<span class="fc" id="L95">            semesterChoiceBox.items.clear()</span>
+<span class="pc bpc" id="L96" title="3 of 6 branches missed.">            if (!fieldChoiceBox.value.isNullOrBlank())</span>
+            {
+                //pobierz liczbę semestrów na kierunku
+<span class="fc" id="L99">                val sems = fieldsModel.getSemesters(new)</span>
+<span class="fc" id="L100">                semesterChoiceBox.items = FXCollections.observableArrayList((1..sems).toList())</span>
+            }
+
+<span class="fc" id="L103">        }</span>
+
+<span class="fc" id="L105">        setOnGroupSelected()</span>
+<span class="fc" id="L106">    }</span>
+
+    /**
+     * Ustawia teksty na kontrolek
+     */
+    override fun setTexts()
+    {
+<span class="fc" id="L113">        fieldChoiceBox.floatingText = MessageBundle.getMess(&quot;label.field&quot;)</span>
+<span class="fc" id="L114">        semesterChoiceBox.floatingText = MessageBundle.getMess(&quot;label.sem&quot;)</span>
+
+<span class="fc" id="L116">        addGroupButton.text = MessageBundle.getMess(&quot;label.addGroup&quot;)</span>
+<span class="fc" id="L117">        showGroupsButton.text = MessageBundle.getMess(&quot;label.showGroups&quot;)</span>
+<span class="fc" id="L118">    }</span>
+
+    /**
+     * Obsługuje akcje wywoływane po kliknięciu na grupę na liście.
+     */
+    override fun setOnGroupSelected() {
+<span class="fc" id="L124">        groupsListView.setOnMouseClicked {</span>
+<span class="nc" id="L125">            val selectedItem = groupsListView.selectionModel.selectedValue</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (selectedItem != null) {</span>
+<span class="nc" id="L127">                showContextMenu(groupsListView.items.indexOf(selectedItem), selectedItem)</span>
+            }
+<span class="nc" id="L129">        }</span>
+<span class="fc" id="L130">    }</span>
+
+    /**
+     * Pobiera listę nazw wszystkich kierunków
+     */
+    override fun getFields() {
+<span class="fc" id="L136">        val fieldList = fieldsModel.getFields()</span>
+<span class="fc" id="L137">        fieldChoiceBox.items = FXCollections.observableArrayList(fieldList.map { field -&gt; field.fieldName })</span>
+<span class="fc" id="L138">    }</span>
+
+    /**
+     * Dodaje nową grupę do wybranego kierunku i semestru (pierwszą wolną w kolejności alfabetycznej)
+     */
+    override fun addGroup() {
+        //Najpierw musisz wybrac kierunek i semestr
+<span class="pc bpc" id="L145" title="4 of 8 branches missed.">        if (fieldChoiceBox.value.isNullOrBlank() || semesterChoiceBox.value == null) MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.groupAddingError&quot;), MessageBundle.getMess(&quot;warning.noFieldOrSem&quot;))</span>
+        else
+        {
+<span class="fc" id="L148">            val romanNumber = CommonUtils.intToRoman(semesterChoiceBox.value)</span>
+<span class="fc" id="L149">            try {</span>
+<span class="fc" id="L150">                fieldsModel.addGroup(fieldChoiceBox.value, semesterChoiceBox.value, romanNumber)</span>
+<span class="fc" id="L151">                showGroups()</span>
+<span class="fc" id="L152">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.group.correctlyAdded&quot;))</span>
+<span class="nc" id="L153">            }catch (e: SQLException) {</span>
+<span class="nc" id="L154">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.addGroupError&quot;))</span>
+            }
+
+        }
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Wyświetla menu kontekstowe dla wybranej grupy z tabeli.
+     *
+     * @param selectedRowIndex Indeks zaznaczonego wiersza na liście.
+     * @param selectedItem       Wybrana grupa.
+     */
+    override fun showContextMenu(selectedRowIndex: Int, selectedItem: String) {
+<span class="fc" id="L167">        val deleteButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.deleteGroup&quot;))</span>
+
+<span class="fc" id="L169">        deleteButton.graphic =  MFXFontIcon(&quot;fas-trash-can&quot;, 16.0, Color.BLACK)</span>
+
+<span class="fc" id="L171">        deleteButton.setOnAction {</span>
+<span class="nc" id="L172">            val groupToDelete = Group(selectedItem, fieldChoiceBox.value, semesterChoiceBox.value)</span>
+<span class="nc" id="L173">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.group.askBeforeDelete&quot;))</span>
+<span class="nc" id="L174">            deleteGroup(groupToDelete)</span>
+<span class="nc" id="L175">        }</span>
+
+<span class="fc" id="L177">        menu.items.clear()</span>
+<span class="fc" id="L178">        menu.hide()</span>
+<span class="fc" id="L179">        menu.items.addAll(deleteButton)</span>
+
+<span class="fc" id="L181">        val selectedRow = groupsListView.getCell(selectedRowIndex)</span>
+
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (selectedRow!=null)</span>
+        {
+<span class="nc" id="L185">            val bounds = selectedRow.boundsInParent</span>
+<span class="nc" id="L186">            val boundsInWindow = groupsListView.localToScene(bounds.maxX, bounds.maxY)</span>
+<span class="nc" id="L187">            val menuX = boundsInWindow.x + groupsListView.scene.window.x + 10</span>
+<span class="nc" id="L188">            val menuY = boundsInWindow.y + groupsListView.scene.window.y + 40</span>
+
+<span class="nc" id="L190">            menu.show(groupsListView, menuX, menuY)</span>
+        }
+
+<span class="fc" id="L193">    }</span>
+
+    /**
+     * Usuwa grupę z bazy danych.
+     *
+     * @param groupToDelete  grupa do usunięcia z bazy danych.
+     */
+    override fun deleteGroup(groupToDelete: Group) {
+<span class="fc" id="L201">        groupsListView.selectionModel.clearSelection()</span>
+<span class="fc" id="L202">        menu.hide()</span>
+
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        if (wantToDelete)</span>
+        {
+<span class="fc" id="L206">            try {</span>
+<span class="fc" id="L207">                fieldsModel.deleteGroup(groupToDelete)</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">                if (groupsListView.items.size&gt;1) showGroups() else groupsListView.items.clear()</span>
+<span class="fc" id="L209">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyDeletedGroup&quot;))</span>
+
+<span class="nc" id="L211">            }catch (e: SQLException) {</span>
+<span class="nc" id="L212">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.deleteGroupError&quot;))</span>
+            }
+
+        }
+<span class="fc" id="L216">    }</span>
+
+    /**
+     * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
+     *
+     * @param content       Wiadomość do wyświetlenia.
+     */
+    fun showDialogYesNoMessage(content: String) {
+<span class="fc" id="L224">        val buttons = listOf(</span>
+<span class="pc" id="L225">            MessageBundle.getMess(&quot;label.yes&quot;) to { wantToDelete = true },</span>
+<span class="pc" id="L226">            MessageBundle.getMess(&quot;label.no&quot;) to { wantToDelete = false}</span>
+        )
+
+<span class="fc" id="L229">        val stage: Stage = showGroupsButton.scene.window as Stage</span>
+
+<span class="fc" id="L231">        dialog = DialogUtils.showMessageDialogWithButtons(content, stage, buttons)</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
+<span class="fc" id="L233">    }</span>
+
+
+    /**
+     * Wyświetla listę grup na wybranym kierunku i semestrze
+     */
+    override fun showGroups() {
+<span class="fc" id="L240">        val field = fieldChoiceBox.value</span>
+<span class="fc" id="L241">        val semester = semesterChoiceBox.value</span>
+
+<span class="pc bpc" id="L243" title="1 of 6 branches missed.">        if (field.isNullOrBlank()) MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showGroupsError&quot;), MessageBundle.getMess(&quot;warning.showGroupsError.noField&quot;))</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">        else if (semester == null)  MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showGroupsError&quot;), MessageBundle.getMess(&quot;warning.showGroupsError.noSem&quot;))</span>
+        else
+        {
+<span class="fc" id="L247">            val groups = fieldsModel.getGroupsForGivenSem(field, semester)</span>
+
+<span class="fc bfc" id="L249" title="All 2 branches covered.">            if (groups.isEmpty()) {</span>
+<span class="fc" id="L250">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noGroups&quot;), MessageBundle.getMess(&quot;warning.noGroupsInGivenField&quot;))</span>
+<span class="fc" id="L251">                groupsListView.items.clear()</span>
+            }
+            else
+            {
+<span class="fc" id="L255">                groupsListView.items = groups</span>
+            }
+        }
+<span class="fc" id="L258">    }</span>
+
+    /**
+     * Metoda wywoływana po dokonaniu zmiany na kierunkach w bazie danych
+     */
+    override fun onFieldsChanged() {
+<span class="nc" id="L264">        getFields()</span>
+<span class="nc" id="L265">    }</span>
+
+    /**
+     * Metoda wywoływana podczas zmiany zakładek przez użytkownika - czyści panel.
+     */
+    override fun onTabsChanged() {
+<span class="fc" id="L271">        CommonUtils.clearBox(fieldChoiceBox)</span>
+<span class="fc" id="L272">        CommonUtils.clearBox(semesterChoiceBox)</span>
+<span class="fc" id="L273">        groupsListView.items.clear()</span>
+<span class="fc" id="L274">    }</span>
+
+
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

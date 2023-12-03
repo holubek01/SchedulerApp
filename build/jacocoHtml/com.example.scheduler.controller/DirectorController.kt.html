@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DirectorController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">DirectorController.kt</span></div><h1>DirectorController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+import io.github.palexdev.materialfx.css.themes.MFXThemeManager
+import io.github.palexdev.materialfx.css.themes.Themes
+import com.example.scheduler.SchedulerApp
+import com.example.scheduler.models.PlansModel
+import com.example.scheduler.utils.DialogUtils
+import com.example.scheduler.utils.MessageBundle
+import com.example.scheduler.utils.MessageUtil
+import com.example.scheduler.utils.TabObserver
+import io.github.palexdev.materialfx.controls.MFXButton
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import javafx.animation.TranslateTransition
+import javafx.application.Platform
+import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
+import javafx.scene.Scene
+import javafx.scene.control.Label
+import javafx.scene.control.Tab
+import javafx.scene.control.TabPane
+import javafx.scene.layout.AnchorPane
+import javafx.stage.Screen
+import javafx.stage.Stage
+import javafx.stage.WindowEvent
+import javafx.util.Duration
+import java.sql.SQLException
+import kotlin.system.exitProcess
+
+
+/**
+ * Klasa obsługująca interakcje, takie jak zmianę zakładek,
+ * wylogowywanie się, zamykanie programu z aktywnym planem.
+ */
+<span class="nc" id="L34">class DirectorController: IDirectorController{</span>
+
+    /**
+     * Panel zakładek do przechodzenia między widokami w interfejsie.
+     */
+    @FXML
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    lateinit var tabPane: TabPane</span>
+
+    /**
+     * Przycisk do wylogowania się z aplikacji.
+     */
+    @FXML
+<span class="nc bnc" id="L46" title="All 2 branches missed.">    lateinit var logoutButton: MFXButton</span>
+
+    /**
+     * Etykieta wyświetlająca aktywny plan.
+     */
+    @FXML
+<span class="nc bnc" id="L52" title="All 2 branches missed.">    lateinit var activePlanLabel: Label</span>
+
+    /**
+     * Pomocnicze okno dialogowe.
+     */
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    lateinit var dialog: MFXStageDialog</span>
+
+    /**
+     * Etykieta wyświetlająca nazwę zalogowanego użytkownika.
+     */
+    @FXML
+<span class="nc bnc" id="L63" title="All 2 branches missed.">    lateinit var userLabel: Label</span>
+
+    /**
+     * Zakładka do tworzenia nowego planu.
+     */
+    @FXML
+    private lateinit var createPlanTab: Tab
+
+    /**
+     * Zakładka do wyświetlania planu dla grup i nauczycieli.
+     */
+    @FXML
+    private lateinit var showPlanTab: Tab
+
+    /**
+     * Zakładka do wyświetlania rozkładu dla sal
+     */
+    @FXML
+    private lateinit var showPlanForRoomsTab: Tab
+
+    /**
+     * Zakładka wyświetlania panelu administracyjnego.
+     */
+    @FXML
+    private lateinit var adminDashboard: Tab
+
+    /**
+     * Główne okno aplikacji.
+     */
+<span class="nc bnc" id="L92" title="All 2 branches missed.">    lateinit var stage: Stage</span>
+
+    /**
+     * Nazwa zalogowanego użytkownika.
+     */
+<span class="nc bnc" id="L97" title="All 2 branches missed.">    lateinit var user:String</span>
+
+<span class="nc" id="L99">    val plansModel = PlansModel()</span>
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize() {
+<span class="nc" id="L106">        setTexts()</span>
+<span class="nc" id="L107">        setTabs()</span>
+<span class="nc" id="L108">        logoutButton.setOnAction { handleBeforeLogout() }</span>
+<span class="nc" id="L109">        tabPane.selectionModel.selectedItemProperty().addListener { _, oldTab, newTab -&gt;</span>
+<span class="nc" id="L110">            animateTabTransition(oldTab, newTab, stage)</span>
+<span class="nc" id="L111">            TabObserver.notifyObservers()</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        stage.setOnCloseRequest {event-&gt; handleClosingProgram(event) }</span>
+<span class="nc" id="L114">    }</span>
+
+    /**
+     * Ustawia teksty etykiet i przycisków.
+     */
+    override fun setTexts()
+    {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        createPlanTab.text = MessageBundle.getMess(&quot;label.createPlan&quot;)</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        showPlanTab.text = MessageBundle.getMess(&quot;label.showPlan&quot;)</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        showPlanForRoomsTab.text = MessageBundle.getMess(&quot;label.planForRooms&quot;)</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        adminDashboard.text = MessageBundle.getMess(&quot;label.adminPanel&quot;)</span>
+<span class="nc" id="L125">        logoutButton.text = MessageBundle.getMess(&quot;label.logout&quot;)</span>
+<span class="nc" id="L126">        activePlanLabel.text = MessageBundle.getMess(&quot;label.currentPlan&quot;)</span>
+<span class="nc" id="L127">        userLabel.text = &quot;${MessageBundle.getMess(&quot;label.user&quot;)} $user&quot;</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Ustawia zakładki interfejsu użytkownika i przypisuje do nich odpowiednie kontrolery.
+     */
+    override fun setTabs()
+    {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        setTab(createPlanTab,&quot;view/createPlan.fxml&quot;)</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        setTab(showPlanTab, &quot;view/showPlan.fxml&quot;)</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        setTab(showPlanForRoomsTab, &quot;view/showPlanForRooms.fxml&quot;)</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        setTab(adminDashboard, &quot;view/adminDashBoard.fxml&quot;)</span>
+<span class="nc" id="L139">    }</span>
+
+    /**
+     * Obsługuje zdarzenie zamknięcia programu.
+     *
+     * Metoda jest wywoływana przy próbie zamknięcia programu i podejmuje odpowiednie działania,
+     * takie jak zapisanie istniejącego planu przed zamknięciem, jeśli taki istnieje.
+     *
+     * @param event Zdarzenie zamknięcia okna.
+     */
+    override fun handleClosingProgram(event: WindowEvent)
+    {
+<span class="nc" id="L151">        event.consume()</span>
+<span class="nc" id="L152">        val shouldSavePlanBeforeClosing = plansModel.shouldSaveOldPlan()</span>
+<span class="nc" id="L153">        try {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            if (shouldSavePlanBeforeClosing)</span>
+            {
+<span class="nc" id="L156">                var wantToSaveAndClose = false</span>
+<span class="nc" id="L157">                val message = MessageBundle.getMess(&quot;question.askBeforeCloseAppWhenPlanExists&quot;)</span>
+
+<span class="nc" id="L159">                val buttons = listOf(</span>
+<span class="nc" id="L160">                    MessageBundle.getMess(&quot;label.yes&quot;) to { wantToSaveAndClose = true },</span>
+<span class="nc" id="L161">                    MessageBundle.getMess(&quot;label.no&quot;) to { wantToSaveAndClose = false})</span>
+
+<span class="nc" id="L163">                dialog = DialogUtils.showMessageDialogWithButtons(message, stage, buttons)</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (dialog.owner.isShowing) dialog.showAndWait()</span>
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">                if (wantToSaveAndClose)</span>
+                {
+<span class="nc" id="L168">                    plansModel.createNewPlan()</span>
+<span class="nc" id="L169">                    close()</span>
+                }
+            }
+            else
+            {
+<span class="nc" id="L174">                close()</span>
+            }
+<span class="nc" id="L176">        }catch (e: SQLException) {</span>
+<span class="nc" id="L177">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.savePlanError&quot;))</span>
+        }
+<span class="nc" id="L179">    }</span>
+
+    /**
+     * Funkcja zamykająca program
+     */
+    fun close()
+    {
+<span class="nc" id="L186">        plansModel.refillHours()</span>
+<span class="nc" id="L187">        Platform.exit()</span>
+<span class="nc" id="L188">        exitProcess(0)</span>
+    }
+
+
+    /**
+     * Sprawdza czy przed wylogowaniem nie trzeba zapisać planu.
+     */
+    override fun handleBeforeLogout() {
+
+<span class="nc" id="L197">        val shouldSavePlanBeforeLogout = plansModel.shouldSaveOldPlan()</span>
+<span class="nc" id="L198">        try {</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">            if (shouldSavePlanBeforeLogout)</span>
+            {
+<span class="nc" id="L201">                var wantToSaveAndClose = false</span>
+<span class="nc" id="L202">                val message = MessageBundle.getMess(&quot;question.askBeforeLogoutWhenPlanExists&quot;)</span>
+
+<span class="nc" id="L204">                val buttons = listOf(</span>
+<span class="nc" id="L205">                    MessageBundle.getMess(&quot;label.yes&quot;) to { wantToSaveAndClose = true },</span>
+<span class="nc" id="L206">                    MessageBundle.getMess(&quot;label.no&quot;) to { wantToSaveAndClose = false})</span>
+
+<span class="nc" id="L208">                dialog = DialogUtils.showMessageDialogWithButtons(message, stage, buttons)</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">                if (dialog.owner.isShowing) dialog.showAndWait()</span>
+
+<span class="nc bnc" id="L211" title="All 2 branches missed.">                if (wantToSaveAndClose)</span>
+                {
+<span class="nc" id="L213">                    plansModel.createNewPlan()</span>
+<span class="nc" id="L214">                    plansModel.refillHours()</span>
+<span class="nc" id="L215">                    logout()</span>
+                }
+            }
+            else
+            {
+<span class="nc" id="L220">                logout()</span>
+            }
+<span class="nc" id="L222">        }catch (e: SQLException) {</span>
+<span class="nc" id="L223">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.savePlanError&quot;))</span>
+        }
+<span class="nc" id="L225">    }</span>
+
+
+    /**
+     * Obsługuje wylogowanie użytkownika i przenosi go do widoku logowania.
+     */
+    override fun logout()
+    {
+        /*
+        UserAgentBuilder.builder()
+            .themes(JavaFXThemes.MODENA)
+            .themes(MaterialFXStylesheets.forAssemble(true))
+            .setDeploy(true)
+            .setResolveAssets(true)
+            .build()
+            .setGlobal()
+
+         */
+
+<span class="nc" id="L244">        val fxmlLoader = FXMLLoader(SchedulerApp::class.java.getResource(&quot;view/loginView.fxml&quot;))</span>
+<span class="nc" id="L245">        val controller = LoginController()</span>
+<span class="nc" id="L246">        controller.stage = stage</span>
+<span class="nc" id="L247">        fxmlLoader.setController(controller)</span>
+<span class="nc" id="L248">        val newRoot: AnchorPane = fxmlLoader.load()</span>
+<span class="nc" id="L249">        val screenBounds: javafx.geometry.Rectangle2D = Screen.getPrimary().bounds</span>
+<span class="nc" id="L250">        val scene = Scene(newRoot)</span>
+<span class="nc" id="L251">        controller.root = newRoot</span>
+<span class="nc" id="L252">        MFXThemeManager.addOn(scene, Themes.DEFAULT, Themes.LEGACY)</span>
+<span class="nc" id="L253">        stage.isResizable = false</span>
+<span class="nc" id="L254">        stage.scene = scene</span>
+<span class="nc" id="L255">        stage.sizeToScene()</span>
+<span class="nc" id="L256">        stage.x = (screenBounds.width-1000.0)/2</span>
+<span class="nc" id="L257">        stage.y = (screenBounds.height-500.0)/2</span>
+<span class="nc" id="L258">    }</span>
+
+    /**
+     * Ustawia animacje przejścia między zakładkami.
+     *
+     * @param oldTab Zakładka, która jest zamykana.
+     * @param newTab Nowa zakładka, która jest otwierana.
+     * @param stage Główne okno aplikacji.
+     */
+    override fun animateTabTransition(oldTab: Tab, newTab: Tab, stage: Stage) {
+<span class="nc" id="L268">        val oldContent = oldTab.content as AnchorPane</span>
+<span class="nc" id="L269">        val newContent = newTab.content as AnchorPane</span>
+
+        //Jeśli zakładka jest na prawo od obecnej to wysuń zakładkę z prawej
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        val oldTabX = if (tabPane.tabs.indexOf(newTab) &gt; tabPane.tabs.indexOf(oldTab)) {</span>
+<span class="nc" id="L273">            -tabPane.layoutBounds.width</span>
+        } else {
+<span class="nc" id="L275">            tabPane.layoutBounds.width</span>
+        }
+<span class="nc" id="L277">        val newTabX = -oldTabX</span>
+
+<span class="nc" id="L279">        val transitionOut = TranslateTransition(Duration.seconds(0.1), oldContent)</span>
+<span class="nc" id="L280">        transitionOut.fromX = 0.0</span>
+<span class="nc" id="L281">        transitionOut.toX = oldTabX</span>
+
+<span class="nc" id="L283">        val transitionIn = TranslateTransition(Duration.seconds(0.1), newContent)</span>
+<span class="nc" id="L284">        transitionIn.fromX = newTabX</span>
+<span class="nc" id="L285">        transitionIn.toX = 0.0</span>
+
+<span class="nc" id="L287">        transitionOut.setOnFinished {</span>
+<span class="nc" id="L288">            oldContent.isVisible = false</span>
+<span class="nc" id="L289">            newContent.isVisible = true</span>
+<span class="nc" id="L290">            transitionIn.play()</span>
+<span class="nc" id="L291">        }</span>
+
+<span class="nc" id="L293">        transitionOut.play()</span>
+<span class="nc" id="L294">    }</span>
+
+    /**
+     * Ustawia zawartość zakładki na podstawie podanego widoku.
+     *
+     * @param tab Zakładka, dla której ustawiana jest zawartość.
+     * @param url Ścieżka do widoku FXML.
+     */
+    override fun setTab(tab: Tab, url: String) {
+<span class="nc" id="L303">        val fxmlLoader = FXMLLoader(SchedulerApp::class.java.getResource(url))</span>
+
+<span class="nc" id="L305">        val createPlanController = CreatePlanController()</span>
+<span class="nc" id="L306">        val showPlanController = ShowPlanController()</span>
+<span class="nc" id="L307">        val showPlanRoomsController = ShowPlanRoomsController()</span>
+<span class="nc" id="L308">        val adminDashboardController = AdminDashboardController()</span>
+        //stage.minWidth = 500.0
+
+<span class="nc" id="L311">        createPlanController.stage = stage</span>
+<span class="nc" id="L312">        showPlanController.stage = stage</span>
+<span class="nc" id="L313">        showPlanRoomsController.stage = stage</span>
+<span class="nc" id="L314">        adminDashboardController.stage = stage</span>
+
+<span class="nc" id="L316">        when(tab)</span>
+        {
+<span class="nc bnc" id="L318" title="All 4 branches missed.">            createPlanTab -&gt; {fxmlLoader.setController(createPlanController); createPlanController.activePlanLabel = activePlanLabel}</span>
+<span class="nc bnc" id="L319" title="All 4 branches missed.">            showPlanTab -&gt; fxmlLoader.setController(showPlanController)</span>
+<span class="nc bnc" id="L320" title="All 4 branches missed.">            showPlanForRoomsTab -&gt; fxmlLoader.setController(showPlanRoomsController)</span>
+<span class="nc bnc" id="L321" title="All 4 branches missed.">            adminDashboard -&gt; fxmlLoader.setController(adminDashboardController)</span>
+        }
+
+<span class="nc" id="L324">        val anch: AnchorPane = fxmlLoader.load()</span>
+<span class="nc" id="L325">        tab.content = anch</span>
+<span class="nc" id="L326">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

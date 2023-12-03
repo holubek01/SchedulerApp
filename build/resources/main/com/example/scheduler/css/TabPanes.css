@@ -1,0 +1,37 @@
+/**
+Plik css definiujący style dla komponentów TabPane
+ */
+
+
+@import 'MFXColors.css';
+
+/* Styl głównego menu nawigacyjnego */
+.tab{ -fx-background-insets: 0 1 0 1,0,0; }
+.CustomTabPane .tab { -fx-background-color: #cccaca;}
+.CustomTabPane .tab:selected { -fx-background-color: -mfx-purple; }   /*Zaznaczona zakładka w menu nawigacyjnym*/
+
+
+.tab-pane:focused>.tab-header-area>.headers-region>.tab:selected .focus-indicator {
+    -fx-border-color: -mfx-purple;
+}
+
+.tab {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #3c3c3c;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 40px;
+    -fx-padding: 10px 20px;
+}
+
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: white;
+
+}
+
+.CustomTabPane:top {
+    -fx-padding: 0.5em 0.5em 0.0em 0.0em;
+    -fx-background-insets: 0, 0 0 1 0;
+}

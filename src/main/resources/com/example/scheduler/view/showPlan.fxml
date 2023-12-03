@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" layoutX="-3.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="700.0" spacing="15.0">
+               <children>
+                  <MFXFilterComboBox id="comboPurple" fx:id="fieldOfStudyChoiceBox" floatingText="Wybierz kierunek" prefHeight="40.0" prefWidth="200.0" />
+                  <MFXFilterComboBox id="comboPurple" fx:id="groupChoiceBox" floatingText="Wybierz grupę" prefHeight="40.0" prefWidth="150.0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </MFXFilterComboBox>
+                  <MFXComboBox id="comboPurple" fx:id="dayChoiceBoxGroup" floatingText="Wybierz dzień" prefHeight="40.0" prefWidth="150.0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </MFXComboBox>
+                  <MFXButton id="customButton" fx:id="showPlanButtonGroup" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="120.0" text="Pokaż plan">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></MFXButton>
+                  <MFXButton id="customButton" fx:id="exportGroupPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="300.0" text="Exportuj plan grupy">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </MFXButton>
+                  <MFXButton id="customButton" fx:id="exportPlansForAllGroups" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="230.0" text="Exportuj plany dla grup" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" prefWidth="200.0" spacing="15.0">
+               <children>
+                  <MFXFilterComboBox id="comboPurple" fx:id="teacherChoiceBox" floatingText="Wybierz nauczyciela" prefHeight="40.0" prefWidth="250.0" />
+                  <MFXComboBox id="comboPurple" fx:id="dayChoiceBoxTeacher" floatingText="Wybierz dzień" prefHeight="40.0" prefWidth="150.0">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></MFXComboBox>
+                  <MFXButton id="customButton" fx:id="showPlanButtonTeacher" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="120.0" text="Pokaż plan">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></MFXButton>
+                  <MFXButton id="customButton" fx:id="exportTeacherPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="300.0" text="Exportuj plan nauczyciela">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </MFXButton>
+                  <MFXButton id="customButton" fx:id="exportPlansForAllTeachers" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="271.0" text="Exportuj plany dla nauczycieli" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <MFXTableView fx:id="planTableView" footerVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

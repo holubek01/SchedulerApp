@@ -1,0 +1,27 @@
+/**
+Plik css definiujący niestandardowe style dla okna dialogowego
+ */
+
+
+@import '../fonts/Fonts.css';
+@import 'MFXColors.css';
+@import 'ListViews.css';
+@import 'Labels.css';
+@import 'TextFields.css';
+@import 'Buttons.css';
+@import 'ComboBoxes.css';
+
+.root{
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.stepper{
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-background-color: #faf7f7;
+}
+
+
+

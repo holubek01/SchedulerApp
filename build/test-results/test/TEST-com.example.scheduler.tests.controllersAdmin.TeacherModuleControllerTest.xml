@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:16" hostname="DESKTOP-DVH4IG9" time="13.543">
+  <properties/>
+  <testcase name="createStepperTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.092"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.857"/>
+  <testcase name="showAddDeleteTeacherTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.007"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.885"/>
+  <testcase name="setOnDaySelectedTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.881"/>
+  <testcase name="onTabsChanged()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.843"/>
+  <testcase name="createAddTeacherFromFileVBoxTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.865"/>
+  <testcase name="checkDBAddAndEditTeacherTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.469"/>
+  <testcase name="showTeacherSubjectsAndAvailability()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.059"/>
+  <testcase name="checkSubjectWasDeletedTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.066"/>
+  <testcase name="createTeacherEditDialogTest()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.97"/>
+  <testcase name="validateTeacherFromFile()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="0.855"/>
+  <testcase name="addTeachersFromFile()" classname="com.example.scheduler.tests.controllersAdmin.TeacherModuleControllerTest" time="1.675"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

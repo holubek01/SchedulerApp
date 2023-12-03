@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1300.0"  xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <VBox layoutX="-3.0"  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="700.0">
+            <children>
+               <MFXComboBox id="comboPurple" fx:id="locationChoiceBox" floatingText="Wybierz lokalizację" prefHeight="40.0" prefWidth="250.0">
+                  <HBox.margin>
+                     <Insets left="20.0" />
+                  </HBox.margin>
+               </MFXComboBox>
+               <MFXButton id="customButton" fx:id="showPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="120.0"  text="Pokaż plan">
+                  <HBox.margin>
+                     <Insets left="40.0" />
+                  </HBox.margin>
+               </MFXButton>
+               <MFXButton id="customButton" fx:id="exportPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="149.0"  text="Exportuj plan">
+                  <HBox.margin>
+                     <Insets left="50.0" />
+                  </HBox.margin>
+               </MFXButton>
+            </children>
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
+         </HBox>
+         <MFXScrollPane>
+            <content>
+               <MFXTableView fx:id="planTableView" footerVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" prefWidth="1400.0" style="-fx-background-color: #e5e0e0;"  />
+            </content>
+         </MFXScrollPane>
+      </children>
+      <padding>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+   </VBox>
+</AnchorPane>

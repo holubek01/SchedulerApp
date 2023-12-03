@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.Utils.EnglishDayConverterTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:41:33" hostname="DESKTOP-DVH4IG9" time="0.965">
+  <properties/>
+  <testcase name="testFromPolishName()" classname="com.example.scheduler.tests.Utils.EnglishDayConverterTest" time="0.238"/>
+  <testcase name="testToPolishNameNonExistingTranslation()" classname="com.example.scheduler.tests.Utils.EnglishDayConverterTest" time="0.24"/>
+  <testcase name="testToPolishName()" classname="com.example.scheduler.tests.Utils.EnglishDayConverterTest" time="0.245"/>
+  <testcase name="testFromPolishNameNonExistingTranslation()" classname="com.example.scheduler.tests.Utils.EnglishDayConverterTest" time="0.237"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

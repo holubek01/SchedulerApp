@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeacherDAOImpl.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.db.dao</a> &gt; <span class="el_source">TeacherDAOImpl.kt</span></div><h1>TeacherDAOImpl.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.db.dao
+
+import com.example.scheduler.db.DBQueryExecutor
+import com.example.scheduler.objects.Teacher
+import javafx.collections.ObservableList
+import java.sql.SQLException
+
+/**
+ * Implementacja interfejsu `TeacherDAO` do obsługi operacji w bazie danych dla nauczyciela
+ */
+<span class="fc" id="L11">class TeacherDAOImpl: TeacherDAO {</span>
+
+    /**
+     * Pobiera przedmioty, których uczy nauczyciel.
+     *
+     * @param teacher Imię i nazwisko nauczyciela.
+     * @return Lista przedmiotów.
+     */
+    override fun getTeacherSubjectsByName(teacher: String): ObservableList&lt;String&gt; {
+<span class="fc" id="L20">        val query = &quot;SELECT subjectName FROM subjects INNER JOIN teacher_subject ts on subjects.subjectID = ts.subjectID &quot; +</span>
+                &quot;INNER JOIN teachers t on ts.teacherID = t.teacherID WHERE name = ? AND lastname = ? ORDER BY subjectName&quot;
+
+<span class="fc" id="L23">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L24">            teacher.split(&quot; &quot;)[1],</span>
+<span class="fc" id="L25">            teacher.split(&quot; &quot;)[0],</span>
+<span class="fc" id="L26">        ){resultSet -&gt; resultSet.getString(1) }</span>
+    }
+
+
+    /**
+     * Metoda pobierająca id podanego nauczyciela.
+     *
+     * @param teacher Obiekt Teacher, którego id chcemy uzyskać
+     * @return Id nauczyciela
+     */
+    override fun getTeacherID(teacher: Teacher): Int {
+<span class="fc" id="L37">        val query = &quot;SELECT teacherID FROM teachers &quot; +</span>
+                &quot;WHERE name = ? AND lastname = ? AND phone = ? AND mail = ?&quot;
+
+<span class="fc" id="L40">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L41">            teacher.firstname,</span>
+<span class="fc" id="L42">            teacher.lastname,</span>
+<span class="fc" id="L43">            teacher.phone,</span>
+<span class="fc" id="L44">            teacher.email)</span>
+<span class="fc" id="L45">        {resultSet -&gt; resultSet.getInt(1)}.first()</span>
+    }
+
+    /**
+     * Metoda aktualizująca nauczyciela w bazie danych przy użyciu procedury z bazy danych.
+     *
+     * @param teacherID Id nauczyciela do aktualizacji
+     * @param teacher Nauczyciel ze zaktualizowanymi danymi
+     * @param subjectsJSON JSON z nową listą przedmiotów
+     */
+    @Throws(SQLException::class)
+    override fun updateTeacher(teacherID: Int, teacher: Teacher, subjectsJSON: String) {
+<span class="fc" id="L57">        val query = &quot;{ CALL updateTeacher(?,?,?,?,?,?) }&quot;</span>
+<span class="fc" id="L58">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="fc" id="L59">            query,</span>
+<span class="fc" id="L60">            teacherID,</span>
+<span class="fc" id="L61">            teacher.firstname,</span>
+<span class="fc" id="L62">            teacher.lastname,</span>
+<span class="fc" id="L63">            teacher.phone,</span>
+<span class="fc" id="L64">            teacher.email,</span>
+<span class="fc" id="L65">            subjectsJSON</span>
+        )
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Metoda, która aktualizuje dyspozycyjność nauczyciela w danym dniu tygodnia.
+     *
+     * @param teacherID ID nauczyciela, którego dyspozycyjność jest aktualizowana.
+     * @param day        Dzień tygodnia, dla którego aktualizowana jest dyspozycyjność.
+     * @param hoursJSON JSON zawierający nowe godziny dyspozycyjności.
+     */
+    @Throws(SQLException::class)
+    override fun updateTeacherAvailability(teacherID: Int, day: String, hoursJSON: String) {
+<span class="nc" id="L78">        val query = &quot;{ CALL updateTeacherAvailability(?,?,?) }&quot;</span>
+<span class="nc" id="L79">        DBQueryExecutor.executePreparedStatement(query, teacherID, day, hoursJSON)</span>
+<span class="nc" id="L80">    }</span>
+
+    /**
+     * Metoda, która dodaje dyspozycyjność nauczycielowi na określony dzień przy użyciu procedury z bazy danych.
+     *
+     * @param day        Dzień tygodnia, dla którego dodawana jest dostępność.
+     * @param hoursJSON JSON zawierający godziny dyspozycyjności do dodania.
+     */
+    @Throws(SQLException::class)
+    override fun addAvailabilityToTeacher(day: String, hoursJSON: String) {
+<span class="fc" id="L90">        val query = &quot;{ CALL addAvailabilityToTeacher(?,?) }&quot;</span>
+<span class="fc" id="L91">        DBQueryExecutor.executePreparedStatement(query, day, hoursJSON)</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Metoda usuwająca nauczyciela z bazy danych.
+     * Przy usuwaniu nauczyciela usuwane są także cała dyspozycyjność oraz wszystkie
+     * zajęcia, które powinien on prowadzić (we wszystkich planach)
+     *
+     * @param teacher Nauczyciel do usunięcia
+     */
+    @Throws(SQLException::class)
+    override fun deleteTeacher(teacher: Teacher) {
+<span class="fc" id="L103">        val query = &quot;{ CALL deleteTeacher(?,?,?,?) }&quot;</span>
+<span class="fc" id="L104">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="fc" id="L105">            query,</span>
+<span class="fc" id="L106">            teacher.firstname,</span>
+<span class="fc" id="L107">            teacher.lastname,</span>
+<span class="fc" id="L108">            teacher.phone,</span>
+<span class="fc" id="L109">            teacher.email</span>
+        )
+<span class="fc" id="L111">    }</span>
+
+    /**
+     * Sprawdza, czy nauczyciel, który nie jest nauczycielem 'selectedTeacher' istnieje w bazie danych.
+     *
+     * @param teacher           Nauczyciel do sprawdzenia w bazie.
+     * @param selectedTeacher   Wybrany nauczyciel do edycji (pomijany).
+     * @return                  `true`, jeśli nauczyciel istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfTeacherInDbEdit(teacher: Teacher, selectedTeacher:Teacher): Boolean {
+<span class="fc" id="L121">        val query = &quot;SELECT COUNT(*) FROM teachers\n&quot; +</span>
+                &quot;WHERE (name = ? AND lastname =\n&quot; +
+                &quot; ? AND phone = ? AND mail = ?)\n&quot; +
+                &quot;AND teachers.teacherID != (SELECT teacherID FROM teachers AS t WHERE t.name =? AND t.lastname =? \n&quot; +
+                &quot;AND t.phone=? AND t.mail = ?)&quot;
+
+<span class="fc" id="L127">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L128">            teacher.firstname,</span>
+<span class="fc" id="L129">            teacher.lastname,</span>
+<span class="fc" id="L130">            teacher.phone,</span>
+<span class="fc" id="L131">            teacher.email,</span>
+<span class="fc" id="L132">            selectedTeacher.firstname,</span>
+<span class="fc" id="L133">            selectedTeacher.lastname,</span>
+<span class="fc" id="L134">            selectedTeacher.phone,</span>
+<span class="fc" id="L135">            selectedTeacher.email)</span>
+<span class="fc" id="L136">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Sprawdza, czy nauczyciel istnieje w bazie danych.
+     *
+     * @param teacher            Nauczyciel do sprawdzenia w bazie
+     * @return                  `true`, jeśli nauczyciel istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfTeacherInDb(teacher: Teacher): Boolean {
+<span class="fc" id="L146">        val query = &quot;SELECT COUNT(*) FROM teachers &quot; +</span>
+                &quot;WHERE name = ? AND lastname = ? AND phone = ? AND mail = ?&quot;
+
+<span class="fc" id="L149">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L150">            teacher.firstname,</span>
+<span class="fc" id="L151">            teacher.lastname,</span>
+<span class="fc" id="L152">            teacher.phone,</span>
+<span class="fc" id="L153">            teacher.email)</span>
+<span class="fc" id="L154">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Pobiera listę wszystkich nauczycieli z bazy danych.
+     *
+     * @return Lista obiektów Teacher reprezentujących nauczycieli.
+     */
+    override fun getTeachers(): ObservableList&lt;Teacher&gt; {
+<span class="fc" id="L163">        val query = &quot;SELECT name, lastname, mail, phone from teachers ORDER BY lastname, name&quot;</span>
+
+<span class="fc" id="L165">        return DBQueryExecutor.executeQuery(query){</span>
+<span class="fc" id="L166">                resultSet -&gt; Teacher(</span>
+<span class="fc" id="L167">            firstname = resultSet.getString(1),</span>
+<span class="fc" id="L168">            lastname = resultSet.getString(2),</span>
+<span class="fc" id="L169">            email = resultSet.getString(3),</span>
+<span class="fc" id="L170">            phone = resultSet.getString(4))</span>
+        }
+    }
+
+    /**
+     * Metoda dodająca nauczyciela do bazy danych przy użyciu procedury z bazy danych.
+     *
+     * @param teacher Nauczyciel do dodania do bazy danych
+     * @param subjectsJSON JSON z nową listą przedmiotów
+     */
+    @Throws(SQLException::class)
+    override fun addTeacher(teacher: Teacher, subjectsJSON: String) {
+<span class="fc" id="L182">        val query = &quot;{ CALL addTeacherWithSubject(?,?,?,?,?) }&quot;</span>
+<span class="fc" id="L183">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="fc" id="L184">            query,</span>
+<span class="fc" id="L185">            teacher.firstname,</span>
+<span class="fc" id="L186">            teacher.lastname,</span>
+<span class="fc" id="L187">            teacher.phone,</span>
+<span class="fc" id="L188">            teacher.email,</span>
+<span class="fc" id="L189">            subjectsJSON</span>
+        )
+<span class="fc" id="L191">    }</span>
+
+    /**
+     * Usuwa ze wszystkich planów wszystkie zajęcia, przypisane do nauczyciela o podanym ID, które
+     * prowadzone są z wybranego przedmiotu (usuwanego z listy nauczyciela)
+     * @param subject Przedmiot, z którego zajęcia należy usunąć
+     * @param teacherID ID nauczyciela, do którego są przypisane zajęcia, które należy usunąć
+     *
+     */
+    @Throws(SQLException::class)
+    override fun deleteClassesAssociatedToDeletedSubjectAndTeacher(subject: String, teacherID: Int) {
+<span class="nc" id="L202">        val query = &quot;{ CALL deleteClassesAssociatedWithTeacherAndSubject(?,?) }&quot;</span>
+<span class="nc" id="L203">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="nc" id="L204">            query,</span>
+<span class="nc" id="L205">            teacherID,</span>
+<span class="nc" id="L206">            subject</span>
+        )
+<span class="nc" id="L208">    }</span>
+
+    /**
+     * Usuwa ze wszystkich planów wszystkie zajęcia, przypisane do nauczyciela o podanym ID, które
+     * odbywają się w w wybranym dniu tygodnia o wybranej godzinie
+     * @param day Dzień tygodnia, w którym należy usunąć zajęcia
+     * @param hour Godzina, w której należy usunąć zajęcia
+     * @param teacherID ID nauczyciela, do którego są przypisane zajęcia, które należy usunąć
+     *
+     */
+    @Throws(SQLException::class)
+    override fun deleteClassesAssociatedToDeletedTeacherAndAvailability(day: String, hour: String, teacherID: Int) {
+<span class="nc" id="L220">        val query = &quot;{ CALL deleteClassesAssociatedToDeletedTeacherAndAvailability(?,?,?) }&quot;</span>
+<span class="nc" id="L221">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="nc" id="L222">            query,</span>
+<span class="nc" id="L223">            teacherID,</span>
+<span class="nc" id="L224">            day,</span>
+<span class="nc" id="L225">            hour</span>
+        )
+<span class="nc" id="L227">    }</span>
+
+    /**
+     * Sprawdza, czy imię i nazwisko istnieją w bazie danych w tabeli nauczycieli.
+     *
+     * @param firstname         Imię do sprawdzenia w bazie.
+     * @param lastname          Nazwisko do sprawdzenia w bazie.
+     * @return                  `true`, jeśli imię i nazwisko istnieją; `false` w przeciwnym razie.
+     */
+    override fun checkIfNameAndLastnameInDb(firstname: String, lastname: String): Boolean {
+<span class="fc" id="L237">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.name = ? AND t.lastname = ? &quot;
+
+<span class="fc" id="L240">        return DBQueryExecutor.executeQuery(query, firstname, lastname)</span>
+<span class="fc" id="L241">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Metoda pobierająca dostępność nauczyciela w wybranym dniu.
+     *
+     * @param teacher Nauczyciel, którego dostępność należy pobrać
+     * @param day Dzień tygodnia
+     * @return Lista godzin dyspozycyjnych w danym dniu
+     */
+    override fun getAvailabilityByDay(teacher: Teacher, day: String): ObservableList&lt;String&gt; {
+<span class="fc" id="L252">        val query = &quot;SELECT hourRange FROM availability INNER JOIN day_of_week AS dow on availability.dayID = dow.dayID &quot; +</span>
+                &quot;INNER JOIN hours h on availability.hourID = h.hourId WHERE dayName = ? AND teacherID = &quot; +
+                &quot;(SELECT teacherID FROM teachers AS t WHERE t.name = ? AND t.lastname = ? AND t.phone = ? AND t.mail = ?) &quot;+
+                &quot; ORDER BY h.hourID&quot;
+
+<span class="fc" id="L257">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L258">            day,</span>
+<span class="fc" id="L259">            teacher.firstname,</span>
+<span class="fc" id="L260">            teacher.lastname,</span>
+<span class="fc" id="L261">            teacher.phone,</span>
+<span class="fc" id="L262">            teacher.email</span>
+<span class="fc" id="L263">        ){resultSet -&gt; resultSet.getString(1)}</span>
+    }
+
+    /**
+     * Metoda pobierająca całą dyspozycyjność nauczyciela.
+     *
+     * @param teacher Nauczyciel, którego dostępność należy pobrać
+     * @return Lista dni i godzin dyspozycyjności
+     */
+    override fun getAvailability(teacher: Teacher): ObservableList&lt;String&gt; {
+<span class="fc" id="L273">        val query = &quot;SELECT dayName, hourRange FROM availability INNER JOIN day_of_week dow on availability.dayID = dow.dayID &quot; +</span>
+                &quot;INNER JOIN hours h on availability.hourID = h.hourId WHERE teacherID = &quot; +
+                &quot;(SELECT teacherID FROM teachers WHERE name = ? AND lastname = ? AND phone = ? AND mail = ?) ORDER BY dow.dayID&quot;
+
+<span class="fc" id="L277">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L278">            teacher.firstname,</span>
+<span class="fc" id="L279">            teacher.lastname,</span>
+<span class="fc" id="L280">            teacher.phone,</span>
+<span class="fc" id="L281">            teacher.email</span>
+<span class="fc" id="L282">        ){resultSet -&gt; &quot;${resultSet.getString(1)} ${resultSet.getString(2)}&quot; }</span>
+    }
+
+    /**
+     * Metoda pobierająca listę przedmiotów nauczyciela.
+     *
+     * @param teacher Nauczyciel, którego przedmioty należy pobrać
+     * @return Lista przedmiotów nauczyciela
+     */
+    override fun getTeacherSubjects(teacher: Teacher): ObservableList&lt;String&gt; {
+<span class="fc" id="L292">        val query = &quot;SELECT subjectName FROM subjects INNER JOIN teacher_subject ts on subjects.subjectID = ts.subjectID &quot; +</span>
+                &quot;INNER JOIN teachers t on ts.teacherID = t.teacherID WHERE name = ? AND lastname = ? &quot; +
+                &quot; AND phone = ? AND mail = ? ORDER BY subjectName&quot;
+
+<span class="fc" id="L296">        return DBQueryExecutor.executeQuery(query,</span>
+<span class="fc" id="L297">            teacher.firstname,</span>
+<span class="fc" id="L298">            teacher.lastname,</span>
+<span class="fc" id="L299">            teacher.phone,</span>
+<span class="fc" id="L300">            teacher.email</span>
+<span class="fc" id="L301">        ){resultSet -&gt; resultSet.getString(1) }</span>
+    }
+
+
+    /**
+     * Sprawdza, czy adres e-mail istnieje w bazie danych.
+     *
+     * @param email              Adres e-mail do sprawdzenia w bazie
+     * @return                  `true`, jeśli adres email istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfEmailInDb(email: String): Boolean {
+<span class="fc" id="L312">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.mail = ?&quot;
+
+<span class="fc" id="L315">        return DBQueryExecutor.executeQuery(query, email)</span>
+<span class="fc" id="L316">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Sprawdza, czy adres e-mail, który nie jest adresem email podanego nauczyciela, istnieje w bazie danych.
+     *
+     * @param email             Adres e-mail do sprawdzenia w bazie.
+     * @param selectedTeacher   Wybrany nauczyciel do edycji.
+     * @return                  `true`, jeśli adres email istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfEmailInDbEdit(email: String, selectedTeacher: Teacher): Boolean {
+<span class="fc" id="L327">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.mail = ? AND t.teacherID != (SELECT teacherID FROM teachers AS t WHERE t.name =? AND t.lastname =? &quot; +
+                &quot;AND t.phone=? AND t.mail = ?)&quot;
+
+<span class="fc" id="L331">        return DBQueryExecutor.executeQuery(query, email, selectedTeacher.firstname, selectedTeacher.lastname, selectedTeacher.phone, selectedTeacher.email)</span>
+<span class="fc" id="L332">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+
+    /**
+     * Sprawdza, czy imię i nazwisko, które nie są imieniem i nazwiskiem wybranego nauczyciela, istnieją w bazie danych w tabeli nauczycieli.
+     *
+     * @param firstname         Imię do sprawdzenia w bazie.
+     * @param lastname          Nazwisko do sprawdzenia w bazie.
+     * @param selectedTeacher   Wybrany nauczyciel do edycji (pomijany).
+     * @return                  `true`, jeśli imię i nazwisko istnieją; `false` w przeciwnym razie.
+     */
+    override fun checkIfNameAndLastnameInDbEdit(
+        firstname: String,
+        lastname: String,
+        selectedTeacher: Teacher
+    ): Boolean {
+<span class="fc" id="L349">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.name = ? AND t.lastname = ? AND t.teacherID != (SELECT teacherID FROM teachers AS t WHERE t.name =? AND t.lastname =? &quot; +
+                &quot;AND t.phone=? AND t.mail = ?)&quot;
+
+<span class="fc" id="L353">        return DBQueryExecutor.executeQuery(query, firstname, lastname, selectedTeacher.firstname, selectedTeacher.lastname, selectedTeacher.phone, selectedTeacher.email)</span>
+<span class="fc" id="L354">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Sprawdza, czy nr telefonu istnieje w bazie danych.
+     *
+     * @param phone              Nr telefonu do sprawdzenia
+     * @return                  `true`, jeśli nr telefonu istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfPhoneInDb(phone: String): Boolean {
+<span class="fc" id="L364">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.phone = ?&quot;
+
+<span class="fc" id="L367">        return DBQueryExecutor.executeQuery(query, phone)</span>
+<span class="fc" id="L368">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Sprawdza, czy nr telefonu, który nie jest nr telefonu wybranego nauczyciela, istnieje w bazie danych.
+     *
+     * @param phone              Nr telefonu do sprawdzenia
+     * @param selectedTeacher   Wybrany nauczyciel do edycji (pomijany).
+     * @return                  `true`, jeśli nr telefonu istnieje; `false` w przeciwnym razie.
+     */
+    override fun checkIfPhoneInDbEdit(phone: String, selectedTeacher: Teacher): Boolean {
+<span class="fc" id="L379">        val query = &quot;SELECT COUNT(*) FROM teachers AS t &quot; +</span>
+                &quot;WHERE t.phone = ? AND t.teacherID != (SELECT teacherID FROM teachers AS t WHERE t.name =? AND t.lastname =? &quot; +
+                &quot;AND t.phone=? AND t.mail = ?)&quot;
+
+<span class="fc" id="L383">        return DBQueryExecutor.executeQuery(query, phone, selectedTeacher.firstname, selectedTeacher.lastname, selectedTeacher.phone, selectedTeacher.email)</span>
+<span class="fc" id="L384">        {resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

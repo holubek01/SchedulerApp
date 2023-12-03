@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.controllersDirector.LoginControllerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:38" hostname="DESKTOP-DVH4IG9" time="2.911">
+  <properties/>
+  <testcase name="onLoginPressedTest()" classname="com.example.scheduler.tests.controllersDirector.LoginControllerTest" time="0.672"/>
+  <testcase name="setActionsTest()" classname="com.example.scheduler.tests.controllersDirector.LoginControllerTest" time="0.482"/>
+  <testcase name="setTextsTest()" classname="com.example.scheduler.tests.controllersDirector.LoginControllerTest" time="0.527"/>
+  <testcase name="createDbPasswordDialogTest()" classname="com.example.scheduler.tests.controllersDirector.LoginControllerTest" time="0.665"/>
+  <testcase name="setConstraintTest()" classname="com.example.scheduler.tests.controllersDirector.LoginControllerTest" time="0.559"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

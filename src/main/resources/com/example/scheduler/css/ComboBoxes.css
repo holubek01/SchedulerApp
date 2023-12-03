@@ -1,0 +1,83 @@
+/**
+Plik css definiujący style dla komponentów ComboBox
+ */
+
+
+@import '../fonts/Fonts.css';
+@import 'MFXColors.css';
+
+
+.mfx-combo-box {
+    -fx-font-family: 'Visby Round CF Medium';
+}
+
+.mfx-combo-box .floating-text {
+    -fx-font-family: 'Visby Round CF Demi Bold';
+    -fx-background-color: transparent;
+}
+
+#comboPurple {
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-color: -mfx-purple;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-padding: 3 3 3 6;
+    -fx-background-insets: 0 0 0 -3;
+}
+
+#comboPurple .floating-text {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+#comboPurple .caret .mfx-font-icon {
+    -mfx-color: white;
+}
+
+#comboPurple .caret .mfx-ripple-generator {
+    -mfx-ripple-color: rgba(255, 255, 255, 0.5);
+}
+
+#comboPurple .caret .mfx-font-icon {
+    -mfx-description: "fas-angle-down";
+    -mfx-size: 20;
+}
+
+#comboGray{
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-color: #b0acac;
+    -fx-background-radius: 10;
+    -fx-text-fill: black;
+    -fx-padding: 3 3 3 6;
+    -fx-background-insets: 0 0 0 -3;
+}
+
+#comboWhite {
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-color: -mfx-textfield-color;
+    -fx-background-radius: 10;
+    -fx-text-fill: black;
+    -fx-padding: 3 3 3 6;
+    -fx-background-insets: 0 0 0 -3;
+}
+
+#comboWhite .floating-text {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+}
+
+#comboWhite .caret .mfx-font-icon {
+    -mfx-color: black;
+}
+
+#comboWhite .caret .mfx-ripple-generator {
+    -mfx-ripple-color: rgba(255, 255, 255, 0.5);
+}
+
+#comboWhite .caret .mfx-font-icon {
+    -mfx-description: "fas-angle-down";
+    -mfx-size: 20;
+}

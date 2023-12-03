@@ -1,0 +1,1174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShowPlanController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">ShowPlanController.kt</span></div><h1>ShowPlanController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+
+import com.example.scheduler.controller.observers.FieldsObserver
+import com.example.scheduler.controller.observers.TabsObserver
+import com.example.scheduler.controller.observers.TeacherObserver
+import com.example.scheduler.models.*
+import com.example.scheduler.models.ClassesToRead
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.*
+import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import io.github.palexdev.materialfx.filter.StringFilter
+import io.github.palexdev.mfxresources.fonts.MFXFontIcon
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.fxml.FXML
+import javafx.geometry.Pos
+import javafx.scene.control.Label
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import javafx.stage.Screen
+import javafx.stage.Stage
+import kotlinx.coroutines.*
+import kotlinx.coroutines.javafx.JavaFx
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.sql.SQLException
+import java.util.function.Consumer
+import java.util.function.Function
+import kotlin.reflect.KProperty1
+
+
+/**
+ * Klasa kontrolera do wyświetlania i eksportowania planów dla grup i nauczycieli oraz edycji zajęć
+ */
+<span class="fc" id="L43">class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, TabsObserver {</span>
+
+    /**
+     * Tabela służąca do wyświetlania planów.
+     */
+    @FXML
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">    lateinit var planTableView: MFXTableView&lt;ClassesToRead&gt;</span>
+
+    /**
+     * Przycisk służący do wyświetlania planu dla wybranej grupy.
+     */
+    @FXML
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    lateinit var showPlanButtonGroup: MFXButton</span>
+
+    /**
+     * Przycisk służący do eksportowania planu dla wybranego nauczyciela.
+     */
+    @FXML
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    lateinit var exportTeacherPlanButton: MFXButton</span>
+
+    /**
+     * Przycisk służący do eksportowania planu dla wybranej grupy.
+     */
+    @FXML
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">    lateinit var exportGroupPlanButton: MFXButton</span>
+
+    /**
+     * Przycisk służący do wyświetlania planu dla wybranego nauczyciela.
+     */
+    @FXML
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    lateinit var showPlanButtonTeacher: MFXButton</span>
+
+    /**
+     * Przycisk służący do eksportowania planów dla wszystkich grup na wybranym kierunku.
+     */
+    @FXML
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    lateinit var exportPlansForAllGroups: MFXButton</span>
+
+    /**
+     * Przycisk służący do eksportowania planów dla wszystkich nauczycieli.
+     */
+    @FXML
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    lateinit var exportPlansForAllTeachers: MFXButton</span>
+
+    /**
+     * Kontrolka służąca do wyboru dnia do planu dla grupy
+     */
+    @FXML
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">    lateinit var dayChoiceBoxGroup: MFXComboBox&lt;String&gt;</span>
+
+    /**
+     * Kontrolka służąca do wyboru dnia do planu dla nauczyciela
+     */
+    @FXML
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">    lateinit var dayChoiceBoxTeacher: MFXComboBox&lt;String&gt;</span>
+
+    /**
+     * Kontrolka służąca do wyboru kierunku
+     */
+    @FXML
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    lateinit var fieldOfStudyChoiceBox: MFXFilterComboBox&lt;String&gt;</span>
+
+    /**
+     * Kontrolka służąca do wyboru grupy
+     */
+    @FXML
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">    lateinit var groupChoiceBox: MFXFilterComboBox&lt;String&gt;</span>
+
+    /**
+     * Kontrolka służąca do wyboru nauczyciela
+     */
+    @FXML
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">    lateinit var teacherChoiceBox: MFXFilterComboBox&lt;String&gt;</span>
+
+    /**
+     * Flaga informująca chęci eksportowania planu.
+     */
+<span class="pc" id="L120">    var wantToExport = false</span>
+
+    /**
+     * Flaga informująca chęci usunięcia planu.
+     */
+<span class="pc" id="L125">    var wantToDelete = false</span>
+
+    /**
+     * Pomocnicze okno dialogowe do menu kontekstowego.
+     */
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">    lateinit var dialog: MFXStageDialog</span>
+
+    /**
+     * Pomocnicze okno dialogowe do wiadomości.
+     */
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">    lateinit var dialogMess: MFXStageDialog</span>
+
+    /**
+     * Flaga informująca chęci edycji planu.
+     */
+    private var wantToEdit = false
+
+    /**
+     * Scena aplikacji
+     */
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">    lateinit var stage: Stage</span>
+
+    /**
+     * Menu kontekstowe wyświetlające się po kliknięciu na wiersz tabeli z planem (na pojedyncze zajęcia)
+     */
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">    lateinit var menu: MFXContextMenu</span>
+
+    /**
+     * Flaga informująca o wyświetleniu okna dialogowego z komunikatem.
+     */
+    private var messageShown = false
+
+    /**
+     * Flaga informująca o tym czy ostatnio wyświetlany plan dotyczył grupy.
+     */
+<span class="pc" id="L160">    var showGroupPlanPressed = false</span>
+
+    /**
+     * Flaga informująca o tym czy ostatnio wyświetlany plan dotyczył nauczyciela.
+     */
+<span class="pc" id="L165">    var showTeacherPlanPressed = false</span>
+
+<span class="pc" id="L167">    val fieldsModel = FieldsModel()</span>
+<span class="fc" id="L168">    val teachersModel = TeachersModel()</span>
+<span class="pc" id="L169">    val plansModel = PlansModel()</span>
+
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize() {
+<span class="fc" id="L177">        TabObserver.addObserver(this)</span>
+<span class="fc" id="L178">        FieldsModel.addObserver(this)</span>
+<span class="fc" id="L179">        TeachersModel.addObserver(this)</span>
+
+<span class="fc" id="L181">        setupTable()</span>
+<span class="fc" id="L182">        menu = MFXContextMenu(planTableView)</span>
+<span class="fc" id="L183">        setOnClassesSelected()</span>
+<span class="fc" id="L184">        setActions()</span>
+<span class="fc" id="L185">        setTexts()</span>
+<span class="fc" id="L186">        setListeners()</span>
+<span class="fc" id="L187">        setUpUI()</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Ustawia komponenty interfejsu graficznego
+     */
+    override fun setUpUI()
+    {
+<span class="fc" id="L195">        fieldOfStudyChoiceBox.items = fieldsModel.getFields().map { it.fieldName }.let { fieldList -&gt; FXCollections.observableArrayList(fieldList) }</span>
+<span class="fc" id="L196">        teacherChoiceBox.items = teachersModel.getTeachers().map { &quot;${it.lastname} ${it.firstname}&quot; }.let { teacherList -&gt; FXCollections.observableArrayList(teacherList) }</span>
+<span class="fc" id="L197">        dayChoiceBoxGroup.items = FXCollections.observableArrayList(MessageBundle.getMess(&quot;label.friday&quot;), MessageBundle.getMess(&quot;label.saturday&quot;), MessageBundle.getMess(&quot;label.sunday&quot;), MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="fc" id="L198">        dayChoiceBoxTeacher.items = FXCollections.observableArrayList(MessageBundle.getMess(&quot;label.friday&quot;), MessageBundle.getMess(&quot;label.saturday&quot;), MessageBundle.getMess(&quot;label.sunday&quot;), MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="fc" id="L199">        dayChoiceBoxGroup.isDisable = true</span>
+<span class="fc" id="L200">        dayChoiceBoxTeacher.isDisable = true</span>
+<span class="fc" id="L201">    }</span>
+
+    /**
+     * Definiuje akcje dla kontrolek
+     */
+    override fun setActions()
+    {
+<span class="pc" id="L208">        showPlanButtonGroup.setOnAction { showGroupPlan() }</span>
+<span class="pc" id="L209">        showPlanButtonTeacher.setOnAction { showTeacherPlan() }</span>
+<span class="fc" id="L210">        exportGroupPlanButton.setOnAction {</span>
+<span class="nc" id="L211">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.group.askBeforeExport&quot;), ActionType.EXPORT)</span>
+<span class="nc" id="L212">            exportGroupPlan()</span>
+<span class="nc" id="L213">        }</span>
+<span class="fc" id="L214">        exportPlansForAllGroups.setOnAction {</span>
+<span class="nc" id="L215">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.groups.askBeforeExport&quot;), ActionType.EXPORT)</span>
+<span class="nc" id="L216">            exportAllGroupsFromField()</span>
+<span class="nc" id="L217">        }</span>
+<span class="fc" id="L218">        exportTeacherPlanButton.setOnAction {</span>
+<span class="nc" id="L219">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.teacher.askBeforeExport&quot;), ActionType.EXPORT)</span>
+<span class="nc" id="L220">            exportTeacherPlan()</span>
+<span class="nc" id="L221">        }</span>
+<span class="fc" id="L222">        exportPlansForAllTeachers.setOnAction {</span>
+<span class="nc" id="L223">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.teacher.askBeforeExportAll&quot;), ActionType.EXPORT)</span>
+<span class="nc" id="L224">            exportAllTeachers()</span>
+<span class="nc" id="L225">        }</span>
+<span class="fc" id="L226">    }</span>
+
+    /**
+     * Ustawia nasłuchiwanie na kontrolkach (odpowiednie kontrolki odpowiednio się czyszczą lub dodają obiekty)
+     */
+    override fun setListeners()
+    {
+<span class="fc" id="L233">        fieldOfStudyChoiceBox.valueProperty().addListener { _, _, new -&gt;</span>
+<span class="fc" id="L234">            dayChoiceBoxGroup.isDisable = false</span>
+<span class="fc" id="L235">            dayChoiceBoxGroup.items = FXCollections.observableArrayList(MessageBundle.getMess(&quot;label.friday&quot;), MessageBundle.getMess(&quot;label.saturday&quot;), MessageBundle.getMess(&quot;label.sunday&quot;), MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+
+<span class="fc bfc" id="L237" title="All 2 branches covered.">            if (new != null)</span>
+            {
+<span class="fc" id="L239">                CommonUtils.clearBox(teacherChoiceBox)</span>
+<span class="fc" id="L240">                CommonUtils.clearBox(dayChoiceBoxTeacher)</span>
+<span class="fc" id="L241">                CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+            }
+
+<span class="fc" id="L244">        }</span>
+
+<span class="fc" id="L246">        groupChoiceBox.valueProperty().addListener { _, _, _ -&gt;</span>
+<span class="fc" id="L247">            CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+<span class="fc" id="L248">        }</span>
+
+<span class="fc" id="L250">        teacherChoiceBox.valueProperty().addListener { _, _, new -&gt;</span>
+<span class="fc" id="L251">            dayChoiceBoxTeacher.isDisable = false</span>
+<span class="fc" id="L252">            dayChoiceBoxTeacher.items = FXCollections.observableArrayList(MessageBundle.getMess(&quot;label.friday&quot;), MessageBundle.getMess(&quot;label.saturday&quot;), MessageBundle.getMess(&quot;label.sunday&quot;), MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            if (new != null)</span>
+            {
+<span class="fc" id="L256">                CommonUtils.clearBox(fieldOfStudyChoiceBox)</span>
+<span class="fc" id="L257">                CommonUtils.clearBox(groupChoiceBox)</span>
+<span class="fc" id="L258">                CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+            }
+<span class="fc" id="L260">        }</span>
+
+
+<span class="fc" id="L263">        fieldOfStudyChoiceBox.valueProperty().addListener { _, _, _ -&gt;</span>
+<span class="fc" id="L264">            groupChoiceBox.items.clear()</span>
+<span class="fc" id="L265">            CommonUtils.clearBox(groupChoiceBox)</span>
+
+<span class="pc bpc" id="L267" title="1 of 6 branches missed.">            if (!fieldOfStudyChoiceBox.value.isNullOrBlank()) groupChoiceBox.items = fieldsModel.getGroups(fieldOfStudyChoiceBox.value)</span>
+<span class="fc" id="L268">        }</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * Ustawia teksty dla kontrolek
+     */
+    override fun setTexts()
+    {
+<span class="fc" id="L276">        fieldOfStudyChoiceBox.floatingText = MessageBundle.getMess(&quot;label.chooseField&quot;)</span>
+<span class="fc" id="L277">        groupChoiceBox.floatingText = MessageBundle.getMess(&quot;label.chooseGroup&quot;)</span>
+<span class="fc" id="L278">        dayChoiceBoxGroup.floatingText = MessageBundle.getMess(&quot;label.chooseDay&quot;)</span>
+<span class="fc" id="L279">        dayChoiceBoxTeacher.floatingText = MessageBundle.getMess(&quot;label.chooseDay&quot;)</span>
+<span class="fc" id="L280">        exportGroupPlanButton.text = MessageBundle.getMess(&quot;label.exportGroupPlan&quot;)</span>
+<span class="fc" id="L281">        exportPlansForAllGroups.text = MessageBundle.getMess(&quot;label.exportGroupsPlans&quot;)</span>
+<span class="fc" id="L282">        exportPlansForAllTeachers.text = MessageBundle.getMess(&quot;label.exportTeachersPlans&quot;)</span>
+<span class="fc" id="L283">        exportTeacherPlanButton.text = MessageBundle.getMess(&quot;label.exportTeacherPlan&quot;)</span>
+<span class="fc" id="L284">        teacherChoiceBox.floatingText = MessageBundle.getMess(&quot;label.chooseTeacher&quot;)</span>
+<span class="fc" id="L285">        showPlanButtonGroup.text = MessageBundle.getMess(&quot;label.showPlan&quot;)</span>
+<span class="fc" id="L286">        showPlanButtonTeacher.text = MessageBundle.getMess(&quot;label.showPlan&quot;)</span>
+<span class="fc" id="L287">    }</span>
+
+    /**
+     * Obsługuje akcje wywoływane po kliknięciu na zajęcia w tabeli.
+     */
+    override fun setOnClassesSelected() {
+<span class="fc" id="L293">        CommonUtils.setOnItemSelected(planTableView, menu) { selectedRowIndex -&gt;</span>
+<span class="nc" id="L294">            showContextMenu(selectedRowIndex, planTableView.items[selectedRowIndex])</span>
+<span class="nc" id="L295">        }</span>
+<span class="fc" id="L296">    }</span>
+
+    /**
+     * Metoda wywoływana podczas zmiany zakładek przez użytkownika - czyści panel.
+     */
+    override fun onTabsChanged() {
+<span class="nc" id="L302">        planTableView.items.clear()</span>
+<span class="nc" id="L303">        clearAllBoxes()</span>
+<span class="nc" id="L304">    }</span>
+
+    /**
+     * Metoda służąca do czyszczenia kontrolek
+     */
+    override fun clearAllBoxes()
+    {
+<span class="nc" id="L311">        CommonUtils.clearBox(teacherChoiceBox)</span>
+<span class="nc" id="L312">        CommonUtils.clearBox(groupChoiceBox)</span>
+<span class="nc" id="L313">        CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+<span class="nc" id="L314">        CommonUtils.clearBox(dayChoiceBoxTeacher)</span>
+<span class="nc" id="L315">        CommonUtils.clearBox(fieldOfStudyChoiceBox)</span>
+<span class="nc" id="L316">    }</span>
+
+
+    /**
+     * Wyświetla menu kontekstowe dla wybranych zajęć z tabeli.
+     *
+     * @param selectedRowIndex Indeks zaznaczonego wiersza w tabeli.
+     * @param selectedItem       Wybrane zajęcia.
+     */
+    override fun showContextMenu(selectedRowIndex: Int, selectedItem: ClassesToRead) {
+
+<span class="fc" id="L327">        val deleteButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.deleteFromPlan&quot;))</span>
+<span class="fc" id="L328">        val changeTeacherButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.changeTeacher&quot;))</span>
+<span class="fc" id="L329">        val changeRoomButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.changeRoom&quot;))</span>
+<span class="fc" id="L330">        val changeHourButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.changeHour&quot;))</span>
+
+<span class="fc" id="L332">        deleteButton.graphic =  MFXFontIcon(&quot;fas-trash-can&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L333">        changeTeacherButton.graphic =  MFXFontIcon(&quot;fas-arrows-rotate&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L334">        changeRoomButton.graphic =  MFXFontIcon(&quot;fas-arrows-rotate&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L335">        changeHourButton.graphic =  MFXFontIcon(&quot;fas-arrows-rotate&quot;, 16.0, Color.BLACK)</span>
+
+<span class="fc" id="L337">        deleteButton.setOnAction {</span>
+<span class="nc" id="L338">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.classes.askBeforeDelete&quot;), ActionType.DELETE)</span>
+<span class="nc" id="L339">            deleteFromPlan(selectedItem)</span>
+<span class="nc" id="L340">        }</span>
+
+<span class="fc" id="L342">        changeTeacherButton.setOnAction {</span>
+<span class="nc" id="L343">            changeTeacher(selectedItem)</span>
+<span class="nc" id="L344">        }</span>
+
+<span class="fc" id="L346">        changeRoomButton.setOnAction {</span>
+<span class="nc" id="L347">            changeRoom(selectedItem)</span>
+<span class="nc" id="L348">        }</span>
+
+<span class="fc" id="L350">        changeHourButton.setOnAction {</span>
+<span class="nc" id="L351">            changeHour(selectedItem)</span>
+<span class="nc" id="L352">        }</span>
+
+<span class="fc" id="L354">        CommonUtils.showContextMenu(selectedRowIndex, planTableView, menu, listOf(deleteButton, changeTeacherButton, changeRoomButton, changeHourButton))</span>
+<span class="fc" id="L355">    }</span>
+
+    /**
+     * Metoda wyświetlająca okno dialogowe służące do zmiany godziny i sali (lub w przypadku platformy tylko godziny)
+     * Pozwala na zmianę godziny zajęć wraz z możliwością wyboru nowej sali.
+     * Po wyborze godziny należy wybrać nową salę.
+     * Wyświetlane są tylko te godziny, w których grupa nie ma zajęć oraz nauczyciel nie jest zajęty oraz sale, które znajdują się w tej samej lokalizacji do zmieniana sala.
+     *
+     * @param classesToEdit Zajęcia, które mają zostać edytowane.
+     */
+    override fun changeHour(classesToEdit: ClassesToRead) {
+<span class="nc" id="L366">        val hourChoicebox = MFXComboBox&lt;String&gt;()</span>
+<span class="nc" id="L367">        hourChoicebox.id = &quot;comboWhite&quot;</span>
+<span class="nc" id="L368">        val freeRooms = MFXListView&lt;String&gt;()</span>
+        val vbox:VBox?
+
+<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (!classesToEdit.room.contains(MessageBundle.getMess(&quot;label.virtual&quot;)))</span>
+        {
+<span class="nc" id="L373">            hourChoicebox.items = classesToEdit.getFreeHours()</span>
+<span class="nc" id="L374">            freeRooms.setOnMouseClicked {</span>
+<span class="nc" id="L375">                val selectedRoom = freeRooms.selectionModel.selectedValue</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">                if (selectedRoom != null) {</span>
+<span class="nc" id="L377">                    showDialogYesNoMessage(MessageBundle.getMess(&quot;question.askBeforeRoomAndHourChange&quot;), ActionType.EDIT)</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">                    if (wantToEdit) {</span>
+<span class="nc" id="L379">                        try {</span>
+<span class="nc" id="L380">                            classesToEdit.changeHours(selectedRoom, hourChoicebox.value)</span>
+<span class="nc" id="L381">                            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.changeMade&quot;), MessageBundle.getMess(&quot;success.roomHour.correctlyChanged&quot;))</span>
+<span class="nc" id="L382">                            showPlanAfterChange(classesToEdit)</span>
+<span class="nc" id="L383">                        }catch (e: SQLException) {</span>
+<span class="nc" id="L384">                            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.changeHourAndRoomError&quot;))</span>
+                        }
+                    }
+                }
+<span class="nc" id="L388">            }</span>
+
+<span class="nc" id="L390">            vbox = createChangeHourVbox(freeRooms, hourChoicebox, classesToEdit)</span>
+        }
+        else
+        {
+<span class="nc" id="L394">            hourChoicebox.items = classesToEdit.getFreeHours()</span>
+<span class="nc" id="L395">            vbox = createChangeHourPlatformVbox(hourChoicebox, classesToEdit)</span>
+
+
+        }
+
+<span class="nc" id="L400">        createAndShowDialog(vbox)</span>
+<span class="nc" id="L401">    }</span>
+
+    /**
+     * Metoda tworząca layout pozwalający na zmianę godziny zajęć na platformie
+     * @param hourChoicebox kontrolka wyboru godziny
+     * @param classesToEdit edytowane zajęcia
+     */
+    fun createChangeHourPlatformVbox(hourChoicebox: MFXComboBox&lt;String&gt;, classesToEdit: ClassesToRead):VBox
+    {
+<span class="fc" id="L410">        val changeButton = MFXButton()</span>
+<span class="fc" id="L411">        changeButton.text = MessageBundle.getMess(&quot;label.changeHour&quot;)</span>
+<span class="fc" id="L412">        changeButton.id = &quot;customButton&quot;</span>
+
+<span class="fc" id="L414">        changeButton.setOnAction {</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">            if (hourChoicebox.value!=null)</span>
+            {
+<span class="nc" id="L417">                showDialogYesNoMessage(MessageBundle.getMess(&quot;question.askBeforeHourChange&quot;), ActionType.EDIT)</span>
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                if (wantToEdit) {</span>
+<span class="nc" id="L419">                    try {</span>
+<span class="nc" id="L420">                        classesToEdit.changeHoursPlatform(hourChoicebox.value)</span>
+<span class="nc" id="L421">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.changeMade&quot;), MessageBundle.getMess(&quot;success.hour.correctlyChanged&quot;))</span>
+<span class="nc" id="L422">                        showPlanAfterChange(classesToEdit)</span>
+<span class="nc" id="L423">                    }catch (e: SQLException) {</span>
+<span class="nc" id="L424">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.changeHourError&quot;))</span>
+                    }
+                }
+            }
+            else
+            {
+<span class="nc" id="L430">                MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.warning&quot;), MessageBundle.getMess(&quot;warning.noHour&quot;))</span>
+            }
+<span class="nc" id="L432">        }</span>
+
+<span class="fc" id="L434">        hourChoicebox.promptText = MessageBundle.getMess(&quot;label.chooseHour&quot;)</span>
+<span class="fc" id="L435">        hourChoicebox.prefWidth = 300.0</span>
+<span class="fc" id="L436">        val vbox = VBox(15.0, hourChoicebox, changeButton)</span>
+<span class="fc" id="L437">        vbox.alignment = Pos.CENTER</span>
+<span class="fc" id="L438">        return vbox</span>
+    }
+
+
+    /**
+     * Tworzy VBox dla okna zmiany godziny i sali (dla lokalizcji różnych niż platforma).
+     *
+     * @param freeRooms     Lista zawierająca wolne sale.
+     * @param hourChoicebox Kontrolka do wyboru nowej godziny zajęć.
+     * @param classesToEdit Zajęcia, które mają zostać edytowane
+     * @return Panel VBox dla zmiany godziny.
+     */
+    override fun createChangeHourVbox(freeRooms: MFXListView&lt;String&gt;, hourChoicebox: MFXComboBox&lt;String&gt;, classesToEdit: ClassesToRead): VBox
+    {
+<span class="fc" id="L452">        freeRooms.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L453">        hourChoicebox.promptText = MessageBundle.getMess(&quot;label.chooseHour&quot;)</span>
+<span class="fc" id="L454">        val freeRoomsLabel = Label(MessageBundle.getMess(&quot;label.freeRooms&quot;))</span>
+<span class="fc" id="L455">        freeRoomsLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+
+<span class="fc" id="L457">        hourChoicebox.valueProperty().addListener { _, _, new -&gt;</span>
+<span class="nc bnc" id="L458" title="All 2 branches missed.">            if (new!=null)</span>
+            {
+<span class="nc" id="L460">                freeRooms.items = classesToEdit.getFreeRoomsByHour(new)</span>
+            }
+<span class="nc" id="L462">        }</span>
+
+<span class="fc" id="L464">        val vbox = VBox(15.0, hourChoicebox, freeRoomsLabel,freeRooms)</span>
+<span class="fc" id="L465">        vbox.alignment = Pos.CENTER</span>
+<span class="fc" id="L466">        freeRooms.prefWidth = 350.0</span>
+<span class="fc" id="L467">        hourChoicebox.prefWidth = 300.0</span>
+
+<span class="fc" id="L469">        return vbox</span>
+    }
+
+
+    /**
+     * Tworzy VBox dla okna zmiany sali.
+     *
+     * @param freeRooms     Lista zawierająca wolne sale.
+     * @param busyRooms     Lista zawierająca zajęte sale.
+     * @return Panel VBox dla zmiany sali.
+     */
+    override fun createChangeRoomVbox(freeRooms: MFXListView&lt;String&gt;, busyRooms: MFXListView&lt;String&gt;): VBox
+    {
+<span class="fc" id="L482">        val freeTeachersLabel = Label(MessageBundle.getMess(&quot;label.freeRooms&quot;))</span>
+<span class="fc" id="L483">        val busyTeachersLabel = Label(MessageBundle.getMess(&quot;label.busyRooms&quot;))</span>
+
+<span class="fc" id="L485">        freeRooms.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L486">        busyRooms.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L487">        freeTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L488">        busyTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+
+<span class="pc bpc" id="L490" title="3 of 4 branches missed.">        val vbox = if (freeRooms.items.isEmpty() &amp;&amp; busyRooms.items.isEmpty())</span>
+        {
+<span class="nc" id="L492">            val noRoomsLabel = Label(MessageBundle.getMess(&quot;label.noRooms&quot;))</span>
+<span class="nc" id="L493">            noRoomsLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="nc" id="L494">            VBox(noRoomsLabel)</span>
+        }
+        else{
+<span class="fc" id="L497">            val v1 = VBox(15.0, freeTeachersLabel, freeRooms)</span>
+<span class="fc" id="L498">            v1.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L500">            val v2 = VBox(15.0, busyTeachersLabel, busyRooms)</span>
+<span class="fc" id="L501">            v2.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L503">            val h1 = HBox(20.0, v1,v2)</span>
+<span class="fc" id="L504">            v1.prefWidth = 350.0</span>
+<span class="fc" id="L505">            v2.prefWidth = 350.0</span>
+<span class="fc" id="L506">            VBox(h1)</span>
+        }
+
+<span class="fc" id="L509">        vbox.maxWidth = Double.MAX_VALUE</span>
+<span class="fc" id="L510">        vbox.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L512">        return vbox</span>
+    }
+
+    /**
+     * Metoda obsługująca zmianę sal, wyświetla odpowiednie wiadomości w przypadku powodzenia lub błędu
+     * @param selectedItem nowa sala, która ma zostać ustawiona
+     * @param classesToEdit edytowane zajecia
+     * @param func funkcja, która ma zostać wywołana
+     */
+    private fun handleRoomSelection(selectedItem: String, classesToEdit: ClassesToRead, func: (String) -&gt; Unit) {
+<span class="nc" id="L522">        showDialogYesNoMessage(MessageBundle.getMess(&quot;question.askBeforeRoomChange&quot;), ActionType.EDIT)</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (wantToEdit) {</span>
+<span class="nc" id="L524">            try {</span>
+<span class="nc" id="L525">                func(selectedItem)</span>
+<span class="nc" id="L526">                MessageUtil.showInfoMessage(</span>
+<span class="nc" id="L527">                    MessageBundle.getMess(&quot;label.changeMade&quot;),</span>
+<span class="nc" id="L528">                    MessageBundle.getMess(&quot;success.room.correctlyChanged&quot;)</span>
+                )
+<span class="nc" id="L530">                showPlanAfterChange(classesToEdit)</span>
+<span class="nc" id="L531">            } catch (e: SQLException) {</span>
+<span class="nc" id="L532">                MessageUtil.showErrorMessage(</span>
+<span class="nc" id="L533">                    MessageBundle.getMess(&quot;warning.operationFailed&quot;),</span>
+<span class="nc" id="L534">                    MessageBundle.getMess(&quot;warning.changeRoomError&quot;)</span>
+                )
+            }
+        }
+<span class="nc" id="L538">    }</span>
+
+    /**
+     * Ustawia akcję po wybraniu sali do zmiany.
+     *
+     * @param freeRooms     Lista zawierająca wolne sale
+     * @param busyRooms     Lista zawierająca zajęte sale
+     * @param classesToEdit Zajęcia, które mają zostać edytowane
+     */
+    override fun setOnRoomToChangeSelected(
+        freeRooms: MFXListView&lt;String&gt;,
+        busyRooms: MFXListView&lt;String&gt;,
+        classesToEdit: ClassesToRead
+    )
+    {
+<span class="nc" id="L553">        freeRooms.setOnMouseClicked {</span>
+<span class="nc" id="L554">            val selectedItem = freeRooms.selectionModel.selectedValue</span>
+<span class="nc" id="L555">            handleRoomSelection(selectedItem,classesToEdit) { room -&gt; classesToEdit.setAnotherRoom(room)}</span>
+<span class="nc" id="L556">        }</span>
+
+<span class="nc" id="L558">        busyRooms.setOnMouseClicked {</span>
+<span class="nc" id="L559">            val selectedItem = busyRooms.selectionModel.selectedValue</span>
+<span class="nc" id="L560">            handleRoomSelection(selectedItem,classesToEdit) { room -&gt; classesToEdit.changeRooms(room)}</span>
+<span class="nc" id="L561">        }</span>
+<span class="nc" id="L562">    }</span>
+
+
+    /**
+     * Metoda wyświetlająca okno dialogowe służące do zmiany sali na wybranych zajęciach.
+     * Metoda wyświetla tylko te sale, które są wolne lub zajęte przez inną grupę.
+     *
+     * @param classesToEdit Zajęcia, które mają zostać edytowane.
+     */
+    override fun changeRoom(classesToEdit: ClassesToRead) {
+<span class="nc" id="L572">        val freeRooms = MFXListView&lt;String&gt;()</span>
+<span class="nc" id="L573">        val busyRooms = MFXListView&lt;String&gt;()</span>
+
+<span class="nc" id="L575">        freeRooms.items = classesToEdit.getFreeRooms()</span>
+<span class="nc" id="L576">        busyRooms.items = classesToEdit.getBusyRooms()</span>
+
+<span class="nc" id="L578">        val vbox = createChangeRoomVbox(freeRooms, busyRooms)</span>
+<span class="nc" id="L579">        setOnRoomToChangeSelected(freeRooms, busyRooms, classesToEdit)</span>
+<span class="nc" id="L580">        createAndShowDialog(vbox)</span>
+<span class="nc" id="L581">    }</span>
+
+    /**
+     * Metoda obsługująca zmianę nauczycieli, wyświetla odpowiednie wiadomości w przypadku powodzenia lub błędu
+     * @param selectedItem nowy nauczyciel, który ma zostać ustawiony
+     * @param classesToEdit edytowane zajecia
+     * @param changeTeacher funkcja, która ma zostać wywołana
+     */
+    private fun handleTeacherSelection(selectedItem: String, classesToEdit: ClassesToRead, changeTeacher: (String, String) -&gt; Unit) {
+<span class="nc" id="L590">        showDialogYesNoMessage(MessageBundle.getMess(&quot;question.teacher.askBeforeChange&quot;), ActionType.EDIT)</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">        if (wantToEdit) {</span>
+<span class="nc" id="L592">            try {</span>
+<span class="nc" id="L593">                changeTeacher(classesToEdit.teacher, selectedItem)</span>
+<span class="nc" id="L594">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.changeMade&quot;), MessageBundle.getMess(&quot;success.teacher.correctlyChanged&quot;))</span>
+<span class="nc" id="L595">                showPlanAfterChange(classesToEdit)</span>
+<span class="nc" id="L596">            }catch (e: SQLException) {</span>
+<span class="nc" id="L597">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.changeTeacherError&quot;))</span>
+            }
+
+        }
+<span class="nc" id="L601">    }</span>
+
+    /**
+     * Ustawia akcje po wybraniu nauczyciela do zmiany.
+     *
+     * @param freeTeachers  Lista zawierająca wolnych nauczycieli
+     * @param busyTeachers  Lista zawierająca zajętych nauczycieli
+     * @param classesToEdit Zajęcia, które mają zostać edytowane
+     */
+    override fun setOnTeacherToChangeSelected(
+        freeTeachers: MFXListView&lt;String&gt;,
+        busyTeachers: MFXListView&lt;String&gt;,
+        classesToEdit: ClassesToRead
+    )
+    {
+<span class="nc" id="L616">        freeTeachers.setOnMouseClicked {</span>
+<span class="nc" id="L617">            val selectedItem = freeTeachers.selectionModel.selectedValue</span>
+<span class="nc" id="L618">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected-&gt; classesToEdit.setAnotherTeacher(teacher,selected)}</span>
+<span class="nc" id="L619">        }</span>
+
+<span class="nc" id="L621">        busyTeachers.setOnMouseClicked {</span>
+<span class="nc" id="L622">            val selectedItem = busyTeachers.selectionModel.selectedValue</span>
+<span class="nc" id="L623">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected -&gt; classesToEdit.changeTeachers(teacher,selected)}</span>
+<span class="nc" id="L624">        }</span>
+<span class="nc" id="L625">    }</span>
+
+
+    /**
+     * Wyswietla plan dla nauczyciela lub grupy w zależności, który plan był wyświetlany przed dokonaniem zmiany zajęć
+     * @param classesToEdit edytowane zajęcia
+     */
+    fun showPlanAfterChange(classesToEdit: ClassesToRead)
+    {
+<span class="fc" id="L634">        dialog.close()</span>
+<span class="fc bfc" id="L635" title="All 2 branches covered.">        if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToEdit.group.split(&quot;, &quot;)[1], classesToEdit.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="pc bpc" id="L636" title="1 of 2 branches missed.">        else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToEdit.teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="fc" id="L637">    }</span>
+
+    /**
+     * Tworzy VBox dla okna zmiany nauczyciela.
+     * @param freeTeachers  Lista zawierająca wolnych nauczycieli
+     * @param busyTeachers  Lista zawierająca zajętych nauczycieli
+     * @return Panel VBox dla zmiany nauczyciela.
+     */
+    override fun createChangeTeacherVbox(freeTeachers: MFXListView&lt;String&gt;, busyTeachers: MFXListView&lt;String&gt;): VBox
+    {
+<span class="fc" id="L647">        val freeTeachersLabel = Label(MessageBundle.getMess(&quot;label.freeTeachers&quot;))</span>
+<span class="fc" id="L648">        val busyTeachersLabel = Label(MessageBundle.getMess(&quot;label.busyTeachers&quot;))</span>
+<span class="fc" id="L649">        freeTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L650">        busyTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L651">        freeTeachers.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L652">        busyTeachers.styleClass.add(&quot;customList2&quot;)</span>
+
+<span class="pc bpc" id="L654" title="3 of 4 branches missed.">        val vbox = if (freeTeachers.items.isEmpty() &amp;&amp; busyTeachers.items.isEmpty())</span>
+        {
+<span class="nc" id="L656">            val noAvailabilityLabel = Label(MessageBundle.getMess(&quot;warning.noTeachers&quot;))</span>
+<span class="nc" id="L657">            noAvailabilityLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="nc" id="L658">            VBox(noAvailabilityLabel)</span>
+        }
+        else{
+<span class="fc" id="L661">            val v1 = VBox(15.0, freeTeachersLabel, freeTeachers)</span>
+<span class="fc" id="L662">            v1.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L664">            val v2 = VBox(15.0, busyTeachersLabel, busyTeachers)</span>
+<span class="fc" id="L665">            v2.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L667">            val h1 = HBox(20.0, v1,v2)</span>
+<span class="fc" id="L668">            v1.prefWidth = 350.0</span>
+<span class="fc" id="L669">            v2.prefWidth = 350.0</span>
+<span class="fc" id="L670">            VBox(h1)</span>
+        }
+
+<span class="fc" id="L673">        vbox.maxWidth = Double.MAX_VALUE</span>
+<span class="fc" id="L674">        vbox.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L676">        return vbox</span>
+    }
+
+
+
+    /**
+     * Metoda wyświetlająca okno dialogowe służące do zmiany nauczyciela na wybranych zajęciach.
+     * Metoda wyświetla tylko tych nauczycieli, którzy są wolni tym czasie i uczą wybranego przedmiotu
+     * lub tych, którzy są zajęci i uczą wybranego przedmiotu oraz nauczyciel z zajęć do zmiany uczy przedmiotu drugiego nauczyciela.
+     * Dodatkowo z list usuwani są nauczyciele, którzy nie zdążą zmienić lokalizacji pomiędzy zajęciami
+     *
+     * @param classesToEdit Zajęcia, które mają zostać edytowane.
+     */
+    override fun changeTeacher(classesToEdit: ClassesToRead) {
+<span class="nc" id="L690">        val freeTeachers = MFXListView&lt;String&gt;()</span>
+<span class="nc" id="L691">        val busyTeachers = MFXListView&lt;String&gt;()</span>
+
+        //Przedmiot którego aktualnie uczy nauczyciel musi być nauczany przez nauczyciela do zmiany
+<span class="nc" id="L694">        val subjects = teachersModel.getTeacherSubjectsByName(classesToEdit.teacher)</span>
+<span class="nc" id="L695">        freeTeachers.items = classesToEdit.getFreeTeachers()</span>
+<span class="nc" id="L696">        busyTeachers.items = classesToEdit.getBusyTeachers(subjects)</span>
+
+<span class="nc" id="L698">        createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
+<span class="nc" id="L699">        setOnTeacherToChangeSelected(freeTeachers, busyTeachers, classesToEdit)</span>
+<span class="nc" id="L700">        val vbox = createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
+
+<span class="nc" id="L702">        createAndShowDialog(vbox)</span>
+
+<span class="nc" id="L704">    }</span>
+
+    /**
+     * Tworzy i wyświetla customowe okno dialogowe.
+     *
+     * @param vbox Kontener z zawartością okna dialogowego.
+     */
+    override fun createAndShowDialog(vbox: VBox) {
+<span class="nc" id="L712">        vbox.alignment = Pos.CENTER</span>
+<span class="nc" id="L713">        dialog = DialogUtils.showCustomDialog(stage, vbox) {</span>
+<span class="nc" id="L714">            planTableView.selectionModel.clearSelection(); menu.hide(); messageShown=false</span>
+<span class="nc" id="L715">        }</span>
+
+<span class="nc" id="L717">        dialog.showAndWait()</span>
+
+<span class="nc" id="L719">    }</span>
+
+    /**
+     * Metoda usuwająca wybrane zajęcia z planu
+     */
+    override fun deleteFromPlan(classesToDelete: ClassesToRead) {
+<span class="fc" id="L725">        planTableView.selectionModel.clearSelection()</span>
+<span class="fc" id="L726">        menu.hide()</span>
+
+<span class="pc bpc" id="L728" title="1 of 2 branches missed.">        if (wantToDelete)</span>
+        {
+<span class="fc" id="L730">            try {</span>
+<span class="fc" id="L731">                classesToDelete.deleteClasses()</span>
+<span class="fc" id="L732">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyDeletedClassesFromPlan&quot;))</span>
+<span class="pc bpc" id="L733" title="1 of 2 branches missed.">                if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToDelete.group.split(&quot;, &quot;)[1], classesToDelete.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="nc bnc" id="L734" title="All 2 branches missed.">                else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToDelete.teacher,  MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="nc" id="L735">            }catch (e: SQLException) {</span>
+<span class="nc" id="L736">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.deleteClassesFromPlanError&quot;))</span>
+            }
+
+        }
+<span class="fc" id="L740">    }</span>
+
+    /**
+     * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
+     *
+     * @param content Wiadomość do wyświetlenia.
+     * @param type flagi do ustawienia
+     */
+    fun showDialogYesNoMessage(content: String, type: ActionType) {
+
+<span class="fc" id="L750">        val buttons = listOf(</span>
+<span class="fc" id="L751">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
+<span class="nc bnc" id="L752" title="All 4 branches missed.">                when (type) {</span>
+<span class="nc" id="L753">                    ActionType.EXPORT -&gt; wantToExport = true</span>
+<span class="nc" id="L754">                    ActionType.EDIT -&gt; wantToEdit = true</span>
+<span class="nc" id="L755">                    ActionType.DELETE -&gt; wantToDelete = true</span>
+                }
+<span class="nc" id="L757">            },</span>
+<span class="fc" id="L758">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
+<span class="nc bnc" id="L759" title="All 4 branches missed.">                when (type) {</span>
+<span class="nc" id="L760">                    ActionType.EXPORT -&gt; wantToExport = false</span>
+<span class="nc" id="L761">                    ActionType.EDIT -&gt; wantToEdit = false</span>
+<span class="nc" id="L762">                    ActionType.DELETE -&gt; wantToDelete = false</span>
+                }
+<span class="nc" id="L764">            }</span>
+        )
+
+<span class="fc" id="L767">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, stage, buttons)</span>
+<span class="pc bpc" id="L768" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
+<span class="fc" id="L769">    }</span>
+
+
+    /**
+     * Metoda wyświetlająca plan dla wybranej grupy
+     */
+    override fun showGroupPlan() {
+<span class="fc" id="L776">        showGroupPlanPressed = true</span>
+<span class="fc" id="L777">        showTeacherPlanPressed = false</span>
+<span class="pc bpc" id="L778" title="9 of 18 branches missed.">        if(!fieldOfStudyChoiceBox.value.isNullOrBlank() &amp;&amp; !groupChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxGroup.value.isNullOrBlank())</span>
+        {
+<span class="fc" id="L780">            planTableView.items = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, groupChoiceBox.value, dayChoiceBoxGroup.value)</span>
+
+<span class="pc bpc" id="L782" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
+            else{
+<span class="fc" id="L784">                CommonUtils.clearBox(fieldOfStudyChoiceBox)</span>
+<span class="fc" id="L785">                CommonUtils.clearBox(groupChoiceBox)</span>
+<span class="fc" id="L786">                CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+            }
+        }
+        else{
+<span class="nc" id="L790">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
+        }
+<span class="fc" id="L792">    }</span>
+
+    /**
+     * Metoda wyświetlająca plan dla wybranego nauczyciela.
+     */
+    override fun showTeacherPlan() {
+<span class="fc" id="L798">        showGroupPlanPressed = false</span>
+<span class="fc" id="L799">        showTeacherPlanPressed = true</span>
+
+<span class="pc bpc" id="L801" title="6 of 12 branches missed.">        if(!teacherChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxTeacher.value.isNullOrBlank())</span>
+        {
+<span class="fc" id="L803">            planTableView.items = plansModel.getPlanTeacher(teacherChoiceBox.value, dayChoiceBoxTeacher.value)</span>
+
+<span class="pc bpc" id="L805" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
+            else{
+<span class="fc" id="L807">                CommonUtils.clearBox(teacherChoiceBox)</span>
+<span class="fc" id="L808">                CommonUtils.clearBox(dayChoiceBoxTeacher)</span>
+            }
+
+        }
+        else{
+<span class="nc" id="L813">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
+        }
+<span class="fc" id="L815">    }</span>
+
+    /**
+     * Metoda wyświetlająca wiadomość informującą o pustym planie
+     */
+    override fun showEmptyPlanMessage() {
+<span class="nc" id="L821">        MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.noPlanInGivenDay&quot;))</span>
+<span class="nc" id="L822">        planTableView.items.clear()</span>
+<span class="nc" id="L823">    }</span>
+
+    /**
+     * Metoda do eksportowania planów zajęć dla wszystkich nauczycieli.
+     */
+    override fun exportAllTeachers() {
+<span class="pc bpc" id="L829" title="1 of 2 branches missed.">        if (wantToExport)</span>
+        {
+<span class="fc" id="L831">            val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L832">            val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
+
+<span class="fc bfc" id="L834" title="All 2 branches covered.">            for(teacher in teacherChoiceBox.items)</span>
+            {
+<span class="fc" id="L836">                val filePath = &quot;$path/$teacher.xlsx&quot;</span>
+<span class="fc" id="L837">                val folder = File(path)</span>
+<span class="fc" id="L838">                var myWorkBook:Workbook? = null</span>
+<span class="pc bpc" id="L839" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
+<span class="fc" id="L840">                var fos: FileOutputStream? = null</span>
+
+<span class="fc" id="L842">                try {</span>
+                    //Dla każdego nauczyciela pobierz plan
+<span class="fc" id="L844">                    val plan = plansModel.getPlanTeacher(teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+
+<span class="pc bpc" id="L846" title="1 of 2 branches missed.">                    if (plan.size!=0)</span>
+                    {
+<span class="nc" id="L848">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="nc" id="L849">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="nc" id="L850">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+<span class="nc" id="L851">                        val planName = ExcelUtils.createPlanName(plan[0].date)</span>
+<span class="nc" id="L852">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="nc" id="L853">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, teacher, planTableView.tableColumns.size)</span>
+<span class="nc" id="L854">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="nc" id="L855">                        fillTableAllGroups(sheet, cellStyle!!, plan)</span>
+<span class="nc" id="L856">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="nc" id="L857">                        fos = FileOutputStream(File(filePath))</span>
+<span class="nc" id="L858">                        myWorkBook.write(fos)</span>
+                    }
+                }
+<span class="nc" id="L861">                catch (e: IOException) {</span>
+<span class="nc" id="L862">                    MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+                }
+                finally {
+<span class="pc bpc" id="L865" title="1 of 2 branches missed.">                    myWorkBook?.close()</span>
+<span class="pc bpc" id="L866" title="1 of 2 branches missed.">                    fos?.close()</span>
+                }
+
+            }
+
+<span class="fc" id="L871">            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.teacher.correctlyExportedAll&quot;))</span>
+        }
+<span class="fc" id="L873">    }</span>
+
+    /**
+     * Metoda do eksportowania planu zajęć dla wybranego nauczyciela.
+     */
+    override fun exportTeacherPlan() {
+<span class="nc bnc" id="L879" title="All 2 branches missed.">        if (wantToExport) {</span>
+<span class="nc bnc" id="L880" title="All 2 branches missed.">            if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.teacher.noPlan&quot;))</span>
+            else{
+<span class="nc" id="L882">                GlobalScope.launch(Dispatchers.JavaFx)</span>
+<span class="nc bnc" id="L883" title="All 2 branches missed.">                {</span>
+<span class="nc" id="L884">                    val prop = ExcelUtils.loadConfigProps()</span>
+<span class="nc" id="L885">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
+<span class="nc" id="L886">                    val teacher = planTableView.items[0].teacher</span>
+<span class="nc" id="L887">                    val filePath = &quot;$path/$teacher.xlsx&quot;</span>
+<span class="nc" id="L888">                    val folder = File(path)</span>
+<span class="nc bnc" id="L889" title="All 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+<span class="nc" id="L890">                    var myWorkBook:Workbook? = null</span>
+<span class="nc" id="L891">                    var fos: FileOutputStream? = null</span>
+
+<span class="nc" id="L893">                    try {</span>
+<span class="nc" id="L894">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="nc" id="L895">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
+<span class="nc" id="L896">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
+<span class="nc" id="L897">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+<span class="nc" id="L898">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="nc" id="L899">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, planTableView.items[0].teacher, planTableView.tableColumns.size)</span>
+<span class="nc" id="L900">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="nc" id="L901">                        fillTable(sheet, cellStyle!!, sheet.lastRowNum)</span>
+<span class="nc" id="L902">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+
+<span class="nc" id="L904">                        fos = FileOutputStream(File(filePath))</span>
+<span class="nc" id="L905">                        myWorkBook.write(fos)</span>
+
+<span class="nc" id="L907">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.teacher.correctlyExported&quot;))</span>
+<span class="nc" id="L908">                    } catch (e: IOException) {</span>
+<span class="nc" id="L909">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+                    }
+                    finally {
+<span class="nc bnc" id="L912" title="All 2 branches missed.">                        fos?.close()</span>
+<span class="nc bnc" id="L913" title="All 4 branches missed.">                        myWorkBook?.close()</span>
+<span class="nc" id="L914">                    }</span>
+<span class="nc" id="L915">                }</span>
+            }
+
+        }
+<span class="nc" id="L919">    }</span>
+
+    /**
+     * Wypełnia arkusz danymi planem przy eksportowaniu wszystkich grup (korzysta z planu z bazy danych a nie z tabeli w aplikacji).
+     *
+     * @param sheet       Obiekt XSSFSheet, na którym zostaną umieszczone dane.
+     * @param cellStyle   Styl komórek, który ma zostać zastosowany do wypełniania danych.
+     * @param plan        Plan zajęć w formie listy zajęć.
+     */
+    override fun fillTableAllGroups(sheet: XSSFSheet, cellStyle: XSSFCellStyle, plan:ObservableList&lt;ClassesToRead&gt;) {
+<span class="fc" id="L929">        val startRow = sheet.lastRowNum</span>
+
+<span class="fc bfc" id="L931" title="All 2 branches covered.">        for ((rowIndex, classes) in plan.withIndex()) {</span>
+<span class="fc" id="L932">            val row = sheet.createRow(rowIndex + startRow+1)</span>
+<span class="fc" id="L933">            createCells(row, classes, cellStyle)</span>
+        }
+<span class="fc" id="L935">    }</span>
+
+    /**
+     * Tworzy komórki dla danego wiersza na podstawie przesłanych danych.
+     *
+     * @param row        Wiersz, dla którego mają zostać utworzone komórki.
+     * @param classes    Obiekt reprezentujący pojedyncze zajęcia.
+     * @param cellStyle  Styl komórek, który ma zostać zastosowany do wypełniania danych.
+     */
+    override fun createCells(row: XSSFRow, classes: ClassesToRead, cellStyle: XSSFCellStyle)
+    {
+<span class="fc" id="L946">        row.createCell(1).setCellValue(classes.date.toString())</span>
+<span class="fc" id="L947">        row.createCell(2).setCellValue(classes.hour)</span>
+<span class="fc" id="L948">        row.createCell(3).setCellValue(classes.subject)</span>
+<span class="fc" id="L949">        row.createCell(4).setCellValue(classes.room)</span>
+<span class="fc" id="L950">        row.createCell(5).setCellValue(classes.teacher)</span>
+<span class="fc" id="L951">        row.createCell(6).setCellValue(classes.group)</span>
+
+<span class="fc bfc" id="L953" title="All 2 branches covered.">        for (i in 1..6) row.getCell(i).cellStyle = cellStyle</span>
+<span class="fc" id="L954">    }</span>
+
+    /**
+     * Wypełnia arkusz planem z tabeli w aplikacji
+     *
+     * @param sheet     Obiekt XSSFSheet, na którym zostaną umieszczone dane.
+     * @param cellStyle Styl komórek, który ma zostać zastosowany do wypełniania danych.
+     * @param startNr   Numer wiersza, od którego ma rozpocząć się wypełnianie danych.
+     */
+    override fun fillTable(sheet: XSSFSheet, cellStyle: XSSFCellStyle, startNr: Int) {
+
+<span class="fc bfc" id="L965" title="All 2 branches covered.">        for ((rowIndex, classes) in planTableView.items.withIndex()) {</span>
+<span class="fc" id="L966">            val row = sheet.createRow(rowIndex + startNr + 1)</span>
+<span class="fc" id="L967">            createCells(row, classes, cellStyle)</span>
+<span class="pc bpc" id="L968" title="1 of 2 branches missed.">            if (rowIndex + startNr + 2 &lt; sheet.lastRowNum) sheet.shiftRows(rowIndex + startNr + 2, sheet.lastRowNum, 1)</span>
+        }
+<span class="fc" id="L970">    }</span>
+
+    /**
+     * Metoda do eksportowania planów zajęć dla wszystkich grup z wybranego kierunku.
+     */
+    override fun exportAllGroupsFromField() {
+<span class="pc bpc" id="L976" title="1 of 2 branches missed.">        if (wantToExport) {</span>
+<span class="pc bpc" id="L977" title="1 of 2 branches missed.">            if (fieldOfStudyChoiceBox.value != null)</span>
+            {
+<span class="fc" id="L979">                val field = fieldOfStudyChoiceBox.value</span>
+<span class="fc" id="L980">                val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L981">                val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
+<span class="fc" id="L982">                val filePath = &quot;$path/$field.xlsx&quot;</span>
+<span class="fc" id="L983">                val folder = File(path)</span>
+
+                //jeśli folder nie istnieje to go stwórz
+<span class="pc bpc" id="L986" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
+
+<span class="fc" id="L988">                val myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L989">                val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
+<span class="fc" id="L990">                val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
+
+<span class="fc" id="L992">                val maxDay = plansModel.getMaxDateFromTable()</span>
+<span class="fc" id="L993">                val planStart = CommonUtils.getPlanStartDay(maxDay)</span>
+<span class="fc" id="L994">                val planName = ExcelUtils.createPlanName(planStart)</span>
+<span class="fc" id="L995">                val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+
+<span class="fc bfc" id="L997" title="All 2 branches covered.">                for (group in groupChoiceBox.items)</span>
+                {
+<span class="fc" id="L999">                    try {</span>
+<span class="fc" id="L1000">                        val planForGroup = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, group, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="pc bpc" id="L1001" title="1 of 2 branches missed.">                        if (!planForGroup.isEmpty())</span>
+                        {
+<span class="fc" id="L1003">                            val title = &quot;$group $field&quot;</span>
+<span class="fc" id="L1004">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, sheet.lastRowNum+3)</span>
+<span class="fc" id="L1005">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, sheet.lastRowNum+1)</span>
+<span class="fc" id="L1006">                            fillTableAllGroups(sheet, cellStyle!!, planForGroup)</span>
+<span class="fc" id="L1007">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+
+<span class="fc" id="L1009">                            val fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L1010">                            myWorkBook.write(fos)</span>
+<span class="fc" id="L1011">                            fos.close()</span>
+                        }
+
+                    }
+<span class="nc" id="L1015">                    catch (e: IOException) {</span>
+<span class="nc" id="L1016">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+                    }
+                }
+
+<span class="fc" id="L1020">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyExportedAll&quot;))</span>
+            }
+
+            else{
+<span class="nc" id="L1024">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.plan.shouldChooseField&quot;))</span>
+            }
+        }
+<span class="fc" id="L1027">    }</span>
+
+    /**
+     * Metoda do eksportowania aktualnie wyświetlanego planu zajęć dla grupy.
+     */
+    override fun exportGroupPlan() {
+<span class="pc bpc" id="L1033" title="1 of 2 branches missed.">            if (wantToExport)</span>
+            {
+<span class="pc bpc" id="L1035" title="1 of 2 branches missed.">                if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.group.noPlan&quot;))</span>
+                else{
+<span class="fc" id="L1037">                    val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L1038">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
+<span class="fc" id="L1039">                    val group = planTableView.items[0].group.split(&quot;, &quot;)[0]</span>
+<span class="fc" id="L1040">                    val field = planTableView.items[0].group.split(&quot;, &quot;)[1]</span>
+
+                    //nazwa pliku to nazwa kierunku
+<span class="fc" id="L1043">                    val filePath = &quot;$path/$field.xlsx&quot;</span>
+<span class="fc" id="L1044">                    val folder = File(path)</span>
+
+<span class="pc bpc" id="L1046" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+
+<span class="fc" id="L1048">                    GlobalScope.launch(Dispatchers.JavaFx)</span>
+<span class="pc bpc" id="L1049" title="1 of 2 branches missed.">                    {</span>
+<span class="fc" id="L1050">                        var myWorkBook:Workbook?=null</span>
+<span class="fc" id="L1051">                        var fos:FileOutputStream?=null</span>
+<span class="fc" id="L1052">                        try {</span>
+<span class="fc" id="L1053">                            myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L1054">                            val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="fc" id="L1055">                            val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+
+
+<span class="fc" id="L1058">                            val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+
+                            //szukaj czy nie ma już takiej zakładki (gdy zakładka istnieje to ją pobierz)
+<span class="fc" id="L1061">                            val sheet = ExcelUtils.createOrGetSheet(myWorkBook, planName)</span>
+
+<span class="fc" id="L1063">                            val startRow = ExcelUtils.findCorrectPlaceForGroup(sheet, group).first</span>
+<span class="fc" id="L1064">                            val groupExistsaInExcel =  ExcelUtils.findCorrectPlaceForGroup(sheet, group).second</span>
+
+                            //Jeśli grupa istnieje to najpierw usuń stary plan
+                            //Należy przesunąć wiersze (chyba że to koniec pliku)
+<span class="pc bpc" id="L1068" title="5 of 6 branches missed.">                            if (startRow != 2 &amp;&amp; !groupExistsaInExcel &amp;&amp; startRow!=sheet.lastRowNum+3) sheet.shiftRows(startRow+1,sheet.lastRowNum, planTableView.items.size+3)</span>
+<span class="pc bpc" id="L1069" title="1 of 2 branches missed.">                            else if (groupExistsaInExcel)</span>
+                            {
+<span class="pc bpc" id="L1071" title="2 of 4 branches missed.">                                for(j in startRow+1..sheet.lastRowNum)</span>
+                                {
+<span class="fc" id="L1073">                                    val rowToDelete = sheet.getRow(j)</span>
+<span class="fc bfc" id="L1074" title="All 2 branches covered.">                                    if (rowToDelete != null) {</span>
+<span class="fc" id="L1075">                                        sheet.removeRow(rowToDelete)</span>
+<span class="fc bfc" id="L1076" title="All 2 branches covered.">                                        if (j+1 &lt; sheet.lastRowNum) sheet.shiftRows(j + 1, sheet.lastRowNum, -1)</span>
+                                    }
+<span class="fc" id="L1078">                                    else break</span>
+                                }
+                            }
+
+<span class="fc" id="L1082">                            val title = &quot;$group $field&quot;</span>
+<span class="fc" id="L1083">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, startRow)</span>
+<span class="fc" id="L1084">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, startRow+1)</span>
+<span class="fc" id="L1085">                            fillTable(sheet, cellStyle!!, startRow+1)</span>
+<span class="fc" id="L1086">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+
+<span class="fc" id="L1088">                            fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L1089">                            myWorkBook.write(fos)</span>
+
+<span class="fc" id="L1091">                            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.group.correctlyExported&quot;))</span>
+
+                        }
+<span class="nc" id="L1094">                        catch (e: IOException) {</span>
+<span class="nc" id="L1095">                            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+                        }
+                        finally {
+<span class="pc bnc" id="L1098" title="All 2 branches missed.">                            fos?.close()</span>
+<span class="pc bpc" id="L1099" title="3 of 4 branches missed.">                            myWorkBook?.close()</span>
+<span class="fc" id="L1100">                        }</span>
+<span class="pc" id="L1101">                    }</span>
+                }
+            }
+<span class="fc" id="L1104">    }</span>
+
+
+    /**
+     * Tworzy i konfiguruje tabelę z planem.
+     */
+    override fun setupTable() {
+
+<span class="fc" id="L1112">        val columns = mapOf&lt;MFXTableColumn&lt;ClassesToRead&gt;, KProperty1&lt;ClassesToRead, *&gt;&gt;(</span>
+<span class="pc" id="L1113">            MFXTableColumn(MessageBundle.getMess(&quot;label.day&quot;), false, Comparator.comparing(ClassesToRead::date)) to ClassesToRead::date,</span>
+<span class="pc" id="L1114">            MFXTableColumn(MessageBundle.getMess(&quot;label.hour&quot;), false, Comparator.comparing(ClassesToRead::hour)) to ClassesToRead::hour,</span>
+<span class="pc" id="L1115">            MFXTableColumn(MessageBundle.getMess(&quot;label.subject&quot;), false, Comparator.comparing(ClassesToRead::subject)) to ClassesToRead::subject,</span>
+<span class="pc" id="L1116">            MFXTableColumn(MessageBundle.getMess(&quot;label.room&quot;), false, Comparator.comparing(ClassesToRead::room)) to ClassesToRead::room,</span>
+<span class="pc" id="L1117">            MFXTableColumn(MessageBundle.getMess(&quot;label.teacher&quot;), false, Comparator.comparing(ClassesToRead::teacher)) to ClassesToRead::teacher,</span>
+<span class="pc" id="L1118">            MFXTableColumn(MessageBundle.getMess(&quot;label.group&quot;), false, Comparator.comparing(ClassesToRead::group)) to ClassesToRead::group</span>
+        )
+
+<span class="fc" id="L1121">        columns.forEach{ column -&gt;</span>
+<span class="fc" id="L1122">            column.key.rowCellFactory = Function&lt;ClassesToRead, MFXTableRowCell&lt;ClassesToRead?, *&gt;&gt;</span>
+            {
+<span class="nc" id="L1124">                val cell = MFXTableRowCell&lt;ClassesToRead?, Any?&gt;(column.value)</span>
+<span class="nc" id="L1125">                cell.styleClass.add(&quot;table-cell&quot;)</span>
+<span class="nc" id="L1126">                cell</span>
+            }
+
+<span class="fc" id="L1129">            column.key.alignment = Pos.CENTER</span>
+<span class="fc" id="L1130">        }</span>
+
+<span class="fc" id="L1132">        planTableView.filters.clear()</span>
+        //filtry
+        //Może powodować bug Invalid range for values: Min[11], Max[10] (błąd w bibliotece MaterialFX), który nie ma wpływu na działanie
+<span class="fc" id="L1135">        planTableView.filters.addAll(</span>
+<span class="pc" id="L1136">            StringFilter(MessageBundle.getMess(&quot;label.hour&quot;), ClassesToRead::hour),</span>
+<span class="pc" id="L1137">            StringFilter(MessageBundle.getMess(&quot;label.subject&quot;), ClassesToRead::subject),</span>
+<span class="pc" id="L1138">            StringFilter(MessageBundle.getMess(&quot;label.room&quot;), ClassesToRead::room),</span>
+<span class="pc" id="L1139">            StringFilter(MessageBundle.getMess(&quot;label.teacher&quot;), ClassesToRead::teacher),</span>
+<span class="pc" id="L1140">            StringFilter(MessageBundle.getMess(&quot;label.group&quot;), ClassesToRead::group)</span>
+        )
+
+<span class="fc" id="L1143">        planTableView.tableColumns.addAll(columns.keys)</span>
+<span class="fc" id="L1144">        var screenWidth = 10.0</span>
+
+<span class="fc" id="L1146">        val screenSizes: ObservableList&lt;Screen&gt; = Screen.getScreens()</span>
+<span class="fc" id="L1147">        screenSizes.forEach(Consumer { screen: Screen -&gt; screenWidth = screen.bounds.width })</span>
+
+<span class="fc" id="L1149">        val widths = arrayOf(2,2,4,2,3,2)</span>
+
+<span class="fc bfc" id="L1151" title="All 2 branches covered.">        for (i in 0 until planTableView.tableColumns.size) {</span>
+<span class="fc" id="L1152">            planTableView.tableColumns[i].prefWidth = (widths[i].toDouble()/15)*screenWidth</span>
+<span class="fc" id="L1153">            planTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+        }
+
+<span class="fc" id="L1156">        TableRowStyler.setTableStyle(planTableView)</span>
+<span class="fc" id="L1157">        planTableView.isFooterVisible = true</span>
+<span class="fc" id="L1158">    }</span>
+
+    /**
+     * Metoda wywoływana podczas dokonania zmiany w tabeli kierunki w bazie danych
+     */
+    override fun onFieldsChanged() {
+<span class="nc" id="L1164">        fieldOfStudyChoiceBox.items = fieldsModel.getFields().map { it.fieldName }.let { fieldList -&gt; FXCollections.observableArrayList(fieldList) }</span>
+<span class="nc" id="L1165">    }</span>
+
+    /**
+     * Metoda wywoływana podczas dokonania zmiany w tabeli nauczyciele w bazie danych
+     */
+    override fun onTeachersChanged() {
+<span class="fc" id="L1171">        teacherChoiceBox.items = teachersModel.getTeachers().map { &quot;${it.lastname} ${it.firstname}&quot; }.let { teacherList -&gt; FXCollections.observableArrayList(teacherList) }</span>
+<span class="fc" id="L1172">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

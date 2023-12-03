@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidationWrapper.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.utils</a> &gt; <span class="el_source">ValidationWrapper.kt</span></div><h1>ValidationWrapper.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.utils
+
+import io.github.palexdev.materialfx.controls.MFXStepper
+import io.github.palexdev.materialfx.controls.MFXTextField
+import javafx.geometry.Pos
+import javafx.scene.control.Label
+import javafx.scene.layout.VBox
+
+/**
+ * Obiekt zawierający narzędzia do obsługi walidacji pól tekstowych oraz wyświetlania komunikatów błędów.
+ * Jest używana w połączeniu z kontrolkami MFXTextField i MFXStepper.
+ */
+object ValidationWrapper {
+    /**
+     * Metoda opakowuje kontrolkę typu MFXTextField w kontener typu VBox i dodaje obsługę walidacji.
+     *
+     * @param node    Kontrolka typu MFXTextField do opakowania.
+     * @param stepper Stepper, do którego jest przypisane pole do walidacji.
+     * @return Kontener typu VBox zawierający kontrolkę typu MFXTextField i etykietę błędu.
+     */
+    fun wrapNodeForValidationStepper(node: MFXTextField, stepper: MFXStepper): VBox{
+<span class="fc" id="L22">        val errorLabel = createErrorLabel()</span>
+
+<span class="fc" id="L24">        stepper.addEventHandler(MFXStepper.MFXStepperEvent.VALIDATION_FAILED_EVENT) {</span>
+<span class="nc" id="L25">            validationAction(node,errorLabel)</span>
+<span class="nc" id="L26">        }</span>
+
+<span class="fc" id="L28">        stepper.addEventHandler(MFXStepper.MFXStepperEvent.NEXT_EVENT) {</span>
+<span class="nc" id="L29">            errorLabel.text = &quot;&quot;</span>
+<span class="nc" id="L30">        }</span>
+
+<span class="fc" id="L32">        return createWrapper(node,errorLabel)</span>
+    }
+
+    /**
+     * Metoda wykonuje walidację kontrolki pola typu MFXTextField i aktualizuje etykietę błędu.
+     *
+     * @param node       Kontrolka typu MFXTextField do walidacji.
+     * @param errorLabel Etykieta służąca do wyświetlania komunikatu błędu.
+     */
+    fun validationAction(node: MFXTextField, errorLabel: Label)
+    {
+<span class="fc" id="L43">        errorLabel.text = &quot;&quot;</span>
+<span class="fc" id="L44">        val validator = node.validator</span>
+<span class="fc bfc" id="L45" title="All 4 branches covered.">        if (validator.validate().isNotEmpty()) errorLabel.text = validator.validate()[0].message</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (validator.validate().isEmpty()) errorLabel.text = &quot;&quot;</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Tworzy etykietę przeznaczoną do wyświetlania komunikatu błędu.
+     *
+     * @return Etykieta błędu.
+     */
+    fun createErrorLabel(): Label
+    {
+<span class="fc" id="L56">        val errorLabel = Label()</span>
+<span class="fc" id="L57">        errorLabel.styleClass.add(&quot;error-label&quot;)</span>
+<span class="fc" id="L58">        errorLabel.isManaged = false</span>
+<span class="fc" id="L59">        return errorLabel</span>
+    }
+
+    /**
+     * Tworzy kontener typu VBox, który zawiera kontrolkę typu MFXTextField i etykietę błędu.
+     *
+     * @param node       Kontrolka typu MFXTextField do umieszczenia w kontenerze.
+     * @param errorLabel Etykieta błędu.
+     * @return Kontener typu VBox zawierający kontrolkę MFXTextField i etykietę błędu.
+     */
+    fun createWrapper(node: MFXTextField, errorLabel: Label): VBox
+    {
+<span class="fc" id="L71">        return object : VBox(node, errorLabel) {</span>
+            override fun layoutChildren() {
+<span class="nc" id="L73">                super.layoutChildren()</span>
+<span class="nc" id="L74">                node.prefWidth = 300.0</span>
+<span class="nc" id="L75">                val x = node.boundsInParent.minX</span>
+<span class="nc" id="L76">                val y = node.boundsInParent.maxY + spacing</span>
+<span class="nc" id="L77">                val width = width</span>
+<span class="nc" id="L78">                val height = errorLabel.prefHeight(-1.0)</span>
+<span class="nc" id="L79">                errorLabel.resizeRelocate(x, y, width, height)</span>
+<span class="nc" id="L80">            }</span>
+
+            override fun computePrefHeight(width: Double): Double {
+<span class="nc" id="L83">                return super.computePrefHeight(width) + errorLabel.height + spacing</span>
+            }
+<span class="fc" id="L85">        }.apply { alignment = Pos.CENTER }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

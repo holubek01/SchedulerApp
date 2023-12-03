@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.Utils.CommonUtilTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:41:29" hostname="DESKTOP-DVH4IG9" time="3.383">
+  <properties/>
+  <testcase name="testCreateCompletedLabel()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="1.023"/>
+  <testcase name="testCreateUpdateButton()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.426"/>
+  <testcase name="testIntToRoman()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.233"/>
+  <testcase name="testRomanToInt()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.232"/>
+  <testcase name="testSetOnItemSelected()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.382"/>
+  <testcase name="testGetPlanStartDay()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.244"/>
+  <testcase name="testSetTextFieldStyle()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.583"/>
+  <testcase name="testCreateResetButton()" classname="com.example.scheduler.tests.Utils.CommonUtilTest" time="0.245"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

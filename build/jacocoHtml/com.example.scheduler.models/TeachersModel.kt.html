@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TeachersModel.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.models</a> &gt; <span class="el_source">TeachersModel.kt</span></div><h1>TeachersModel.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.models;
+
+import com.example.scheduler.controller.exceptions.DuplicatesException
+import com.example.scheduler.controller.exceptions.IdenticalObjectExistsException
+import com.example.scheduler.controller.observers.TeacherObserver
+import com.example.scheduler.db.dao.TeacherDAOImpl
+import com.example.scheduler.objects.Teacher
+import com.example.scheduler.utils.MessageBundle
+import com.fasterxml.jackson.databind.ObjectMapper
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import java.sql.SQLException
+
+/**
+ * Model zawierający logikę biznesową związaną z Teacher
+ */
+<span class="fc" id="L17">class TeachersModel {</span>
+    /**
+     * Obiekt zawierajacy zapytania do bazy danych
+     */
+<span class="fc" id="L21">    private val dao = TeacherDAOImpl()</span>
+<span class="fc" id="L22">    private var teachers = FXCollections.observableArrayList&lt;Teacher&gt;()</span>
+
+    /**
+     * @see TeacherDAOImpl.getTeachers
+     */
+    fun getTeachers(): ObservableList&lt;Teacher&gt; {
+<span class="fc" id="L28">        teachers = dao.getTeachers()</span>
+<span class="fc" id="L29">        return teachers</span>
+    }
+
+    /**
+     * @see TeacherDAOImpl.deleteTeacher
+     */
+    @Throws(SQLException::class)
+    fun deleteTeacher(teacher: Teacher) {
+<span class="fc" id="L37">        dao.deleteTeacher(teacher)</span>
+<span class="fc" id="L38">        notifyObservers()</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Dodaje nowego nauczyciela wraz z przedmiotami oraz dyspozycyjnością do bazy danych.
+     *
+     * @param teacher   Model nauczyciela do dodania.
+     * @param subjects  Lista przedmiotów nauczanych przez nauczyciela.
+     * @param availabilityList Lista dyspozycyjności do dodania
+     */
+    @Throws(SQLException::class)
+    fun addTeacher(teacher: Teacher, subjects: List&lt;String&gt;, availabilityList: MutableMap&lt;String, MutableList&lt;String&gt;&gt;) {
+<span class="fc" id="L50">        val objectMapper = ObjectMapper()</span>
+<span class="fc" id="L51">        val subjectsJSON = objectMapper.writeValueAsString(subjects)</span>
+
+<span class="fc" id="L53">        dao.addTeacher(teacher, subjectsJSON)</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        availabilityList.filterNot { it.value.isEmpty() }.forEach { (key, value) -&gt;</span>
+<span class="fc" id="L56">            val hoursJSON = objectMapper.writeValueAsString(value)</span>
+<span class="fc" id="L57">            dao.addAvailabilityToTeacher(key.uppercase(), hoursJSON)</span>
+<span class="fc" id="L58">        }</span>
+
+<span class="fc" id="L60">        notifyObservers()</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Aktualizuje nauczyciela oraz jego przedmioty w bazie danych.
+     *
+     * @param teacherID   Id edytowanego nauczyciela.
+     * @param teacher     Model nauczyciela z nowymi danymi.
+     * @param subjects    Nowa lista przedmiotów nauczyciela.
+     */
+    @Throws(SQLException::class)
+    fun updateTeacher(teacherID: Int, teacher: Teacher, subjects: List&lt;String&gt;) {
+<span class="fc" id="L72">        val objectMapper = ObjectMapper()</span>
+<span class="fc" id="L73">        val subjectsJSON = objectMapper.writeValueAsString(subjects)</span>
+
+<span class="fc" id="L75">        dao.updateTeacher(teacherID, teacher, subjectsJSON)</span>
+<span class="fc" id="L76">        notifyObservers()</span>
+<span class="fc" id="L77">    }</span>
+
+    /**
+     * Aktualizuje dyspozycyjność nauczyciela w bazie danych
+     * @param availabilityList  Nowa lista dyspozycyjności
+     * @param teacherID id nauczyciela do aktualizacji
+     */
+    @Throws(SQLException::class)
+    fun updateTeacherAvailability(availabilityList: MutableMap&lt;String, MutableList&lt;String&gt;&gt;, teacherID: Int) {
+
+<span class="fc" id="L87">        val objectMapper = ObjectMapper()</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        availabilityList.filterNot { it.value.isEmpty() }.forEach { (key, value) -&gt;</span>
+<span class="nc" id="L89">            val hoursJSON = objectMapper.writeValueAsString(value)</span>
+<span class="nc" id="L90">            dao.updateTeacherAvailability(teacherID, key.uppercase(), hoursJSON)</span>
+<span class="nc" id="L91">        }</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Dodaje nowego nauczyciela wraz z przedmiotami (ale bez dyspozycyjności) do bazy danych.
+     *
+     * @param teacher   Model nauczyciela do dodania.
+     * @param subjects  Lista przedmiotów do przypisania nauczycielowi.
+     */
+    @Throws(SQLException::class)
+    fun addTeacher(teacher: Teacher, subjects: List&lt;String&gt;) {
+<span class="fc" id="L102">        val objectMapper = ObjectMapper()</span>
+<span class="fc" id="L103">        val subjectsJSON = objectMapper.writeValueAsString(subjects)</span>
+
+<span class="fc" id="L105">        dao.addTeacher(teacher, subjectsJSON)</span>
+<span class="fc" id="L106">        notifyObservers()</span>
+<span class="fc" id="L107">    }</span>
+
+
+    /**
+     * @see TeacherDAOImpl.getTeacherID
+     */
+    fun getTeacherID(lastSelectedTeacher: Teacher): Int {
+<span class="fc" id="L114">        return dao.getTeacherID(lastSelectedTeacher)</span>
+    }
+
+    /**
+     * Sprawdza, czy w bazie danych nie ma już podobnych lub takich samych danych podczas dodawania nauczyciela.
+     *
+     * @param teacher Dodawany nauczyciel.
+     * @throws DuplicatesException jeśli istnieją duplikaty
+     */
+    @Throws(DuplicatesException::class)
+    fun checkDBwhileAdding(teacher: Teacher) {
+        //sprawdź czy w bazie nie istnieje już nauczyciel z tymi danymi
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if(dao.checkIfTeacherInDb(teacher))</span>
+        {
+<span class="fc" id="L128">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacherAlreadyInDB&quot;))</span>
+        }
+        //Nie mogą być powtarzalne (Imię i nazwisko), nr telefonu, mail (ale samo nazwisko może być powtarzalne)
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        else if(dao.checkIfNameAndLastnameInDb(teacher.firstname,teacher.lastname))</span>
+        {
+<span class="fc" id="L133">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacherExists&quot;))</span>
+        }
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        else if(dao.checkIfPhoneInDb(teacher.phone))</span>
+        {
+<span class="fc" id="L137">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.phoneOccupied&quot;))</span>
+        }
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        else if(dao.checkIfEmailInDb(teacher.email))</span>
+        {
+<span class="fc" id="L141">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.emailOccupied&quot;))</span>
+        }
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * Sprawdza czy w bazie danych nie ma już podobnych lub takich samych danych podczas edycji nauczyciela.
+     *
+     * @param teacher Edytowany nauczyciel.
+     * @param lastSelectedTeacher Ostatni wybrany nauczyciel z tabeli nauczycieli
+     * @throws DuplicatesException jeśli istnieją duplikaty
+     */
+    @Throws(DuplicatesException::class)
+    fun checkDBwhileEditing(teacher: Teacher, lastSelectedTeacher: Teacher, messageShown: Boolean) {
+        //Sprawdź czy nauczyciel o podanych danych istnieje w bazie (oprócz samego siebie)
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        if(dao.checkIfTeacherInDbEdit(teacher, lastSelectedTeacher))</span>
+        {
+<span class="fc" id="L157">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacherAlreadyInDB&quot;))</span>
+        }
+
+        //Sprawdź czy nauczyciel o podanym imieniu i nazwisku istnieje w bazie (oprócz samego siebie)
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        else if(dao.checkIfNameAndLastnameInDbEdit(teacher.firstname,teacher.lastname, lastSelectedTeacher))</span>
+        {
+<span class="fc" id="L163">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacherExists&quot;))</span>
+        }
+
+        //Sprawdź czy nauczyciel o podanym numerze telefonu istnieje w bazie (oprócz samego siebie)
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        else if(dao.checkIfPhoneInDbEdit(teacher.phone, lastSelectedTeacher))</span>
+        {
+<span class="fc" id="L169">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.phoneOccupied&quot;))</span>
+        }
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        else if(dao.checkIfEmailInDbEdit(teacher.email, lastSelectedTeacher))</span>
+        {
+<span class="fc" id="L173">            throw DuplicatesException(MessageBundle.getMess(&quot;warning.emailOccupied&quot;))</span>
+        }
+<span class="nc bnc" id="L175" title="All 4 branches missed.">        else if(!messageShown &amp;&amp; dao.checkIfTeacherInDb(teacher))</span>
+        {
+<span class="nc" id="L177">            throw IdenticalObjectExistsException(MessageBundle.getMess(&quot;warning.teacherExistsInEdit&quot;))</span>
+        }
+<span class="nc" id="L179">    }</span>
+
+
+    /**
+     * @see TeacherDAOImpl.getTeacherSubjects
+     */
+    fun getTeacherSubjects(teacher: Teacher): ObservableList&lt;String&gt; {
+<span class="fc" id="L186">        return dao.getTeacherSubjects(teacher)</span>
+    }
+
+    /**
+     * @see TeacherDAOImpl.getTeacherSubjectsByName
+     */
+    fun getTeacherSubjectsByName(teacher: String): ObservableList&lt;String&gt; {
+<span class="fc" id="L193">        return dao.getTeacherSubjectsByName(teacher)</span>
+    }
+
+    /**
+     * @see TeacherDAOImpl.getAvailability
+     */
+    fun getAvailability(teacher: Teacher): ObservableList&lt;String&gt; {
+<span class="fc" id="L200">        val availabilityList = FXCollections.observableArrayList(dao.getAvailability(teacher).map { item -&gt;</span>
+<span class="fc" id="L201">            item.replace(&quot;SATURDAY&quot;, MessageBundle.getMess(&quot;label.saturday&quot;))</span>
+<span class="fc" id="L202">                .replace(&quot;SUNDAY&quot;, MessageBundle.getMess(&quot;label.sunday&quot;))</span>
+<span class="fc" id="L203">                .replace(&quot;FRIDAY&quot;, MessageBundle.getMess(&quot;label.friday&quot;))</span>
+        })
+<span class="fc" id="L205">        return availabilityList</span>
+    }
+
+    /**
+     * @see TeacherDAOImpl.getAvailabilityByDay
+     */
+    fun getAvailabilityByDay(lastSelectedTeacher: Teacher, day: String): ObservableList&lt;String&gt; {
+<span class="fc" id="L212">        return dao.getAvailabilityByDay(lastSelectedTeacher, day)</span>
+    }
+
+    /**
+     * Metoda sprawdzająca czy w pliku Excel nie ma duplikatów. Jeśli nie istnieją duplikaty to nauczyciele są dodawani
+     * @param teachersToAdd Nauczyciele z przedmiotami do sprawdzenia i dodania
+     * @throws DuplicatesException jeśli istnieją duplikaty
+     */
+    @Throws(DuplicatesException::class)
+    fun checkDuplicatesAndAddTeachers(teachersToAdd: MutableMap&lt;Teacher, List&lt;String&gt;&gt;) {
+
+<span class="fc" id="L223">        val distinctTeachers = teachersToAdd.keys.distinctBy { it }</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        var duplicatesExist = teachersToAdd.keys.size != distinctTeachers.size</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if (duplicatesExist) throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacher.excel.duplicated&quot;))</span>
+
+<span class="fc" id="L227">        val distinctNames = teachersToAdd.keys.distinctBy { &quot;${it.firstname} ${it.lastname}&quot; }</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        duplicatesExist = teachersToAdd.keys.size != distinctNames.size</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        if (duplicatesExist) throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacher.excel.duplicatedNames&quot;))</span>
+
+<span class="fc" id="L231">        val distinctPhones = teachersToAdd.keys.distinctBy { it.phone }</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        duplicatesExist = teachersToAdd.keys.size != distinctPhones.size</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (duplicatesExist) throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacher.excel.duplicatedPhones&quot;))</span>
+
+<span class="fc" id="L235">        val distinctEmails = teachersToAdd.keys.distinctBy { it.email }</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        duplicatesExist = teachersToAdd.keys.size != distinctEmails.size</span>
+<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if (duplicatesExist) throw DuplicatesException(MessageBundle.getMess(&quot;warning.teacher.excel.duplicatedEmails&quot;))</span>
+
+<span class="fc" id="L239">        teachersToAdd.forEach { (teacher, subjects) -&gt;</span>
+<span class="fc" id="L240">            addTeacher(teacher, subjects)</span>
+<span class="fc" id="L241">        }</span>
+<span class="fc" id="L242">    }</span>
+
+    /**
+     * Funkcja walidująca nauczyciela podczas dodawania z pliku Excel
+     * @param teacher   Nauczyciel do walidacji
+     * @return error Błąd wynikający z walidacji
+     */
+    fun validateTeacher(teacher: Teacher): String {
+<span class="fc" id="L250">        return when{</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">            teacher.firstname.length&lt;2 -&gt; &quot;${MessageBundle.getMess(&quot;firstname.validation.moreThanOneLetter&quot;)}: ${teacher.firstname}&quot;</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">            !teacher.firstname[0].isUpperCase() -&gt;&quot;${MessageBundle.getMess(&quot;firstname.validation.startWithUppercase&quot;)}: ${teacher.firstname}&quot;</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">            teacher.firstname.substring(1).lowercase() != teacher.firstname.substring(1) -&gt; &quot;${MessageBundle.getMess(&quot;firstname.validation.allLettersLowercaseExceptFirst&quot;)}: ${teacher.firstname}&quot;</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            !teacher.firstname.matches(&quot;[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùżźśúûüųūÿýñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð'-]+&quot;.toRegex()) -&gt; &quot;${MessageBundle.getMess(&quot;firstname.validation.noSpecialChars&quot;)}: ${teacher.firstname}&quot;</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">            teacher.lastname.length&lt;2 -&gt;&quot;${MessageBundle.getMess(&quot;lastname.validation.moreThanOneLetter&quot;)}: ${teacher.lastname}&quot;</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">            !teacher.lastname[0].isUpperCase() -&gt; &quot;${MessageBundle.getMess(&quot;lastname.validation.startWithUppercase&quot;)}: ${teacher.lastname}&quot;</span>
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">            !teacher.lastname.matches(&quot;[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùżźśúûüųūÿýñçšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕŻŹŚØÙÚÛÜŲŪŸÝÑßÇŒÆŠŽ∂ð'-]+&quot;.toRegex()) -&gt; &quot;${MessageBundle.getMess(&quot;lastname.validation.noSpecialChars&quot;)}: ${teacher.lastname}&quot;</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">            !teacher.phone.matches(Regex(&quot;[0-9]+&quot;)) -&gt;&quot;${MessageBundle.getMess(&quot;phone.validation.onlyNumbers&quot;)}: ${teacher.phone}&quot;</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">            teacher.phone.length!=9 -&gt;&quot;${MessageBundle.getMess(&quot;phone.validation.nineDigits&quot;)}: ${teacher.phone}&quot;</span>
+<span class="pc bpc" id="L260" title="3 of 12 branches missed.">            teacher.email.count{it == '@'}!=1 || !teacher.email.contains(&quot;.&quot;) || teacher.email.contains(&quot; &quot;) || (teacher.email.lastIndexOf(&quot;.&quot;) &lt;= teacher.email.indexOf(&quot;@&quot;)) -&gt; &quot;${MessageBundle.getMess(&quot;email.validation.incorrectEmail&quot;)}: ${teacher.email}&quot;</span>
+<span class="fc" id="L261">            else -&gt; &quot;&quot;</span>
+        }
+    }
+
+    /**
+     * Metoda obsługująca zdarzenia, gdy nowa lista przedmiotów nauczyciela nie obejmuje wszystkich starych przedmiotów
+     * @param teacherID ID edytowanego nauczyciela
+     * @param lastSelectedTeacher Ostatni wybrany nauczyciel z tabeli nauczycieli
+     * @param Nowa lista przedmiotów
+     */
+    fun handleDeleteSubjects(teacherID: Int, lastSelectedTeacher: Teacher, subjects: List&lt;String&gt;) {
+<span class="fc" id="L272">        val oldSubjects = getTeacherSubjects(lastSelectedTeacher)</span>
+<span class="fc" id="L273">        val deletedSubjects = oldSubjects-subjects.toSet()</span>
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        for (subject in deletedSubjects)</span>
+        {
+<span class="nc" id="L276">            dao.deleteClassesAssociatedToDeletedSubjectAndTeacher(subject, teacherID)</span>
+        }
+<span class="fc" id="L278">    }</span>
+
+    /**
+     * Metoda obsługująca zdarzenia, gdy nowa lista dyspozycyjności nauczyciela nie całej starej dyspozycyjności
+     * @param teacherID ID edytowanego nauczyciela
+     * @param deletedAvailability Lista dyspozycyjności, która ma zostać usunięta
+     */
+    fun handleDeleteAvailabulity(teacherID: Int, deletedAvailability: MutableMap&lt;String, MutableList&lt;String&gt;&gt;) {
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        for ((day, hours) in deletedAvailability) {</span>
+<span class="pc bpc" id="L287" title="1 of 2 branches missed.">            for (hour in hours) {</span>
+<span class="nc" id="L288">                dao.deleteClassesAssociatedToDeletedTeacherAndAvailability(day,hour,teacherID)</span>
+            }
+        }
+<span class="fc" id="L291">    }</span>
+
+
+    /**
+     * Obiekt, umożliwiający rejestrowanie i powiadamianie obserwatorów o zmianach
+     * nauczycieli w bazie danych (dodanie, usunięcie lub edycja nauczyciela).
+     */
+    companion object{
+        /**
+         * Lista obserwatorów
+         */
+<span class="fc" id="L302">        private val observers = mutableListOf&lt;TeacherObserver&gt;()</span>
+
+        /**
+         * Metoda dodająca obserwatora do listy obserwatorów.
+         *
+         * @param observer Obserwator, który ma zostać dodany do listy obserwatorów.
+         */
+        fun addObserver(observer: TeacherObserver) {
+<span class="fc" id="L310">            observers.add(observer)</span>
+<span class="fc" id="L311">        }</span>
+
+        /**
+         * Metodą służąca do powiadamiania wszystkich zarejestrowanych obserwatorów o zmianach.
+         */
+        fun notifyObservers() {
+<span class="fc" id="L317">            observers.forEach { it.onTeachersChanged() }</span>
+<span class="fc" id="L318">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

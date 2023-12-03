@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FieldsModuleController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">FieldsModuleController.kt</span></div><h1>FieldsModuleController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+import com.example.scheduler.SchedulerApp
+import com.example.scheduler.controller.exceptions.DuplicatesException
+import com.example.scheduler.controller.exceptions.IdenticalObjectExistsException
+import com.example.scheduler.controller.observers.AdminTabsObserver
+import com.example.scheduler.controller.observers.TabsObserver
+import com.example.scheduler.models.FieldsModel
+import com.example.scheduler.objects.*
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.*
+import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell
+import io.github.palexdev.materialfx.dialogs.MFXGenericDialog
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import io.github.palexdev.materialfx.filter.StringFilter
+import io.github.palexdev.materialfx.filter.IntegerFilter
+import io.github.palexdev.mfxresources.fonts.MFXFontIcon
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.fxml.FXML
+import javafx.geometry.Insets
+import javafx.geometry.Pos
+import javafx.scene.control.Label
+import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
+import javafx.scene.text.TextAlignment
+import javafx.stage.Stage
+import java.sql.SQLException
+import java.util.function.Function
+import kotlin.Comparator
+import kotlin.reflect.KProperty1
+
+/**
+ * Klasa kontrolera modułu FieldModule do zarządzania danymi kierunków
+ */
+<span class="fc" id="L37">class FieldsModuleController: IFieldsModuleController, AdminTabsObserver, TabsObserver {</span>
+
+    /**
+     * Przycisk do wyświetlania kierunków kształcenia w tabeli
+     */
+    @FXML
+    private lateinit var showFieldsButton: MFXButton
+
+    /**
+     * Stepper odpowiedzialny za proces dodawania kierunku wraz z walidacją danych.
+     */
+    @FXML
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">    lateinit var stepper: MFXStepper</span>
+
+    /**
+     * Tabela służąca do wyświetlania listy kierunków.
+     */
+    @FXML
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    lateinit var fieldsTableView: MFXTableView&lt;Field&gt;</span>
+
+    /**
+     * Obiekt reprezentujący ostatnio wybrany kierunek z tabeli
+     */
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    lateinit var lastSelectedField: Field</span>
+
+    /**
+     * Menu kontekstowe wyświetlające się po kliknięciu na wiersz tabeli z kierunkami
+     */
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">    lateinit var menu: MFXContextMenu</span>
+
+    /**
+     * Flaga informująca o chęci edycji kierunku.
+     */
+    private var wantToEdit = false
+
+    /**
+     * Flaga informująca o chęci usunięcia kierunku.
+     */
+    private var wantToDelete = false
+
+    /**
+     * Pomocnicze okno dialogowe do menu kontekstowego.
+     */
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">    lateinit var dialog: MFXStageDialog</span>
+
+    /**
+     * Pomocnicze okno dialogowe do wyświetlania wiadomości.
+     */
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">    lateinit var dialogMess: MFXStageDialog</span>
+
+    /**
+     * Pole tekstowe do wprowadzania nazwy kierunku podczas dodawania kierunku
+     */
+<span class="fc" id="L90">    private var fieldNameTextField: MFXTextField = MFXTextField()</span>
+
+    /**
+     * Pole tekstowe do wprowadzania skrótu nazwy kierunku podczas dodawania kierunku
+     */
+<span class="fc" id="L95">    private var shortcutTextField: MFXTextField = MFXTextField()</span>
+
+    /**
+     * Pole do wyboru liczby semestrów podczas dodawania kierunku
+     */
+<span class="pc" id="L100">    var semChoiceBox: MFXComboBox&lt;Int&gt; = MFXComboBox()</span>
+
+    /**
+     * Pole tekstowe do wprowadzania nazwy kierunku podczas edycji kierunku
+     */
+<span class="pc" id="L105">    var fieldNameTextFieldEdit: MFXTextField = MFXTextField()</span>
+
+    /**
+     * Pole tekstowe do wprowadzania skrótu nazwy kierunku podczas edycji kierunku
+     */
+<span class="pc" id="L110">    var shortcutTextFieldEdit: MFXTextField = MFXTextField()</span>
+
+    /**
+     * Etykieta ładowania szkolnych planów nauczania
+     */
+<span class="fc" id="L115">    private var uploadSPNLabel: Label = Label()</span>
+
+    /**
+     * Kontrolka służąca do ładowania planów nauczania
+     */
+<span class="fc" id="L120">    private var uploadSPNToggle: MFXRectangleToggleNode = MFXRectangleToggleNode()</span>
+
+    /**
+     * Lista obiektów reprezentujących przedmioty do dodania do szkolnego planu
+     * nauczania wraz z liczbą godzin na poszczególnych semestrach
+     */
+<span class="pc" id="L126">    var subjectsToAdd: MutableList&lt;Subject&gt; = mutableListOf()</span>
+
+    /**
+     * Lista obiektów MFXComboBox&lt;Int&gt; służących do zaznaczania liczby godzin na poszczególnych semestrach
+     */
+<span class="fc" id="L131">    var groupNumberComboBoxArray: MutableList&lt;MFXComboBox&lt;Int&gt;&gt; = mutableListOf()</span>
+
+    /**
+     * Flaga informująca o tym czy kierunek jest w trybie edycji
+     */
+    private var inEditMode = false
+
+<span class="fc" id="L138">    val fieldsModel = FieldsModel()</span>
+
+
+    /**
+     * Inicjalizuje kontroler
+     */
+    @FXML
+    fun initialize()
+    {
+<span class="fc" id="L147">        setupTable()</span>
+<span class="fc" id="L148">        setupFieldForm()</span>
+<span class="fc" id="L149">        setActions()</span>
+<span class="fc" id="L150">        setConstraints(fieldNameTextField, shortcutTextField)</span>
+<span class="fc" id="L151">        setConstraints(fieldNameTextFieldEdit, shortcutTextFieldEdit)</span>
+<span class="fc" id="L152">        menu = MFXContextMenu(fieldsTableView)</span>
+<span class="fc" id="L153">        setOnFieldSelected()</span>
+<span class="fc" id="L154">        createSteps()</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        showFieldsButton.text = MessageBundle.getMess(&quot;label.showFields&quot;)</span>
+<span class="fc" id="L156">        AdminTabObserver.addObserver(this)</span>
+<span class="fc" id="L157">        TabObserver.addObserver(this)</span>
+<span class="fc" id="L158">    }</span>
+
+
+    /**
+     * Dodaje kierunek kształcenia do bazy wraz z przypisanym szkolnym planem nauczania
+     * @param   field   Kierunek do dodania
+     */
+    override fun addField(field: Field) {
+<span class="fc" id="L166">        try {</span>
+<span class="fc" id="L167">            fieldsModel.addField(field, groupNumberComboBoxArray, subjectsToAdd)</span>
+<span class="fc" id="L168">            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.fieldAdded&quot;), MessageBundle.getMess(&quot;success.field.correctlyAdded&quot;))</span>
+
+<span class="nc" id="L170">        } catch (e: SQLException) {</span>
+<span class="nc" id="L171">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.fieldAddingError&quot;))</span>
+<span class="nc" id="L172">            fieldsModel.deleteField(field)</span>
+        }
+<span class="fc" id="L174">        showFields()</span>
+<span class="fc" id="L175">    }</span>
+
+    /**
+     * Tworzy pierwszy krok formularza dodawania kierunku.
+     */
+    override fun createFirstsStep(): MFXStepperToggle
+    {
+<span class="fc" id="L182">        val step1 = MFXStepperToggle(MessageBundle.getMess(&quot;label.data&quot;), MFXFontIcon(&quot;fas-paperclip&quot;, 16.0, Color.web(&quot;#40F6F6&quot;)))</span>
+<span class="fc" id="L183">        semChoiceBox.prefWidth = 300.0</span>
+
+<span class="fc" id="L185">        val step1Box = VBox(20.0,</span>
+<span class="fc" id="L186">            ValidationWrapper.wrapNodeForValidationStepper(fieldNameTextField,stepper),</span>
+<span class="fc" id="L187">            ValidationWrapper.wrapNodeForValidationStepper(shortcutTextField,stepper),</span>
+<span class="fc" id="L188">            semChoiceBox)</span>
+
+<span class="fc" id="L190">        step1Box.alignment = Pos.CENTER</span>
+<span class="fc" id="L191">        step1.content = step1Box</span>
+<span class="fc" id="L192">        step1.validator</span>
+<span class="fc" id="L193">            .dependsOn(fieldNameTextField.validator)</span>
+<span class="fc" id="L194">            .dependsOn(shortcutTextField.validator)</span>
+
+<span class="fc" id="L196">        return step1</span>
+    }
+
+    /**
+     * Tworzy drugi krok formularza dodawania kierunku.
+     */
+    override fun createSecondStep(): MFXStepperToggle
+    {
+<span class="fc" id="L204">        val step2 = MFXStepperToggle(MessageBundle.getMess(&quot;label.groups&quot;), MFXFontIcon(&quot;fas-people-group&quot;, 16.0, Color.web(&quot;#40F6F6&quot;)))</span>
+<span class="fc" id="L205">        val step2Box = VBox(30.0)</span>
+<span class="fc" id="L206">        step2Box.alignment = Pos.CENTER</span>
+<span class="fc" id="L207">        step2.content = step2Box</span>
+<span class="fc" id="L208">        step2Box.padding = Insets(30.0)</span>
+
+<span class="fc" id="L210">        return step2</span>
+    }
+
+    /**
+     * Tworzy trzeci krok formularza dodawania kierunku.
+     */
+    override fun createThirdStep(): MFXStepperToggle
+    {
+<span class="fc" id="L218">        val step3 = MFXStepperToggle(MessageBundle.getMess(&quot;label.subjects&quot;), MFXFontIcon(&quot;fas-file-circle-plus&quot;, 16.0, Color.web(&quot;#40F6F6&quot;)))</span>
+
+<span class="fc" id="L220">        MFXTooltip.of(uploadSPNToggle, MessageBundle.getMess(&quot;label.SPN.patternInfo&quot;)).install()</span>
+<span class="fc" id="L221">        val step3Box = VBox(20.0, uploadSPNLabel, uploadSPNToggle)</span>
+<span class="fc" id="L222">        step3Box.alignment = Pos.CENTER</span>
+<span class="fc" id="L223">        step3.content = step3Box</span>
+<span class="fc" id="L224">        step3Box.padding = Insets(30.0)</span>
+
+<span class="fc" id="L226">        return step3</span>
+    }
+
+    /**
+     * Tworzy groupNumberComboBoxArray i dodaje ją do kroku 2 dodawania kierunku
+     */
+    fun createGroupNumberArray()
+    {
+<span class="pc bpc" id="L234" title="1 of 4 branches missed.">        for (i in 1 .. semChoiceBox.value)</span>
+        {
+<span class="fc" id="L236">            val box = MFXComboBox&lt;Int&gt;()</span>
+<span class="fc" id="L237">            box.floatingText = &quot;${MessageBundle.getMess(&quot;label.enterHoursNum&quot;)} $i&quot;</span>
+<span class="fc" id="L238">            box.id = &quot;comboWhite&quot;</span>
+<span class="fc" id="L239">            box.items = FXCollections.observableArrayList((1..15).toList())</span>
+<span class="fc" id="L240">            groupNumberComboBoxArray.add(box)</span>
+        }
+
+<span class="fc" id="L243">        val comboBoxContainer = VBox(20.0)</span>
+<span class="fc" id="L244">        comboBoxContainer.children.addAll(groupNumberComboBoxArray)</span>
+<span class="fc" id="L245">        comboBoxContainer.alignment = Pos.CENTER</span>
+<span class="fc" id="L246">        stepper.stepperToggles[1].content = comboBoxContainer    }</span>
+
+    /**
+     * Tworzy kroki dla stepper procesu dodawania kierunku.
+     */
+    override fun createSteps() {
+<span class="fc" id="L252">        val step1 = createFirstsStep()</span>
+<span class="fc" id="L253">        val step2 = createSecondStep()</span>
+<span class="fc" id="L254">        val step3 = createThirdStep()</span>
+
+<span class="fc" id="L256">        val completedLabel = CommonUtils.createCompletedLabel(MessageBundle.getMess(&quot;label.fieldAdded&quot;))</span>
+<span class="fc" id="L257">        val resetButton = CommonUtils.createResetButton()</span>
+
+<span class="fc" id="L259">        stepper.setOnBeforePrevious {</span>
+<span class="pc bpc" id="L260" title="1 of 2 branches missed.">            if (stepper.currentStepperNode == stepper.stepperToggles[1])</span>
+            {
+<span class="nc" id="L262">                groupNumberComboBoxArray.clear()</span>
+            }
+<span class="fc" id="L264">        }</span>
+
+<span class="fc" id="L266">        stepper.setOnBeforeNext{</span>
+
+<span class="nc bnc" id="L268" title="All 4 branches missed.">            if (stepper.currentStepperNode == stepper.stepperToggles[0] &amp;&amp; semChoiceBox.value!=null)</span>
+            {
+<span class="nc" id="L270">                groupNumberComboBoxArray.clear()</span>
+<span class="nc" id="L271">                createGroupNumberArray()</span>
+            }
+
+<span class="nc" id="L274">        }</span>
+
+<span class="fc" id="L276">        resetButton.setOnAction {</span>
+<span class="nc" id="L277">            CommonUtils.removeStepDependencies(stepper, fieldNameTextField, shortcutTextField)</span>
+<span class="nc" id="L278">            createSteps()</span>
+<span class="nc" id="L279">            clearBoxes()</span>
+<span class="nc" id="L280">            inEditMode=false</span>
+<span class="nc" id="L281">        }</span>
+
+<span class="fc" id="L283">        stepper.setOnLastNext {</span>
+<span class="nc bnc" id="L284" title="All 6 branches missed.">            if (uploadSPNToggle.text.isNotEmpty() &amp;&amp; uploadSPNToggle.isSelected)</span>
+            {
+<span class="nc" id="L286">                subjectsToAdd.clear()</span>
+<span class="nc" id="L287">                ExcelUtils.uploadSingleSPN(uploadSPNToggle.text, subjectsToAdd)</span>
+
+<span class="nc" id="L289">                val field = Field(</span>
+<span class="nc" id="L290">                    fieldName = fieldNameTextField.text,</span>
+<span class="nc" id="L291">                    shortcut = shortcutTextField.text,</span>
+<span class="nc" id="L292">                    semsNumber = semChoiceBox.value</span>
+                )
+
+<span class="nc" id="L295">                addField(field)</span>
+
+<span class="nc" id="L297">                val vbox = step3.content as VBox</span>
+<span class="nc" id="L298">                vbox.children.setAll(completedLabel, resetButton)</span>
+            }
+            else
+            {
+<span class="nc" id="L302">                stepper.previous()</span>
+<span class="nc" id="L303">                MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.noSPN&quot;), MessageBundle.getMess(&quot;warning.noSPNSelected&quot;))</span>
+            }
+<span class="nc" id="L305">            uploadSPNToggle.isSelected = false</span>
+<span class="nc" id="L306">        }</span>
+
+<span class="fc" id="L308">        stepper.stepperToggles.addAll(listOf(step1, step2, step3))</span>
+<span class="fc" id="L309">        performActionsBetweenSteps()</span>
+<span class="fc" id="L310">    }</span>
+
+    /**
+     * Obsługuje akcje wywoływane po pierwszym kroku podczas dodawania kierunku.
+     */
+    override fun handleActionAfterFirstStep()
+    {
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[1])</span>
+        {
+<span class="nc" id="L319">            checkDbWhileAdding(fieldNameTextField.text, shortcutTextField.text, semChoiceBox)</span>
+        }
+<span class="nc" id="L321">    }</span>
+
+    /**
+     * Metoda sprawdza istnienie w bazie kierunku o podobnych danych podczas dodawania
+     * Jeśli walidacja przebiegła pomyślnie to kierunek jest dodawany
+     * @param fieldName     nazwa kierunku do dodania
+     * @param shotcut       skrót kierunku do dodania
+     * @param sem           Liczba semestrów na kierunku do dodania
+     */
+    override fun checkDbWhileAdding(fieldName: String, shotcut: String, sem: MFXComboBox&lt;Int&gt;)
+    {
+<span class="fc" id="L332">        try {</span>
+<span class="nc" id="L333">            fieldsModel.checkDBWhileAdding(fieldName, shotcut, sem)</span>
+<span class="fc" id="L334">        }catch (e: DuplicatesException)</span>
+        {
+<span class="fc" id="L336">            stepper.previous()</span>
+<span class="fc" id="L337">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.fieldAddingError&quot;), e.message!!)</span>
+        }
+<span class="fc" id="L339">    }</span>
+
+    /**
+     * Obsługuje akcje wywoływane po drugim kroku podczas dodawania kierunku.
+     */
+    override fun handleActionAfterSecondStep()
+    {
+<span class="nc bnc" id="L346" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[2])</span>
+        {
+<span class="nc" id="L348">            checkIfSemComboBoxEmpty()</span>
+        }
+
+<span class="nc" id="L351">    }</span>
+
+    /**
+     * Metoda sprawdzająca, czy użytkownik wybrał liczbę grup dla każdego semestru
+     * Jeśli nie - cofa do poprzedniego kroku
+     */
+    override fun checkIfSemComboBoxEmpty()
+    {
+<span class="fc bfc" id="L359" title="All 4 branches covered.">        val anyComboBoxEmpty = groupNumberComboBoxArray.any { it.value == null }</span>
+<span class="fc bfc" id="L360" title="All 2 branches covered.">        if (anyComboBoxEmpty)</span>
+        {
+<span class="fc" id="L362">            stepper.previous()</span>
+<span class="fc" id="L363">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.fieldAddingError&quot;), MessageBundle.getMess(&quot;warning.noGroupsNumber&quot;))</span>
+        }
+<span class="fc" id="L365">    }</span>
+
+    /**
+     * Wykonuje akcje między krokami formularza.
+     */
+    override fun performActionsBetweenSteps()
+    {
+<span class="fc" id="L372">        stepper.addEventHandler(MFXStepper.MFXStepperEvent.NEXT_EVENT) {</span>
+<span class="nc" id="L373">            handleActionAfterFirstStep()</span>
+<span class="nc" id="L374">            handleActionAfterSecondStep()</span>
+<span class="nc" id="L375">        }</span>
+<span class="fc" id="L376">    }</span>
+
+
+    /**
+     * Ustawia ograniczenia na pola tekstowe walidujące poprawność danych.
+     *
+     * @param fieldName         Pole tekstowe do wprowadzania nazwy kierunku.
+     * @param fieldShort        Pole tekstowe do wprowadzania skrótu kierunku.
+     */
+    override fun setConstraints(fieldName: MFXTextField, fieldShort: MFXTextField) {
+<span class="fc" id="L386">        fieldName.validator.constraint(ValidatorUtil.createNotEmptyConstraint(fieldName.textProperty(), MessageBundle.getMess(&quot;fieldName.validation.notEmpty&quot;)))</span>
+<span class="fc" id="L387">        fieldName.validator.constraint(ValidatorUtil.createNoSpecialCharsConstraintSpceAllowed(fieldName.textProperty(),MessageBundle.getMess(&quot;fieldName.validation.noSpecialChars&quot;) ))</span>
+<span class="fc" id="L388">        fieldShort.validator.constraint(ValidatorUtil.createNotEmptyConstraint(fieldShort.textProperty(),MessageBundle.getMess(&quot;shortcut.validation.notEmpty&quot;) ))</span>
+<span class="fc" id="L389">        fieldShort.validator.constraint(ValidatorUtil.createNoLongerThanSixLettersConstraint(fieldShort.textProperty(),MessageBundle.getMess(&quot;shortcut.noLongerThan6Chars&quot;) ))</span>
+<span class="fc" id="L390">        fieldShort.validator.constraint(ValidatorUtil.createOnlyBigLettersConstraint(fieldShort.textProperty(), MessageBundle.getMess(&quot;shortcut.onlyBigLetters&quot;)))</span>
+<span class="fc" id="L391">    }</span>
+
+
+    /**
+     * Konfiguruje formularz dodawania kierunku.
+     */
+    override fun setupFieldForm() {
+<span class="fc" id="L398">        stepper.styleClass.add(&quot;stepper&quot;)</span>
+<span class="fc" id="L399">        fieldNameTextField.floatingText = MessageBundle.getMess(&quot;label.enterFieldName&quot;)</span>
+<span class="fc" id="L400">        shortcutTextField.floatingText = MessageBundle.getMess(&quot;label.enterFieldShortcut&quot;)</span>
+<span class="fc" id="L401">        semChoiceBox.floatingText = MessageBundle.getMess(&quot;label.enterSemNum&quot;)</span>
+
+<span class="fc" id="L403">        semChoiceBox.id = &quot;biggerIconCombo&quot;</span>
+<span class="fc" id="L404">        semChoiceBox.items = FXCollections.observableArrayList((1..6).toList())</span>
+
+<span class="fc" id="L406">        CommonUtils.setTextFieldStyle(fieldNameTextField, shortcutTextField, semChoiceBox)</span>
+
+<span class="fc" id="L408">        uploadSPNLabel.text = MessageBundle.getMess(&quot;label.enterSPN&quot;)</span>
+<span class="fc" id="L409">        uploadSPNLabel.textAlignment = TextAlignment.CENTER</span>
+<span class="fc" id="L410">        uploadSPNLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L411">        uploadSPNToggle.labelTrailingIcon = MFXFontIcon(&quot;fas-list-ul&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L412">        uploadSPNToggle.text = MessageBundle.getMess(&quot;label.chooseFile&quot;)</span>
+
+<span class="fc" id="L414">        uploadSPNLabel.prefWidth = 380.0</span>
+<span class="fc" id="L415">        uploadSPNToggle.prefWidth = 380.0</span>
+
+<span class="fc" id="L417">    }</span>
+
+    /**
+     * Tworzy i konfiguruje tabelę z kierunkami.
+     */
+    override fun setupTable() {
+<span class="fc" id="L423">        val columns = mapOf&lt;MFXTableColumn&lt;Field&gt;, KProperty1&lt;Field, *&gt;&gt;(</span>
+<span class="pc" id="L424">            MFXTableColumn(MessageBundle.getMess(&quot;label.fieldName&quot;), false, Comparator.comparing(Field::fieldName)) to Field::fieldName,</span>
+<span class="pc" id="L425">            MFXTableColumn(MessageBundle.getMess(&quot;label.semCount&quot;), false, Comparator.comparing(Field::semsNumber)) to Field::semsNumber,</span>
+<span class="pc" id="L426">            MFXTableColumn(MessageBundle.getMess(&quot;label.shortcut&quot;), false, Comparator.comparing(Field::shortcut)) to Field::shortcut)</span>
+
+
+<span class="fc" id="L429">        columns.forEach{ column -&gt;</span>
+<span class="fc" id="L430">            column.key.rowCellFactory = Function&lt;Field, MFXTableRowCell&lt;Field?, *&gt;&gt;</span>
+            {
+<span class="nc" id="L432">                val cell = MFXTableRowCell&lt;Field?, Any?&gt;(column.value)</span>
+<span class="nc" id="L433">                cell.styleClass.add(&quot;table-cell&quot;)</span>
+<span class="nc" id="L434">                cell</span>
+            }
+<span class="fc" id="L436">        }</span>
+
+<span class="fc" id="L438">        addFilters()</span>
+
+<span class="fc" id="L440">        fieldsTableView.tableColumns.addAll(columns.keys)</span>
+
+<span class="fc bfc" id="L442" title="All 2 branches covered.">        for (i in 0 until fieldsTableView.tableColumns.size) {</span>
+<span class="fc" id="L443">            fieldsTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+        }
+
+<span class="fc" id="L446">        fieldsTableView.tableColumns[0].minWidth = 220.0</span>
+<span class="fc" id="L447">        fieldsTableView.tableColumns[1].minWidth = 150.0</span>
+<span class="fc" id="L448">        fieldsTableView.tableColumns[2].minWidth = 70.0</span>
+<span class="fc" id="L449">        fieldsTableView.isFooterVisible = true</span>
+
+<span class="fc" id="L451">    }</span>
+
+    /**
+     * Tworzy filtry dla tabeli
+     */
+    private fun addFilters()
+    {
+<span class="fc" id="L458">        fieldsTableView.filters.addAll(</span>
+<span class="pc" id="L459">            StringFilter(MessageBundle.getMess(&quot;label.fieldName&quot;), Field::fieldName),</span>
+<span class="pc" id="L460">            IntegerFilter(MessageBundle.getMess(&quot;label.semCount&quot;), Field::semsNumber),</span>
+<span class="pc" id="L461">            StringFilter(MessageBundle.getMess(&quot;label.shortcut&quot;), Field::shortcut),</span>
+        )
+<span class="fc" id="L463">    }</span>
+
+    /**
+     * Ustawia akcje dla kontrolek
+     */
+    override fun setActions()
+    {
+<span class="pc bpc" id="L470" title="1 of 2 branches missed.">        showFieldsButton.setOnAction { showFields() }</span>
+<span class="fc" id="L471">        uploadSPNToggle.setOnAction {</span>
+<span class="nc bnc" id="L472" title="All 2 branches missed.">            val stage = showFieldsButton.scene.window as Stage</span>
+<span class="nc" id="L473">            ExcelUtils.searchFile(uploadSPNToggle, stage ) }</span>
+
+<span class="fc" id="L475">    }</span>
+
+    /**
+     * Obsługuje akcje wywoływane po kliknięciu na kierunek w tabeli.
+     */
+    override fun setOnFieldSelected() {
+<span class="fc" id="L481">        CommonUtils.setOnItemSelected(fieldsTableView, menu) { selectedRowIndex -&gt;</span>
+<span class="nc" id="L482">            lastSelectedField = fieldsTableView.items[selectedRowIndex]</span>
+<span class="nc" id="L483">            showContextMenu(selectedRowIndex, lastSelectedField)</span>
+<span class="nc" id="L484">        }</span>
+<span class="fc" id="L485">    }</span>
+
+
+    /**
+     * Wyświetla menu kontekstowe dla wybranego kierunku z tabeli.
+     *
+     * @param selectedRowIndex Indeks zaznaczonego wiersza w tabeli.
+     * @param selectedItem       Wybrany kierunek.
+     */
+    override fun showContextMenu(selectedRowIndex: Int, selectedItem: Field) {
+
+<span class="fc" id="L496">        val deleteButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.deleteField&quot;))</span>
+<span class="fc" id="L497">        val editButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.editField&quot;))</span>
+<span class="fc" id="L498">        val showSPNButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.showSPN&quot;))</span>
+
+<span class="fc" id="L500">        deleteButton.graphic =  MFXFontIcon(&quot;fas-trash-can&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L501">        editButton.graphic = MFXFontIcon(&quot;fas-wrench&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L502">        showSPNButton.graphic = MFXFontIcon(&quot;fas-paperclip&quot;, 16.0, Color.BLACK)</span>
+
+<span class="fc" id="L504">        deleteButton.setOnAction {</span>
+<span class="nc" id="L505">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.field.askBeforeDelete&quot;), ActionType.DELETE)</span>
+<span class="nc" id="L506">            deleteField(selectedItem)</span>
+<span class="nc" id="L507">        }</span>
+
+<span class="fc" id="L509">        editButton.setOnAction {</span>
+<span class="nc" id="L510">            inEditMode = true</span>
+<span class="nc" id="L511">            editField(selectedItem)</span>
+<span class="nc" id="L512">        }</span>
+
+<span class="fc" id="L514">        showSPNButton.setOnAction {</span>
+<span class="nc" id="L515">            showSPN(selectedItem)</span>
+<span class="nc" id="L516">        }</span>
+
+<span class="fc" id="L518">        CommonUtils.showContextMenu(selectedRowIndex, fieldsTableView, menu, listOf(deleteButton,editButton,showSPNButton))</span>
+<span class="fc" id="L519">    }</span>
+
+
+    /**
+     * Tworzy tabelę do wyświetlania szkolnego planu nauczania dla wybranego kierunku.
+     * @param field Kierunek, dla którego ma zostać utworzona tabela.
+     * @return Tabela do wyświetlania szkolnego planu nauczania dla wybranego kierunku
+     */
+    override fun createSPNtable(field: Field): MFXTableView&lt;TeachingPlan&gt;
+    {
+<span class="fc" id="L529">        val spnTableView = MFXTableView&lt;TeachingPlan&gt;()</span>
+<span class="fc" id="L530">        spnTableView.isFooterVisible = false</span>
+<span class="pc bpc" id="L531" title="1 of 2 branches missed.">        spnTableView.stylesheets.add(SchedulerApp::class.java.getResource(&quot;css/customStyles.css&quot;)?.toExternalForm()!!)</span>
+
+<span class="fc" id="L533">        spnTableView.maxWidth = Double.MAX_VALUE</span>
+<span class="fc" id="L534">        spnTableView.maxHeight = Double.MAX_VALUE</span>
+<span class="fc" id="L535">        VBox.setVgrow(spnTableView, Priority.ALWAYS)</span>
+
+<span class="fc" id="L537">        val columns: ObservableList&lt;MFXTableColumn&lt;TeachingPlan&gt;&gt; = FXCollections.observableArrayList()</span>
+<span class="pc" id="L538">        val subjectNameColumn: MFXTableColumn&lt;TeachingPlan&gt; = MFXTableColumn(MessageBundle.getMess(&quot;label.subject&quot;), true, java.util.Comparator.comparing(TeachingPlan::subjectName))</span>
+
+<span class="fc bfc" id="L540" title="All 2 branches covered.">        for(sem in 0 until field.semsNumber)</span>
+        {
+<span class="fc" id="L542">            columns.add(MFXTableColumn(&quot;sem ${sem+1}&quot;, true))</span>
+        }
+
+<span class="fc" id="L545">        subjectNameColumn.rowCellFactory = Function&lt;TeachingPlan, MFXTableRowCell&lt;TeachingPlan?, *&gt;&gt;</span>
+        {
+<span class="nc" id="L547">            MFXTableRowCell&lt;TeachingPlan?, Any?&gt;(TeachingPlan::subjectName)</span>
+        }
+
+<span class="fc bfc" id="L550" title="All 2 branches covered.">        for ((counter, column) in columns.withIndex()) {</span>
+<span class="fc" id="L551">            column.rowCellFactory = Function {</span>
+<span class="nc" id="L552">                val cell = MFXTableRowCell&lt;TeachingPlan, Any?&gt; { item -&gt;</span>
+<span class="nc bnc" id="L553" title="All 4 branches missed.">                    item?.semesters?.getOrNull(counter)</span>
+                }
+<span class="nc" id="L555">                cell</span>
+            }
+        }
+
+<span class="fc" id="L559">        spnTableView.tableColumns.addAll(subjectNameColumn)</span>
+<span class="fc" id="L560">        spnTableView.tableColumns.addAll(columns)</span>
+
+<span class="fc bfc" id="L562" title="All 2 branches covered.">        for (i in 0 until spnTableView.tableColumns.size) {</span>
+<span class="fc" id="L563">            spnTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+<span class="fc" id="L564">            spnTableView.tableColumns[i].minWidth = 350.0 / (spnTableView.tableColumns.size-1)</span>
+
+        }
+<span class="fc" id="L567">        spnTableView.tableColumns[0].minWidth = 350.0</span>
+
+<span class="fc" id="L569">        return spnTableView</span>
+    }
+
+
+    /**
+     * Wyświetla szkolny plan nauczania dla danego kierunku w tabeli.
+     * @param field Kierunek, dla którego wyświetlony zostanie szkolny plan nauczania.
+     */
+    override fun showSPN(field: Field)
+    {
+<span class="nc" id="L579">        val spnTableView = createSPNtable(field)</span>
+<span class="nc" id="L580">        val vbox = VBox(10.0, spnTableView)</span>
+<span class="nc" id="L581">        vbox.alignment = Pos.CENTER</span>
+
+<span class="nc" id="L583">        spnTableView.items = fieldsModel.showSPN(field)</span>
+<span class="nc" id="L584">        createAndShowDialog(vbox)</span>
+<span class="nc" id="L585">    }</span>
+
+
+    /**
+     * Tworzy i wyświetla customowe okno dialogowe.
+     *
+     * @param vBox Kontener z zawartością okna dialogowego.
+     */
+    override fun createAndShowDialog(vBox: VBox) {
+<span class="fc" id="L594">        vBox.alignment = Pos.CENTER</span>
+
+<span class="pc bpc" id="L596" title="1 of 2 branches missed.">        val stage: Stage = showFieldsButton.scene.window as Stage</span>
+<span class="fc" id="L597">        dialog = DialogUtils.showCustomDialog(stage, vBox) {</span>
+<span class="nc" id="L598">            fieldsTableView.selectionModel.clearSelection()</span>
+<span class="nc" id="L599">            menu.hide()</span>
+<span class="nc" id="L600">            inEditMode = false</span>
+<span class="nc" id="L601">        }</span>
+
+<span class="pc bpc" id="L603" title="1 of 2 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
+<span class="fc" id="L604">    }</span>
+
+
+    /**
+     * Wyświetla listę kierunków kształcenia w tabeli
+     */
+    override fun showFields() {
+<span class="fc" id="L611">        val fields = fieldsModel.getFields()</span>
+<span class="pc bpc" id="L612" title="1 of 2 branches missed.">        if (fields.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.noFields&quot;), MessageBundle.getMess(&quot;warning.fieldNotInDB&quot;))</span>
+<span class="fc" id="L613">        else fieldsTableView.items = fields</span>
+<span class="fc" id="L614">    }</span>
+
+    /**
+     * Metoda sprawdza istnienie w bazie kierunku o podobnych danych
+     * Jeśli walidacja przebiegła pomyślnie to kierunek jest aktualizowany
+     * @param fieldName Nazwa kierunku do sprawdzenia
+     * @param shotcut Skrót kierunku do sprawdzenia
+     */
+    override fun checkWhileEditing(fieldName: String, shotcut: String)
+    {
+<span class="fc" id="L624">        try {</span>
+<span class="fc" id="L625">            fieldsModel.checkDBWhileEditing(fieldName, shotcut, lastSelectedField)</span>
+<span class="fc" id="L626">            updateField()</span>
+
+<span class="fc" id="L628">        }catch (e: DuplicatesException)</span>
+        {
+<span class="fc" id="L630">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.fieldEditingError&quot;), e.message!!)</span>
+        }
+<span class="nc" id="L632">        catch (e: IdenticalObjectExistsException)</span>
+        {
+            //Jest to edytowany kierunek
+<span class="nc" id="L635">            showDialogYesNoMessage(e.message!!, ActionType.EDIT)</span>
+<span class="nc bnc" id="L636" title="All 2 branches missed.">            if (wantToEdit) dialog.close()</span>
+        }
+<span class="fc" id="L638">    }</span>
+
+    /**
+     * Metoda tworząca i wyświetlająca okno dialogowe służące do zmiany danych kierunku
+     * Pozwala na zmianę nazwy kierunku oraz skrótu nazwy kierunku
+     * @param field edytowany kierunek
+     */
+    override fun editField(field: Field) {
+<span class="fc" id="L646">        val labelEdit = Label(MessageBundle.getMess(&quot;label.editFieldData&quot;))</span>
+<span class="fc" id="L647">        labelEdit.styleClass.add(&quot;header-label-big&quot;)</span>
+
+<span class="fc" id="L649">        val updateButton = CommonUtils.createUpdateButton()</span>
+<span class="fc" id="L650">        val errorFieldName = ValidationWrapper.createErrorLabel()</span>
+<span class="fc" id="L651">        val errorShortcut = ValidationWrapper.createErrorLabel()</span>
+
+<span class="fc" id="L653">        val vbox = VBox(</span>
+<span class="fc" id="L654">            20.0,</span>
+<span class="fc" id="L655">            labelEdit,</span>
+<span class="fc" id="L656">            ValidationWrapper.createWrapper(fieldNameTextFieldEdit, errorFieldName),</span>
+<span class="fc" id="L657">            ValidationWrapper.createWrapper(shortcutTextFieldEdit, errorShortcut),</span>
+<span class="fc" id="L658">            updateButton)</span>
+
+<span class="pc" id="L660">        updateButton.setOnAction { onUpdateButtonPressed(errorFieldName, errorShortcut) }</span>
+
+<span class="fc" id="L662">        fieldNameTextFieldEdit.floatingText = MessageBundle.getMess(&quot;label.enterFieldName&quot;)</span>
+<span class="fc" id="L663">        shortcutTextFieldEdit.floatingText = MessageBundle.getMess(&quot;label.enterFieldShortcut&quot;)</span>
+<span class="fc" id="L664">        CommonUtils.setTextFieldStyle(fieldNameTextFieldEdit, shortcutTextFieldEdit)</span>
+
+<span class="fc" id="L666">        fieldNameTextFieldEdit.prefWidth = 300.0</span>
+<span class="fc" id="L667">        shortcutTextFieldEdit.prefWidth = 300.0</span>
+
+<span class="fc" id="L669">        fieldNameTextFieldEdit.text = field.fieldName</span>
+<span class="fc" id="L670">        shortcutTextFieldEdit.text =  field.shortcut</span>
+
+<span class="fc" id="L672">        vbox.styleClass.add(&quot;stepper&quot;)</span>
+
+<span class="fc" id="L674">        createAndShowDialog(vbox)</span>
+<span class="fc" id="L675">    }</span>
+
+    /**
+     * Metoda sprawdzająca poprawność wprowadzonych danych podczas edytowania
+     * @param errorFieldName etykieta błędu związana z nazwą kierunku
+     * @param errorShortcut etykieta błędu związana ze skrótem kierunku
+     */
+    override fun onUpdateButtonPressed(errorFieldName: Label, errorShortcut: Label)
+    {
+<span class="fc" id="L684">        ValidationWrapper.validationAction(fieldNameTextFieldEdit, errorFieldName)</span>
+<span class="fc" id="L685">        ValidationWrapper.validationAction(shortcutTextFieldEdit, errorShortcut)</span>
+
+<span class="pc bpc" id="L687" title="2 of 8 branches missed.">        if (errorFieldName.text.isEmpty() &amp;&amp; errorShortcut.text.isEmpty())</span>
+        {
+<span class="fc" id="L689">            checkWhileEditing(fieldNameTextFieldEdit.text, shortcutTextFieldEdit.text)</span>
+        }
+<span class="fc" id="L691">    }</span>
+
+    /**
+     * Metoda służąca do aktualizacji kierunku kształcenia
+     */
+    override fun updateField() {
+<span class="fc" id="L697">        val fieldID = fieldsModel.getFieldID(lastSelectedField)</span>
+<span class="fc" id="L698">        val completedLabel = CommonUtils.createCompletedLabel(MessageBundle.getMess(&quot;label.fieldUpdated&quot;))</span>
+
+<span class="fc" id="L700">        val okButton = MFXButton(&quot;OK&quot;)</span>
+<span class="fc" id="L701">        okButton.id = &quot;customButton&quot;</span>
+<span class="pc" id="L702">        okButton.setOnAction { dialog.close() }</span>
+
+<span class="fc" id="L704">        val vbox = VBox(20.0, completedLabel, okButton)</span>
+<span class="fc" id="L705">        vbox.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L707">        try {</span>
+<span class="fc" id="L708">            fieldsModel.updateField(fieldID, fieldNameTextFieldEdit.text, shortcutTextFieldEdit.text)</span>
+<span class="pc bpc" id="L709" title="1 of 2 branches missed.">            if (this::dialog.isInitialized) (dialog.content as MFXGenericDialog).content = vbox</span>
+<span class="fc" id="L710">            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.fieldUpdated&quot;), MessageBundle.getMess(&quot;success.field.correctlyUpdated&quot;))</span>
+<span class="fc" id="L711">            showFields()</span>
+
+<span class="nc" id="L713">        }catch (e: SQLException) {</span>
+<span class="nc" id="L714">            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.updateFieldError&quot;))</span>
+        }
+<span class="fc" id="L716">    }</span>
+
+    /**
+     * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
+     *
+     * @param content Wiadomość do wyświetlenia
+     * @param type Rodzaj akcji do wykonania
+     */
+    override fun showDialogYesNoMessage(content: String, type: ActionType) {
+<span class="fc" id="L725">        val buttons = listOf(</span>
+<span class="fc" id="L726">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
+<span class="nc bnc" id="L727" title="All 3 branches missed.">                when (type) {</span>
+<span class="nc" id="L728">                    ActionType.EDIT -&gt; wantToEdit = true</span>
+<span class="nc" id="L729">                    ActionType.DELETE -&gt; wantToDelete = true</span>
+                }
+<span class="nc" id="L731">            },</span>
+<span class="fc" id="L732">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
+<span class="nc bnc" id="L733" title="All 3 branches missed.">                when (type) {</span>
+<span class="nc" id="L734">                    ActionType.EDIT -&gt; wantToEdit = false</span>
+<span class="nc" id="L735">                    ActionType.DELETE -&gt; wantToDelete = false</span>
+                }
+<span class="nc" id="L737">            }</span>
+        )
+
+<span class="pc bpc" id="L740" title="1 of 2 branches missed.">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, showFieldsButton.scene.window as Stage, buttons)</span>
+<span class="pc bpc" id="L741" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
+<span class="fc" id="L742">    }</span>
+
+    /**
+     * Metoda usuwająca kierunek kształcenia
+     * @param field Kierunek do usunięcia
+     */
+    override fun deleteField(field: Field) {
+<span class="nc bnc" id="L749" title="All 2 branches missed.">        if (wantToDelete)</span>
+        {
+<span class="nc" id="L751">            try {</span>
+<span class="nc" id="L752">                fieldsModel.deleteField(field)</span>
+<span class="nc bnc" id="L753" title="All 2 branches missed.">                if (fieldsTableView.items.size&gt;1) showFields() else fieldsTableView.items.clear()</span>
+<span class="nc" id="L754">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyDeletedField&quot;))</span>
+<span class="nc" id="L755">            }catch (e: SQLException) {</span>
+<span class="nc" id="L756">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.deleteFieldError&quot;))</span>
+            }
+        }
+<span class="nc" id="L759">    }</span>
+
+    /**
+     * Metoda wywoływana podczas zmiany zakładek przed użytkownika.
+     */
+    override fun onTabsChanged() {
+<span class="nc" id="L765">        fieldsTableView.items.clear()</span>
+<span class="nc" id="L766">        CommonUtils.removeStepDependencies(stepper, fieldNameTextField, shortcutTextField)</span>
+<span class="nc" id="L767">        createSteps()</span>
+<span class="nc" id="L768">        clearBoxes()</span>
+<span class="nc" id="L769">    }</span>
+
+    /**
+     * Metoda czyszcząca kontrolki
+     */
+    override fun clearBoxes()
+    {
+<span class="nc" id="L776">        fieldNameTextField.clear()</span>
+<span class="nc" id="L777">        shortcutTextField.clear()</span>
+<span class="nc" id="L778">        groupNumberComboBoxArray.clear()</span>
+<span class="nc" id="L779">        CommonUtils.clearBox(semChoiceBox)</span>
+<span class="nc" id="L780">        uploadSPNToggle.text=&quot;&quot;</span>
+<span class="nc" id="L781">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

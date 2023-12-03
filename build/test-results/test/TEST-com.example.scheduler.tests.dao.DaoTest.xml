@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.dao.DaoTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:43:04" hostname="DESKTOP-DVH4IG9" time="12.497">
+  <properties/>
+  <testcase name="changeTeacherTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="2.78"/>
+  <testcase name="getFieldIDTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="0.982"/>
+  <testcase name="locationIDTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="0.957"/>
+  <testcase name="changeRoomTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="1.998"/>
+  <testcase name="getTeacherIDTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="1.29"/>
+  <testcase name="getRoomIDTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="0.962"/>
+  <testcase name="changeHourAndRoomTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="1.628"/>
+  <testcase name="canTeacherMoveBetweenClassesTest()" classname="com.example.scheduler.tests.dao.DaoTest" time="1.893"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

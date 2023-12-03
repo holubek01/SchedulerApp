@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXStepper?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane alignment="CENTER" hgap="10.0" stylesheets="@../css/customStyles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scheduler.controller.LocationsModuleController">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" percentWidth="35.0" />
+        <ColumnConstraints halignment="CENTER" />
+      <ColumnConstraints />
+      <ColumnConstraints percentWidth="60.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" />
+    </rowConstraints>
+   <MFXTableView fx:id="locationTableView" footerVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+      <GridPane.margin>
+         <Insets top="60.0" />
+      </GridPane.margin>
+   </MFXTableView>
+   <MFXButton id="customButton" fx:id="showLocationsButton" prefWidth="227.0" text="Wyświetl lokalizacje" GridPane.valignment="TOP" />
+   <MFXStepper fx:id="stepper" maxHeight="300.0" maxWidth="450.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="450.0" spacing="30.0" style="-fx-background-color: white;" GridPane.columnIndex="3">
+      <GridPane.margin>
+         <Insets />
+      </GridPane.margin></MFXStepper>
+   <padding>
+      <Insets bottom="50.0" right="25.0" />
+   </padding>
+</GridPane>

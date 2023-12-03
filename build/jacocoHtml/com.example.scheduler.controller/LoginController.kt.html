@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoginController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">LoginController.kt</span></div><h1>LoginController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+import com.example.scheduler.SchedulerApp
+import com.example.scheduler.models.User
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.MFXButton
+import io.github.palexdev.materialfx.controls.MFXPasswordField
+import io.github.palexdev.materialfx.controls.MFXRectangleToggleNode
+import io.github.palexdev.materialfx.controls.MFXTextField
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import javafx.application.Platform
+import javafx.fxml.FXML
+import javafx.fxml.FXMLLoader
+import javafx.geometry.Pos
+import javafx.scene.control.Label
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
+import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.VBox
+import javafx.stage.Screen
+import javafx.stage.Stage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.sql.SQLException
+import java.util.*
+import kotlin.system.exitProcess
+
+
+/**
+ * Klasa kontrolera obsługująca logowanie użytkownika
+ */
+<span class="fc" id="L40">class LoginController: ILoginController {</span>
+
+    /**
+     * Pole tekstowe do wprowadzania loginu.
+     */
+    @FXML
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    lateinit var loginTextField: MFXTextField</span>
+
+    /**
+     * Pole tekstowe do wprowadzania hasła.
+     */
+    @FXML
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">    lateinit var passwordTextField: MFXPasswordField</span>
+
+    /**
+     * Pole przechowujące etykietę powitalną.
+     */
+    @FXML
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">    lateinit var welcomeLabel: Label</span>
+
+    /**
+     * Pole przechowujące etykietę logowania.
+     */
+    @FXML
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    lateinit var logLabel: Label</span>
+
+    /**
+     * Przycisk typu toggle służący jako przełącznik języka.
+     */
+    @FXML
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">    lateinit var languageToggle: MFXRectangleToggleNode</span>
+
+    /**
+     * Przycisk służący do logowania
+     */
+    @FXML
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">    lateinit var loginButton: MFXButton</span>
+
+<span class="pc bnc" id="L78" title="All 2 branches missed.">    lateinit var stage: Stage</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">    lateinit var root: AnchorPane</span>
+
+    /**
+     * Okno dialogowe pozwalające na zmianę hasła tymczasowego
+     */
+    private lateinit var dialog: MFXStageDialog
+
+    /**
+     * Okno dialogowe pozwalające na ustawienie hasła do bazy danych
+     */
+    private lateinit var dbDialog: MFXStageDialog
+
+    /**
+     * Pole przechowujące aktualny obiekt Locale, decydujący o języku aplikacji - Domyślnie polski
+     */
+<span class="fc" id="L94">    private var currentLocale: Locale = Locale(&quot;pl&quot;, &quot;PL&quot;)</span>
+
+    /**
+     * Pole tekstowe do wprowadzania nowego hasła.
+     */
+<span class="fc" id="L99">    val newPassword = MFXPasswordField()</span>
+
+    /**
+     * Pole tekstowe do wprowadzania powtórzenia nowego hasła.
+     */
+<span class="fc" id="L104">    val newPasswordRepeat = MFXPasswordField()</span>
+
+    /**
+     * Przycisk do ustawiania nowego hasła do bazy danych
+     */
+<span class="fc" id="L109">    private var setNewPasswordButton = MFXButton()</span>
+
+    /**
+     * Maksymalne wymiary okna aplikacji
+     */
+<span class="fc" id="L114">    private val MAX_WINDOW_WIDTH = 1280.0</span>
+<span class="fc" id="L115">    private val MAX_WINDOW_HEIGHT = 860.0</span>
+
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize()
+    {
+<span class="fc" id="L124">        MessageBundle.loadBundle(currentLocale)</span>
+<span class="fc" id="L125">        setActions()</span>
+<span class="fc" id="L126">        setHandlers()</span>
+<span class="fc" id="L127">        setTexts()</span>
+
+<span class="fc" id="L129">        val img = Image(SchedulerApp::class.java.getResourceAsStream(&quot;photos/flagPL.png&quot;))</span>
+<span class="fc" id="L130">        languageToggle.labelTrailingIcon = ImageView(img)</span>
+<span class="fc" id="L131">    }</span>
+
+    /**
+     * Metoda, sprawdzająca, czy hasło do bazy danych istnieje. Jeśli nie istnieje tworzy okno dialogowe do jego podania
+     */
+    override fun checkDBpasswordExists(){
+<span class="fc" id="L137">        val prop = Properties()</span>
+
+<span class="fc" id="L139">        val configFilePath = Paths.get(&quot;&quot;).toAbsolutePath().resolve(&quot;config.properties&quot;)</span>
+
+        //Files.newInputStream(Path.of(&quot;src/main/resources/config.properties&quot;)).use { input -&gt; prop.load(input)}
+<span class="pc" id="L142">        Files.newInputStream(configFilePath).use { input -&gt; prop.load(input)}</span>
+<span class="fc" id="L143">        val pass = prop.getProperty(&quot;db.password&quot;)</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if(pass!! == &quot;&quot;)</span>
+        {
+<span class="nc" id="L146">            val vBox = createDbPasswordDialog(prop)</span>
+<span class="nc" id="L147">            dbDialog = DialogUtils.showCustomDialog(stage, vBox, true) {}</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">            dbDialog.content.stylesheets.add(SchedulerApp::class.java.getResource(&quot;css/customStyles.css&quot;)?.toExternalForm()!!)</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            dbDialog.showAndWait()</span>
+        }
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * Metoda ustawiająca teksty na kontrolkach
+     */
+    override fun setTexts()
+    {
+<span class="fc" id="L158">        welcomeLabel.text = MessageBundle.getMess(&quot;label.welcomeInApp&quot;)</span>
+<span class="fc" id="L159">        logLabel.text = MessageBundle.getMess(&quot;label.logging&quot;)</span>
+<span class="fc" id="L160">        loginTextField.floatingText = MessageBundle.getMess(&quot;label.login&quot;)</span>
+<span class="fc" id="L161">        passwordTextField.floatingText = MessageBundle.getMess(&quot;label.password&quot;)</span>
+<span class="fc" id="L162">        loginButton.text = MessageBundle.getMess(&quot;label.log&quot;)</span>
+<span class="fc" id="L163">    }</span>
+
+    /**
+     * Metoda ustawiająca przycisk Enter jako wowołanie metody onLoginPressed()
+     */
+    override fun setHandlers()
+    {
+<span class="fc" id="L170">        loginTextField.addEventHandler(KeyEvent.KEY_RELEASED) { event -&gt;</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">            if (event.code == KeyCode.ENTER) {</span>
+<span class="nc" id="L172">                onLoginPressed()</span>
+            }
+<span class="nc" id="L174">        }</span>
+
+<span class="fc" id="L176">        passwordTextField.addEventHandler(KeyEvent.KEY_RELEASED) { event -&gt;</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">            if (event.code == KeyCode.ENTER) {</span>
+<span class="nc" id="L178">                onLoginPressed()</span>
+            }
+<span class="nc" id="L180">        }</span>
+
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if (this::stage.isInitialized) stage.setOnCloseRequest {</span>
+<span class="nc" id="L183">            Platform.exit()</span>
+<span class="nc" id="L184">            exitProcess(0)</span>
+        }
+<span class="fc" id="L186">    }</span>
+
+    /**
+     * Metoda ustawiająca akcje na kontrolkach
+     */
+    override fun setActions()
+    {
+<span class="pc" id="L193">        loginButton.setOnAction { onLoginPressed()}</span>
+
+        //zmiana języka
+<span class="fc" id="L196">        languageToggle.setOnMouseClicked {</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">            if (currentLocale == Locale(&quot;pl&quot;, &quot;PL&quot;)) {</span>
+<span class="fc" id="L198">                currentLocale = Locale(&quot;en&quot;, &quot;EN&quot;)</span>
+<span class="fc" id="L199">                languageToggle.text = &quot;English&quot;</span>
+<span class="fc" id="L200">                val img = Image(SchedulerApp::class.java.getResourceAsStream(&quot;photos/flagGB.png&quot;))</span>
+<span class="fc" id="L201">                languageToggle.labelTrailingIcon = ImageView(img)</span>
+            } else {
+<span class="nc" id="L203">                currentLocale = Locale(&quot;pl&quot;, &quot;PL&quot;)</span>
+<span class="nc" id="L204">                languageToggle.text = &quot;Polski&quot;</span>
+<span class="nc" id="L205">                val img = Image(SchedulerApp::class.java.getResourceAsStream(&quot;photos/flagPL.png&quot;))</span>
+<span class="nc" id="L206">                languageToggle.labelTrailingIcon = ImageView(img)</span>
+            }
+
+<span class="fc" id="L209">            MessageBundle.loadBundle(currentLocale)</span>
+<span class="fc" id="L210">            setTexts()</span>
+<span class="fc" id="L211">        }</span>
+<span class="fc" id="L212">    }</span>
+
+    /**
+     * Metoda pozwalająca za załadowanie głównego okna aplikacji
+     */
+    override fun loadNewScene(role: Int) {
+
+<span class="nc" id="L219">        GlobalScope.launch(Dispatchers.JavaFx)</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        {</span>
+            //val loader = ProgressIndicator()
+            //loader.setPrefSize(100.0, 100.0)
+            //loader.layoutX = loginButton.scene.width  - 100
+            //loader.layoutY = loginButton.scene.height - 100
+            //root.children.add(loader)
+
+<span class="nc" id="L227">            val screenBounds: javafx.geometry.Rectangle2D = Screen.getPrimary().bounds</span>
+<span class="nc" id="L228">            val fxmlLoader = FXMLLoader(SchedulerApp::class.java.getResource(&quot;view/directorMain.fxml&quot;))</span>
+<span class="nc" id="L229">            val controller = DirectorController()</span>
+<span class="nc" id="L230">            controller.stage = stage</span>
+<span class="nc" id="L231">            controller.user = loginTextField.text</span>
+<span class="nc" id="L232">            fxmlLoader.setController(controller)</span>
+<span class="nc" id="L233">            val newRoot: AnchorPane = fxmlLoader.load()</span>
+<span class="nc" id="L234">            root.children.setAll(newRoot)</span>
+            //stage.width = screenBounds.width+20
+            //stage.height = screenBounds.height
+
+<span class="nc" id="L238">            stage.width = MAX_WINDOW_WIDTH + 20.0</span>
+<span class="nc" id="L239">            stage.height = MAX_WINDOW_HEIGHT</span>
+
+<span class="nc" id="L241">            stage.maxWidth = MAX_WINDOW_WIDTH + 20.0</span>
+<span class="nc" id="L242">            stage.maxHeight = MAX_WINDOW_HEIGHT</span>
+
+<span class="nc bnc" id="L244" title="All 4 branches missed.">            if (screenBounds.width&lt;=MAX_WINDOW_WIDTH &amp;&amp; screenBounds.height&lt;MAX_WINDOW_HEIGHT)</span>
+            {
+<span class="nc" id="L246">                stage.isMaximized = true</span>
+            }
+
+<span class="nc" id="L249">            stage.x = (screenBounds.width-MAX_WINDOW_WIDTH)/2</span>
+<span class="nc" id="L250">            stage.y = (screenBounds.height-MAX_WINDOW_HEIGHT)/2</span>
+<span class="nc" id="L251">            stage.isResizable = true</span>
+
+<span class="nc" id="L253">            val anch = root.children[0] as AnchorPane</span>
+
+<span class="nc" id="L255">            AnchorPane.setLeftAnchor(anch, 0.0)</span>
+<span class="nc" id="L256">            AnchorPane.setRightAnchor(anch, 0.0)</span>
+<span class="nc" id="L257">            AnchorPane.setTopAnchor(anch, 0.0)</span>
+<span class="nc" id="L258">            AnchorPane.setBottomAnchor(anch, 0.0)</span>
+<span class="nc" id="L259">        }</span>
+<span class="nc" id="L260">    }</span>
+
+    /**
+     * Ustawia ograniczenia na pola tekstowe walidujące poprawność haseł.
+     * @param newPassword Pole do wpisania nowego hasła
+     * @param newPasswordRepeat Pole do wpisania powtórzenia noweg hasła
+     */
+    override fun setConstraints(newPassword: MFXPasswordField, newPasswordRepeat: MFXPasswordField)
+    {
+<span class="fc" id="L269">        newPassword.validator.constraint(ValidatorUtil.createNotEmptyConstraint(newPassword.textProperty(), MessageBundle.getMess(&quot;password.validation.notEmpty&quot;)))</span>
+<span class="fc" id="L270">        newPassword.validator.constraint(ValidatorUtil.createMoreThanFiveLetterConstraint(newPassword.textProperty(), MessageBundle.getMess(&quot;password.validation.moreThan6Letters&quot;)))</span>
+<span class="fc" id="L271">        newPassword.validator.constraint(ValidatorUtil.createContainsDigitConstraint(newPassword.textProperty(), MessageBundle.getMess(&quot;password.validation.containsDigit&quot;)))</span>
+<span class="fc" id="L272">        newPassword.validator.constraint(ValidatorUtil.createContainsBigLetterConstraint(newPassword.textProperty(), MessageBundle.getMess(&quot;password.validation.containsBigLetter&quot;)))</span>
+        //newPassword.validator.constraint(ValidatorUtil.createEqualPasswordConstraint(newPasswordRepeat.textProperty(),newPassword.textProperty(), MessageBundle.getMess(&quot;password.validation.notEqualPasswords&quot;)))
+
+<span class="fc" id="L275">        newPasswordRepeat.validator.constraint(ValidatorUtil.createNotEmptyConstraint(newPasswordRepeat.textProperty(), MessageBundle.getMess(&quot;password.validation.notEmpty&quot;)))</span>
+<span class="fc" id="L276">        newPasswordRepeat.validator.constraint(ValidatorUtil.createEqualPasswordConstraint(newPassword.textProperty(),newPasswordRepeat.textProperty(), MessageBundle.getMess(&quot;password.validation.notEqualPasswords&quot;)))</span>
+<span class="fc" id="L277">    }</span>
+
+
+    /**
+     * Tworzy okno dialogowe do zmiany hasła tymczasowego.
+     *
+     * @param user Obiekt User użytkownika
+     * @param role Rola użytkownika
+     * @return VBox zawierający okno dialogowe do zmiany hasła
+     */
+    override fun createNewPasswordDialog(user: User, role: Int): VBox
+    {
+<span class="fc" id="L289">        val title = Label()</span>
+<span class="fc" id="L290">        title.text = MessageBundle.getMess(&quot;label.passwordChange&quot;)</span>
+<span class="fc" id="L291">        title.styleClass.add(&quot;header-label-white-big&quot;)</span>
+
+<span class="fc" id="L293">        val label = Label()</span>
+<span class="fc" id="L294">        label.text = MessageBundle.getMess(&quot;label.passwordTemporary&quot;)</span>
+<span class="fc" id="L295">        label.styleClass.add(&quot;header-label_white&quot;)</span>
+
+<span class="fc" id="L297">        newPassword.floatingText= MessageBundle.getMess(&quot;label.newPassword&quot;)</span>
+<span class="fc" id="L298">        newPassword.id = &quot;comboWhite&quot;</span>
+<span class="fc" id="L299">        newPassword.prefWidth = 300.0</span>
+
+<span class="fc" id="L301">        newPasswordRepeat.floatingText=MessageBundle.getMess(&quot;label.repeatNewPassword&quot;)</span>
+<span class="fc" id="L302">        newPasswordRepeat.id = &quot;comboWhite&quot;</span>
+<span class="fc" id="L303">        newPasswordRepeat.prefWidth = 300.0</span>
+
+<span class="fc" id="L305">        setNewPasswordButton.text = MessageBundle.getMess(&quot;label.setPassword&quot;)</span>
+<span class="fc" id="L306">        setNewPasswordButton.id = &quot;customButton&quot;</span>
+
+<span class="fc" id="L308">        val errorPassword = ValidationWrapper.createErrorLabel()</span>
+<span class="fc" id="L309">        val errorPasswordRepeat = ValidationWrapper.createErrorLabel()</span>
+
+<span class="fc" id="L311">        setConstraints(newPassword, newPasswordRepeat)</span>
+
+<span class="fc" id="L313">        setNewPasswordButton.setOnAction {</span>
+<span class="nc" id="L314">            setNewPassword(errorPassword, errorPasswordRepeat, user)</span>
+<span class="nc" id="L315">        }</span>
+
+<span class="fc" id="L317">        val vBox = VBox(30.0, title, label, ValidationWrapper.createWrapper(newPassword, errorPassword),ValidationWrapper.createWrapper(newPasswordRepeat, errorPasswordRepeat), setNewPasswordButton)</span>
+<span class="fc" id="L318">        vBox.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L320">        return vBox</span>
+    }
+
+    /**
+     * Metoda, ustawiająca nowe hasło użytkownika i weryfikująca jego zgodność z normami
+     */
+    fun setNewPassword(errorPassword: Label, errorPasswordRepeat: Label, user: User)
+    {
+<span class="fc" id="L328">        ValidationWrapper.validationAction(newPassword, errorPassword)</span>
+<span class="fc" id="L329">        ValidationWrapper.validationAction(newPasswordRepeat, errorPasswordRepeat)</span>
+
+<span class="pc bpc" id="L331" title="2 of 8 branches missed.">        if (errorPassword.text.isEmpty() &amp;&amp; errorPasswordRepeat.text.isEmpty())</span>
+        {
+<span class="nc" id="L333">            try {</span>
+<span class="nc" id="L334">                user.changeTempPassword(newPassword.text)</span>
+<span class="nc" id="L335">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.password.correctlyUpdated&quot;))</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">                dialog.close()</span>
+<span class="nc" id="L337">                loginTextField.clear()</span>
+<span class="nc" id="L338">                passwordTextField.clear()</span>
+<span class="nc" id="L339">            }catch (e: SQLException) {</span>
+<span class="nc" id="L340">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.changeTempPassError&quot;))</span>
+            }
+        }
+<span class="fc" id="L343">    }</span>
+
+
+    /**
+     * Metoda wywoływana po wciśnięciu przycisku logowania, identyfikująca użytkownika.
+     */
+    override fun onLoginPressed() {
+<span class="fc" id="L350">        checkDBpasswordExists()</span>
+
+<span class="fc" id="L352">        val login = loginTextField.text</span>
+<span class="fc" id="L353">        val password = passwordTextField.text</span>
+
+<span class="fc" id="L355">        val user = User(login,password)</span>
+<span class="pc bpc" id="L356" title="1 of 4 branches missed.">        if (user.username.isBlank() || user.password.isBlank()){</span>
+<span class="fc" id="L357">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.loggingError&quot;), MessageBundle.getMess(&quot;warning.noPasswordOrUsername&quot;))</span>
+        }
+        else
+        {
+<span class="pc bpc" id="L361" title="1 of 2 branches missed.">            when(val role = user.authenticateUser())</span>
+            {
+                1,2,3-&gt;
+                {
+<span class="nc" id="L365">                    val isPassTemp = user.isPasswordTemp()</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">                    if (!isPassTemp) loadNewScene(user.authenticateUser())</span>
+                    else
+                    {
+<span class="nc" id="L369">                        val vBox = createNewPasswordDialog(user, role)</span>
+<span class="nc" id="L370">                        dialog = DialogUtils.showCustomDialog(stage, vBox, true) {}</span>
+<span class="nc bnc" id="L371" title="All 4 branches missed.">                        dialog.content.stylesheets.add(SchedulerApp::class.java.getResource(&quot;css/customStyles.css&quot;)?.toExternalForm()!!)</span>
+<span class="nc bnc" id="L372" title="All 2 branches missed.">                        dialog.showAndWait()</span>
+                    }
+                }
+<span class="fc" id="L375">                else -&gt; MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.loggingError&quot;), MessageBundle.getMess(&quot;warning.incorrectLoginOrPassword&quot;))</span>
+            }
+        }
+<span class="fc" id="L378">    }</span>
+
+    /**
+     * Tworzy okno dialogowe do ustawienia hasła do serwera bazy danych.
+     * @param prop Plik konfiguracyjny z danymi
+     *
+     * @return VBox zawierający okno dialogowe do ustawienia hasła do bazy
+     */
+    fun createDbPasswordDialog(prop: Properties): VBox
+    {
+<span class="fc" id="L388">        val dBPasswordTextField = MFXPasswordField()</span>
+<span class="fc" id="L389">        val title = Label()</span>
+<span class="fc" id="L390">        title.text = MessageBundle.getMess(&quot;label.firstAppUse&quot;)</span>
+<span class="fc" id="L391">        title.styleClass.add(&quot;header-label-white-big&quot;)</span>
+
+<span class="fc" id="L393">        val label = Label()</span>
+<span class="fc" id="L394">        label.text = MessageBundle.getMess(&quot;label.shouldEnterPassword&quot;)</span>
+<span class="fc" id="L395">        label.styleClass.add(&quot;header-label_white&quot;)</span>
+
+<span class="fc" id="L397">        dBPasswordTextField.floatingText= MessageBundle.getMess(&quot;label.password&quot;)</span>
+<span class="fc" id="L398">        dBPasswordTextField.id = &quot;comboWhite&quot;</span>
+<span class="fc" id="L399">        dBPasswordTextField.prefWidth = 300.0</span>
+
+<span class="fc" id="L401">        setNewPasswordButton.text = MessageBundle.getMess(&quot;label.setPassword&quot;)</span>
+<span class="fc" id="L402">        setNewPasswordButton.id = &quot;customButton&quot;</span>
+
+<span class="fc" id="L404">        setNewPasswordButton.setOnAction {</span>
+            //Sprawdź czy połączy się z bazą danych
+<span class="nc" id="L406">            val user = User(prop.getProperty(&quot;db.username&quot;), dBPasswordTextField.text)</span>
+<span class="nc" id="L407">            val isPassOk = user.testDbPassword(prop.getProperty(&quot;db.name&quot;))</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">            if (isPassOk)</span>
+            {
+<span class="nc" id="L410">                prop.setProperty(&quot;db.password&quot;, dBPasswordTextField.text)</span>
+                //val outputPath = &quot;src/main/resources/config.properties&quot;
+<span class="nc" id="L412">                val outputPath = Paths.get(&quot;&quot;).toAbsolutePath().resolve(&quot;config.properties&quot;).toString()</span>
+
+<span class="nc" id="L414">                try {</span>
+<span class="nc" id="L415">                    FileOutputStream(outputPath).use { output -&gt;</span>
+<span class="nc" id="L416">                        prop.store(output, null)</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">                        dbDialog.close()</span>
+<span class="nc" id="L418">                    }</span>
+<span class="nc" id="L419">                } catch (e: IOException) {</span>
+<span class="nc" id="L420">                    e.printStackTrace()</span>
+                }
+            }
+            else{
+<span class="nc" id="L424">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.dbConnectionError&quot;), MessageBundle.getMess(&quot;warning.invalidDBPassword&quot;))</span>
+            }
+<span class="nc" id="L426">        }</span>
+
+<span class="fc" id="L428">        val vBox = VBox(30.0, title, label, dBPasswordTextField, setNewPasswordButton)</span>
+<span class="fc" id="L429">        vBox.alignment = Pos.CENTER</span>
+
+<span class="fc" id="L431">        return vBox</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

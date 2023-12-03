@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.Utils.ValidatorUtilTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:41:39" hostname="DESKTOP-DVH4IG9" time="5.669">
+  <properties/>
+  <testcase name="testCreateNotEmptyConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.378"/>
+  <testcase name="createMoreThanOneLetterConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.364"/>
+  <testcase name="createPostalCodeConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.4"/>
+  <testcase name="createFirstLetterBigConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.357"/>
+  <testcase name="testCreateOnlyBigLettersConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.351"/>
+  <testcase name="testCreateNoSpecialCharsExceptDigitsConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.347"/>
+  <testcase name="createNoLongerThan30LettersConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.339"/>
+  <testcase name="createNoLongerThanSixLettersConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.341"/>
+  <testcase name="createNoSpecialCharsConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.342"/>
+  <testcase name="testCreateBigLetterConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.357"/>
+  <testcase name="testCreateExactlyNineDigitConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.357"/>
+  <testcase name="testCreateContainsDigitConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.343"/>
+  <testcase name="createOnlyDigitsAllowedConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.351"/>
+  <testcase name="createIncorrectEmailConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.338"/>
+  <testcase name="testCreateEqualPasswordsConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.344"/>
+  <testcase name="createLettersSmallExceptFirstConstraint()" classname="com.example.scheduler.tests.Utils.ValidatorUtilTest" time="0.345"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

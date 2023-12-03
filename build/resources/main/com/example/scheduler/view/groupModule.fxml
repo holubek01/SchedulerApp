@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXListView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane alignment="CENTER" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scheduler.controller.GroupsModuleController">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" percentWidth="50.0" />
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" />
+    </rowConstraints>
+   <VBox alignment="CENTER" spacing="15.0">
+      <children>
+         <MFXComboBox id="comboWhite" fx:id="fieldChoiceBox" floatingText="Kierunek" maxWidth="1.7976931348623157E308" />
+         <MFXComboBox id="comboWhite" fx:id="semesterChoiceBox" floatingText="Semestr" maxWidth="1.7976931348623157E308" />
+         <HBox maxWidth="1.7976931348623157E308" prefHeight="45.0" prefWidth="300.0" spacing="15.0">
+            <children>
+                <MFXButton id="customButton" fx:id="showGroupsButton" alignment="CENTER" buttonType="RAISED" depthLevel="LEVEL1" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" text="Wyświetl grupy" />
+               <MFXButton id="customButton" fx:id="addGroupButton" alignment="CENTER" buttonType="RAISED" depthLevel="LEVEL1" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="250.0" text="Dodaj grupę" />
+            </children>
+         </HBox>
+         <MFXListView fx:id="groupsListView" depthLevel="LEVEL0" maxWidth="1.7976931348623157E308" prefWidth="300.0" styleClass="customList" stylesheets="@../css/ListViews.css" />
+      </children>
+   </VBox>
+    <padding>
+        <Insets bottom="50.0" right="25.0" />
+    </padding>
+</GridPane>

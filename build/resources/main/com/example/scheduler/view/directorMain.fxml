@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" stylesheets="@../css/customStyles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="800.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="TOP_RIGHT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Label fx:id="activePlanLabel" prefHeight="40.0" text="Aktywny plan: " textAlignment="CENTER" textFill="#f6f3f3">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Label fx:id="userLabel" alignment="CENTER_RIGHT" prefHeight="40.0" text="Użytkownik: Tomek" textFill="#f6f3f3">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Label>
+                  <MFXButton id="customButton" fx:id="logoutButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="106.0" text="Wyloguj">
+                     <HBox.margin>
+                        <Insets bottom="10.0" />
+                     </HBox.margin></MFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <MFXScrollPane prefHeight="800.0" styleClass="root">
+               <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="720.0" prefWidth="1275.0" styleClass="root" VBox.vgrow="ALWAYS">
+                  <children>
+                     <TabPane fx:id="tabPane" maxHeight="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1200.0" styleClass="CustomTabPane" tabClosingPolicy="UNAVAILABLE">
+                        <tabs>
+                           <Tab fx:id="createPlanTab" text="Tworzenie planu">
+                              <content>
+                                 <AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" prefHeight="400.0" prefWidth="1250.0">
+                                    <children>
+                                       <VBox alignment="CENTER" spacing="20.0">
+                                          <children>
+                                             <VBox prefHeight="145.0" prefWidth="206.0" spacing="20.0">
+                                                <children>
+                                                   <MFXComboBox id="comboWhite" fx:id="getPlanChoiceBox" alignment="CENTER" floatingText="Plan" maxWidth="1.7976931348623157E308" prefHeight="43.0" prefWidth="143.0" selectable="true" />
+                                                   <MFXButton id="customButton" fx:id="getPlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="150.0" text="Przywróć plan">
+                                                      <font>
+                                                         <Font name="System Bold" size="18.0" />
+                                                      </font>
+                                                   </MFXButton>
+                                                </children>
+                                             </VBox>
+                                             <MFXButton id="customButton" fx:id="savePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" text="Zapisz plan">
+                                                <font>
+                                                   <Font name="System Bold" size="18.0" />
+                                                </font>
+                                             </MFXButton>
+                                             <MFXButton id="customButton" fx:id="closePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="150.0" text="Zamknij plan">
+                                                <font>
+                                                   <Font name="System Bold" size="18.0" />
+                                                </font>
+                                             </MFXButton>
+                                             <MFXButton id="customButton" fx:id="deletePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="206.0" text="Usuń aktualny plan">
+                                                <font>
+                                                   <Font name="System Bold" size="18.0" />
+                                                </font>
+                                             </MFXButton>
+                                          </children>
+                                          <padding>
+                                             <Insets left="20.0" top="60.0" />
+                                          </padding>
+                                       </VBox>
+                                       <VBox alignment="CENTER" layoutX="227.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="500.0" prefHeight="637.0" prefWidth="1024.0" spacing="18.0">
+                                          <padding>
+                                             <Insets right="50.0" top="50.0" />
+                                          </padding>
+                                          <children>
+                                             <MFXDatePicker id="comboGray" fx:id="datepicker" editable="false" prefHeight="40.0" prefWidth="420.0" promptText="Wybierz datę" />
+                                             <MFXComboBox id="comboWhite" fx:id="fieldOfStudyChoiceBox" floatingText="Kierunek" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+                                             <MFXComboBox id="comboPurple" fx:id="groupChoiceBox" floatingText="Odział" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+                                             <MFXComboBox id="comboWhite" fx:id="subjectChoiceBox" floatingText="Przedmiot" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+                                             <MFXComboBox id="comboPurple" fx:id="locationChoiceBox" floatingText="Lokalizacja" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+                                             <MFXComboBox id="comboWhite" fx:id="hourChoiceBox" allowEdit="true" floatingText="Godzina" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+                                             <MFXFilterComboBox id="comboPurple" fx:id="roomChoicebox" floatingText="Sala" prefWidth="420.0" />
+                                             <MFXFilterComboBox id="comboWhite" fx:id="teacherChoiceBox" floatingText="Nauczyciel" prefWidth="420.0" />
+                                             <MFXButton id="customButton" fx:id="addClassesButton" buttonType="RAISED" depthLevel="LEVEL1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="150.0" text="Dodaj">
+                                                <font>
+                                                   <Font name="System Bold" size="18.0" />
+                                                </font>
+                                             </MFXButton>
+                                          </children>
+                                       </VBox>
+                                    </children>
+                                    <stylesheets>
+                                       <URL value="@../css/customStyles.css" />
+                                    </stylesheets>
+                                 </AnchorPane>
+                              </content></Tab>
+                           <Tab fx:id="showPlanTab" text="Pokaż plan">
+                              <content>
+                                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="700.0" prefWidth="1300.0">
+                                    <children>
+                                       <VBox alignment="TOP_CENTER" layoutX="-3.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <children>
+                                             <HBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="700.0" spacing="15.0">
+                                                <children>
+                                                   <MFXFilterComboBox id="comboPurple" fx:id="fieldOfStudyChoiceBox1" floatingText="Wybierz kierunek" prefHeight="40.0" prefWidth="200.0" />
+                                                   <MFXFilterComboBox id="comboPurple" fx:id="groupChoiceBox1" floatingText="Wybierz grupę" prefHeight="40.0" prefWidth="150.0">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXFilterComboBox>
+                                                   <MFXComboBox id="comboPurple" fx:id="dayChoiceBoxGroup" floatingText="Wybierz dzień" prefHeight="40.0" prefWidth="150.0">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXComboBox>
+                                                   <MFXButton id="customButton" fx:id="showPlanButtonGroup" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="120.0" text="Pokaż plan">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXButton>
+                                                   <MFXButton id="customButton" fx:id="exportGroupPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="300.0" text="Exportuj plan grupy">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXButton>
+                                                   <MFXButton id="customButton" fx:id="exportPlansForAllGroups" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="230.0" text="Exportuj plany dla grup" />
+                                                </children>
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
+                                             </HBox>
+                                             <HBox alignment="CENTER" prefWidth="200.0" spacing="15.0">
+                                                <children>
+                                                   <MFXFilterComboBox id="comboPurple" fx:id="teacherChoiceBox1" floatingText="Wybierz nauczyciela" prefHeight="40.0" prefWidth="250.0" />
+                                                   <MFXComboBox id="comboPurple" fx:id="dayChoiceBoxTeacher" floatingText="Wybierz dzień" prefHeight="40.0" prefWidth="150.0">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXComboBox>
+                                                   <MFXButton id="customButton" fx:id="showPlanButtonTeacher" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="120.0" text="Pokaż plan">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXButton>
+                                                   <MFXButton id="customButton" fx:id="exportTeacherPlanButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="300.0" text="Exportuj plan nauczyciela">
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
+                                                   </MFXButton>
+                                                   <MFXButton id="customButton" fx:id="exportPlansForAllTeachers" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="271.0" text="Exportuj plany dla nauczycieli" />
+                                                </children>
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
+                                             </HBox>
+                                             <MFXTableView fx:id="planTableView" footerVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="500.0" />
+                                          </children>
+                                          <padding>
+                                             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                          </padding>
+                                       </VBox>
+                                    </children>
+                                 </AnchorPane>
+                              </content></Tab>
+                           <Tab fx:id="showPlanForRoomsTab" text="Plan sale" />
+                           <Tab fx:id="adminDashboard" text="Panel admina" />
+                        </tabs>
+                        <VBox.margin>
+                           <Insets top="10.0" />
+                        </VBox.margin>
+                     </TabPane>
+                  </children>
+               </VBox>
+            </MFXScrollPane>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

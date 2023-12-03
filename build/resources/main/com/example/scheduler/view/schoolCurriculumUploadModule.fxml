@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/customStyles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scheduler.controller.SchoolCurriculumUploaderController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="208.0" prefWidth="1000.0" spacing="25.0">
+               <children>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="200.0" spacing="30.0">
+                     <children>
+                        <MFXButton id="customButton" fx:id="chooseFilesButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="143.0" text="Wybierz pliki" />
+                        <MFXButton id="customButton" fx:id="uploadSPNsButton" buttonType="RAISED" depthLevel="LEVEL1" prefHeight="40.0" prefWidth="143.0" text="Załaduj plany" />
+                     </children>
+                  </VBox>
+                  <MFXListView fx:id="chosenFilesListView" depthLevel="LEVEL0" maxHeight="1.7976931348623157E308" prefHeight="208.0" prefWidth="581.0" />
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <Label fx:id="label" prefHeight="31.0" styleClass="header-label_white" text="Wzór pliku Excel ze szkolnym planem nauczania">
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </Label>
+            <ImageView fx:id="spnExampleImage" fitHeight="350.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

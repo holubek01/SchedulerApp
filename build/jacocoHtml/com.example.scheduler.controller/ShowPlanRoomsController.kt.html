@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShowPlanRoomsController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">ShowPlanRoomsController.kt</span></div><h1>ShowPlanRoomsController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+import com.example.scheduler.controller.observers.LocationObserver
+import com.example.scheduler.controller.observers.TabsObserver
+import com.example.scheduler.models.LocationsModel
+import com.example.scheduler.models.PlansModel
+import com.example.scheduler.models.RoomsModel
+import com.example.scheduler.objects.PlanForRooms
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.MFXButton
+import io.github.palexdev.materialfx.controls.MFXComboBox
+import io.github.palexdev.materialfx.controls.MFXTableColumn
+import io.github.palexdev.materialfx.controls.MFXTableView
+import io.github.palexdev.materialfx.controls.cell.MFXTableRowCell
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import io.github.palexdev.materialfx.filter.StringFilter
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.fxml.FXML
+import javafx.stage.Stage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFSheet
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.function.Function
+
+
+/**
+ * Klasa kontrolera do wyświetlania i eksportowania planów dla sal
+ */
+<span class="fc" id="L38">class ShowPlanRoomsController: IShowPlanRoomsController, LocationObserver, TabsObserver{</span>
+
+    /**
+     * Tabela służąca do wyświetlania planu dla sal.
+     */
+    @FXML
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">    lateinit var planTableView: MFXTableView&lt;PlanForRooms&gt;</span>
+
+    /**
+     * Przycisk służący do wyświetlania planu dla sal.
+     */
+    @FXML
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">    lateinit var showPlanButton: MFXButton</span>
+
+    /**
+     * Przycisk służący do wykonywania eksportu planu dla sal.
+     */
+    @FXML
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">    lateinit var exportPlanButton: MFXButton</span>
+
+    /**
+     * Kontrolka zawierająca listę lokalizacji
+     */
+    @FXML
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">    lateinit var locationChoiceBox: MFXComboBox&lt;String&gt;</span>
+
+    /**
+     * Flaga informująca chęci eksportowania planu dla sal.
+     */
+<span class="fc" id="L67">    var wantToExport = false</span>
+
+    /**
+     * Pomocnicze okno dialogowe.
+     */
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">    lateinit var dialog: MFXStageDialog</span>
+
+    /**
+     * Scena aplikacji
+     */
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">    lateinit var stage: Stage</span>
+
+<span class="pc" id="L79">    val locationsModel = LocationsModel()</span>
+<span class="pc" id="L80">    val roomsModel = RoomsModel()</span>
+<span class="pc" id="L81">    val plansModel = PlansModel()</span>
+
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize() {
+<span class="fc" id="L89">        TabObserver.addObserver(this)</span>
+<span class="fc" id="L90">        LocationsModel.addObserver(this)</span>
+<span class="fc" id="L91">        setTexts()</span>
+<span class="fc" id="L92">        setActions()</span>
+<span class="fc" id="L93">        exportPlanButton.isDisable = true</span>
+<span class="fc" id="L94">        locationChoiceBox.items = locationsModel.getLocationsNames()</span>
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Metoda ustawiająca teskty dla kontrolek
+     */
+    override fun setTexts()
+    {
+<span class="fc" id="L102">        locationChoiceBox.floatingText = MessageBundle.getMess(&quot;label.chooseLocation&quot;)</span>
+<span class="fc" id="L103">        showPlanButton.text = MessageBundle.getMess(&quot;label.showPlan&quot;)</span>
+<span class="fc" id="L104">        exportPlanButton.text = MessageBundle.getMess(&quot;label.exportPlan&quot;)</span>
+<span class="fc" id="L105">    }</span>
+
+
+    /**
+     * Metoda tworząca i konfigurująca tabelę z zajęciami (plan).
+     *
+     * @param rooms     Lista sal w wybranej lokalizacji
+     */
+    override fun setupTable(rooms: ObservableList&lt;String&gt;) {
+<span class="fc" id="L114">        val columns: ObservableList&lt;MFXTableColumn&lt;PlanForRooms&gt;&gt; = FXCollections.observableArrayList()</span>
+<span class="pc" id="L115">        val dateColumn: MFXTableColumn&lt;PlanForRooms&gt; = MFXTableColumn(MessageBundle.getMess(&quot;label.day&quot;), false, Comparator.comparing(PlanForRooms::date))</span>
+<span class="pc" id="L116">        val hourColumn: MFXTableColumn&lt;PlanForRooms&gt; = MFXTableColumn(MessageBundle.getMess(&quot;label.hour&quot;), false, Comparator.comparing(PlanForRooms::hour))</span>
+
+        //Pobierz liste sal i zrób z nich kolumny
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        for(room in rooms)</span>
+        {
+<span class="fc" id="L121">            columns.add(MFXTableColumn(room.toString(), true))</span>
+        }
+
+<span class="fc" id="L124">        dateColumn.rowCellFactory = Function&lt;PlanForRooms, MFXTableRowCell&lt;PlanForRooms?, *&gt;&gt;</span>
+        {
+<span class="fc" id="L126">            MFXTableRowCell&lt;PlanForRooms?, Any?&gt;(PlanForRooms::date)</span>
+        }
+
+<span class="fc" id="L129">        hourColumn.rowCellFactory = Function&lt;PlanForRooms, MFXTableRowCell&lt;PlanForRooms?, *&gt;&gt;</span>
+        {
+<span class="fc" id="L131">            MFXTableRowCell&lt;PlanForRooms?, Any?&gt;(PlanForRooms::hour)</span>
+        }
+
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        for ((counter, column) in columns.withIndex()) {</span>
+<span class="fc" id="L136">            column.rowCellFactory = Function {</span>
+<span class="fc" id="L137">                val cell = MFXTableRowCell&lt;PlanForRooms, Any?&gt; { item -&gt;</span>
+<span class="pc bpc" id="L138" title="2 of 4 branches missed.">                    item?.rooms?.getOrNull(counter)</span>
+                }
+<span class="fc" id="L140">                cell</span>
+            }
+        }
+
+        //Filtry
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (planTableView.filters.size&gt;0) planTableView.filters.clear()</span>
+<span class="fc" id="L146">        planTableView.filters.addAll(</span>
+<span class="pc" id="L147">            StringFilter(MessageBundle.getMess(&quot;label.hour&quot;), PlanForRooms::hour),</span>
+<span class="pc" id="L148">            StringFilter(MessageBundle.getMess(&quot;label.day&quot;)) { planForRooms -&gt; planForRooms.date.toString() }</span>
+        )
+
+        //Filtry
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for ((index, room) in rooms.withIndex())</span>
+        {
+<span class="pc" id="L154">            planTableView.filters.add(StringFilter(room) { plan:PlanForRooms -&gt; plan.rooms[index] })</span>
+        }
+
+
+<span class="fc" id="L158">        planTableView.tableColumns.addAll(dateColumn, hourColumn)</span>
+<span class="fc" id="L159">        planTableView.tableColumns.addAll(columns)</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        for (i in 0 until planTableView.tableColumns.size) {</span>
+<span class="fc" id="L162">            planTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+        }
+
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        if (rooms.size==1) planTableView.tableColumns[2].minWidth = 1000.0</span>
+<span class="fc" id="L166">        TableRowStyler.setTableStyle(planTableView)</span>
+<span class="fc" id="L167">        planTableView.isFooterVisible = true</span>
+<span class="fc" id="L168">    }</span>
+
+    /**
+     * Ustawia akcje dla kontrolek
+     */
+    fun setActions()
+    {
+<span class="fc" id="L175">        exportPlanButton.setOnAction {</span>
+<span class="nc" id="L176">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.planForRooms.askBeforeExport&quot;))</span>
+<span class="nc" id="L177">            exportPlan() }</span>
+
+<span class="pc" id="L179">        showPlanButton.setOnAction { showPlan() }</span>
+<span class="fc" id="L180">    }</span>
+
+
+    /**
+     * Metoda do wyświetlania planu zajęć dla sal
+     */
+    override fun showPlan() {
+<span class="fc" id="L187">        exportPlanButton.isDisable = true</span>
+
+<span class="fc" id="L189">        planTableView.items.clear()</span>
+<span class="fc" id="L190">        planTableView.tableColumns.clear()</span>
+
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if (locationChoiceBox.value != null)</span>
+        {
+<span class="fc" id="L194">            val roomNames = roomsModel.getRooms(locationChoiceBox.value).map { it.roomName }.let { roomNamesList -&gt;</span>
+<span class="fc" id="L195">                FXCollections.observableArrayList(roomNamesList)</span>
+            }
+<span class="fc" id="L197">            setupTable(roomNames)</span>
+
+            //pobieranie planu dla lokalizacji
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            val plan = if (locationChoiceBox.value!=MessageBundle.getMess(&quot;label.platform&quot;)) plansModel.getPlan(locationChoiceBox.value, roomNames)</span>
+<span class="fc" id="L201">            else plansModel.getPlanForPlatform()</span>
+
+<span class="fc" id="L203">            planTableView.items = plan</span>
+
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">            if (plan.isEmpty())</span>
+            {
+<span class="nc" id="L207">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.noPlanForLocation&quot;))</span>
+<span class="nc" id="L208">                planTableView.items.clear()</span>
+            }
+            else
+            {
+<span class="fc" id="L212">                exportPlanButton.isDisable = false</span>
+            }
+        }
+        else
+        {
+<span class="nc" id="L217">            exportPlanButton.isDisable = true</span>
+<span class="nc" id="L218">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.warning&quot;), MessageBundle.getMess(&quot;warning.noLocation&quot;))</span>
+        }
+<span class="fc" id="L220">    }</span>
+
+
+    /**
+     * Metoda do wypełniania tabeli w pliku Excel
+     * @param sheet Arkusz, w którym ma zostać wypełniona tabela.
+     * @param cellStyle Styl komórki w pliku Excel.
+     */
+    override fun fillTable(sheet: XSSFSheet, cellStyle: XSSFCellStyle) {
+<span class="fc" id="L229">        val startRow = 3</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for ((rowIndex, locationModel) in planTableView.items.withIndex()) {</span>
+<span class="fc" id="L231">            val row = sheet.createRow(rowIndex + startRow + 1)</span>
+<span class="fc" id="L232">            row.createCell(1).setCellValue(locationModel.date.toString())</span>
+<span class="fc" id="L233">            row.createCell(2).setCellValue(locationModel.hour)</span>
+
+<span class="fc" id="L235">            row.getCell(1).cellStyle = cellStyle</span>
+<span class="fc" id="L236">            row.getCell(2).cellStyle = cellStyle</span>
+
+<span class="fc bfc" id="L238" title="All 2 branches covered.">            for ((columnIndex, room) in locationModel.rooms.withIndex()) {</span>
+<span class="fc" id="L239">                row.createCell(columnIndex + 3).setCellValue(room)</span>
+<span class="fc" id="L240">                row.getCell(columnIndex+3).cellStyle = cellStyle</span>
+            }
+        }
+<span class="fc" id="L243">    }</span>
+
+    /**
+     * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
+     *
+     * @param content Wiadomość do wyświetlenia.
+     */
+    fun showDialogYesNoMessage(content: String) {
+
+<span class="fc" id="L252">        val buttons = listOf(</span>
+<span class="fc" id="L253">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
+<span class="nc" id="L254">               wantToExport = true</span>
+<span class="nc" id="L255">            },</span>
+<span class="fc" id="L256">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
+<span class="nc" id="L257">                wantToExport = false</span>
+<span class="nc" id="L258">            }</span>
+        )
+
+<span class="fc" id="L261">        dialog = DialogUtils.showMessageDialogWithButtons(content, stage, buttons)</span>
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
+<span class="fc" id="L263">    }</span>
+
+    /**
+     * Metoda do eksportowania planu dla sal.
+     */
+    override fun exportPlan() {
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">        GlobalScope.launch(Dispatchers.JavaFx) {</span>
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.noPlanForLocation&quot;))</span>
+            else
+            {
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">                if (wantToExport)</span>
+                {
+<span class="fc" id="L275">                    var myWorkBook: XSSFWorkbook? = null</span>
+<span class="fc" id="L276">                    var fos: FileOutputStream? = null</span>
+<span class="fc" id="L277">                    val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L278">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.locations.path&quot;)</span>
+<span class="fc" id="L279">                    println(path)</span>
+
+<span class="fc" id="L281">                    val filePath = &quot;$path/sale${locationChoiceBox.value}.xlsx&quot;</span>
+<span class="fc" id="L282">                    val folder = File(path)</span>
+
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+
+<span class="fc" id="L286">                    try {</span>
+<span class="fc" id="L287">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L288">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="fc" id="L289">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+<span class="fc" id="L290">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+
+<span class="fc" id="L292">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+
+<span class="fc" id="L294">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, locationChoiceBox.value, planTableView.tableColumns.size)</span>
+<span class="fc" id="L295">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="fc" id="L296">                        fillTable(sheet, cellStyle!!)</span>
+<span class="fc" id="L297">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+
+<span class="fc" id="L299">                        fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L300">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.planForRooms.correctlyExported&quot;))</span>
+<span class="fc" id="L301">                        myWorkBook.write(fos)</span>
+                    }
+<span class="nc" id="L303">                    catch (e: IOException) {</span>
+<span class="nc" id="L304">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+                    }
+                    finally {
+<span class="pc bpc" id="L307" title="3 of 4 branches missed.">                        myWorkBook?.close()</span>
+<span class="pc bnc" id="L308" title="All 2 branches missed.">                        fos?.close()</span>
+<span class="fc" id="L309">                    }</span>
+
+                }
+            }
+<span class="pc" id="L313">        }</span>
+<span class="fc" id="L314">    }</span>
+
+    /**
+     * Metoda wywoływana po zmianie lokalizacji w bazie danych (dodanie, usunięcie lub edycja lokalizacji).
+     */
+    override fun onLocationsChanged() {
+<span class="nc" id="L320">        locationChoiceBox.items = locationsModel.getLocationsNames()</span>
+<span class="nc" id="L321">    }</span>
+
+    /**
+     * Metoda wywoływana po zmianie zakładek - czyści kontrolki
+     */
+    override fun onTabsChanged() {
+<span class="nc" id="L327">        exportPlanButton.isDisable = true</span>
+<span class="nc" id="L328">        planTableView.items.clear()</span>
+<span class="nc" id="L329">        planTableView.tableColumns.clear()</span>
+<span class="nc" id="L330">        CommonUtils.clearBox(locationChoiceBox)</span>
+<span class="nc" id="L331">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXStepper?>
+<?import io.github.palexdev.materialfx.controls.MFXTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane alignment="CENTER" hgap="10.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.scheduler.controller.RoomModuleController">
+    <columnConstraints>
+        <ColumnConstraints halignment="CENTER" percentWidth="25.0" />
+        <ColumnConstraints halignment="CENTER" />
+        <ColumnConstraints />
+        <ColumnConstraints percentWidth="60.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" />
+    </rowConstraints>
+   <VBox alignment="CENTER" spacing="15.0">
+      <children>
+         <MFXComboBox id="comboWhite" fx:id="locationChoiceBox" alignment="TOP_LEFT" prefWidth="200.0" />
+          <MFXButton id="customButton" fx:id="showRoomsButton" alignment="CENTER" buttonType="RAISED" depthLevel="LEVEL1" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="200.0" text="Wyświetl sale" />
+          <MFXTableView fx:id="roomsTableView" footerVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="491.0" prefWidth="193.0" style="-fx-background-color: #e5e0e0;" />
+      </children>
+   </VBox>
+    <MFXStepper fx:id="stepper" maxHeight="300.0" maxWidth="400.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: white;" GridPane.columnIndex="3">
+        <GridPane.margin>
+            <Insets />
+        </GridPane.margin></MFXStepper>
+    <padding>
+        <Insets bottom="50.0" right="25.0" />
+    </padding>
+</GridPane>

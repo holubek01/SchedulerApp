@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlanDAOImpl.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.db.dao</a> &gt; <span class="el_source">PlanDAOImpl.kt</span></div><h1>PlanDAOImpl.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.db.dao
+
+import com.example.scheduler.db.DBConnection
+import com.example.scheduler.db.DBQueryExecutor
+import com.example.scheduler.models.ClassesToRead
+import com.example.scheduler.objects.PlanForRooms
+import com.example.scheduler.utils.CommonUtils
+import com.example.scheduler.utils.EnglishDayConverter
+import com.example.scheduler.utils.MessageBundle
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import java.sql.SQLException
+import java.time.LocalDate
+import java.util.Locale
+
+/**
+ * Implementacja interfejsu `PlanDAO` do obsługi operacji w bazie danych dla planów
+ */
+<span class="fc" id="L19">class PlanDAOImpl:PlanDAO {</span>
+
+    /**
+     * Usuwa plan o podanej nazwie (tabela w bazie danych) oraz tabelę z odpowiadającymi mu
+     * godzinami jakie zostały do ułożenia pełnego planu.
+     *
+     * @param planName      Nazwa planu do usunięcia.
+     * @param hoursLeftName Nazwa tabeli z godzinami, które pozostały.
+     */
+    @Throws(SQLException::class)
+    override fun deletePlan(planName: String, hoursLeftName: String) {
+<span class="fc" id="L30">        val query = &quot;{ CALL deletePlan(?,?) }&quot;</span>
+<span class="fc" id="L31">        DBQueryExecutor.executePreparedStatement(query,planName, hoursLeftName)</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Pobiera listę nazw wszystkich istniejących planów w bazie danych.
+     *
+     * @return Lista istniejących planów.
+     */
+    override fun getAllPlans(): ObservableList&lt;String&gt; {
+<span class="fc" id="L40">        val query= &quot;SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'plan_%' AND table_schema = DATABASE();&quot;</span>
+<span class="fc" id="L41">        return DBQueryExecutor.executeQuery(query){ resultSet -&gt; resultSet.getString(1) }</span>
+    }
+
+    /**
+     * Pobiera maksymalną datę z tabeli 'plan'.
+     *
+     * @return Maksymalna data z tabeli 'plan' lub LocalDate.MIN, jeśli tabela jest pusta.
+     */
+    override fun getMaxDateFromTable(): LocalDate {
+<span class="fc" id="L50">        val query = &quot;SELECT DISTINCT MAX(date) FROM plan&quot;</span>
+<span class="fc" id="L51">        val result = DBQueryExecutor.executeQuery(query) { resultSet -&gt;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            resultSet.getString(1)?.let {</span>
+<span class="fc" id="L53">                LocalDate.parse(it)</span>
+            }
+        }
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        return result.first() ?: LocalDate.MIN</span>
+    }
+
+
+    /**
+     * Pobiera plan zajęć dla danej lokalizacji w formie rozkładu dla sal (W tabeli w ShowPlanForRooms).
+     * @return Rozpiska zajęć dla wybranej lokalizacji.
+     */
+    override fun getPlan(location: String, rooms: ObservableList&lt;String&gt;): ObservableList&lt;PlanForRooms&gt; {
+
+<span class="fc" id="L67">        val query = &quot;SELECT plan.date,hourRange, GROUP_CONCAT(CONCAT(CONCAT(SUBSTRING(groupName, 1, LENGTH(groupName)-1), fieldShort, SUBSTRING(groupName, LENGTH(groupName), 1)),':',r.roomName) SEPARATOR '|') AS pairs from plan &quot; +</span>
+                &quot;INNER JOIN hours h on plan.hourId = h.hourId &quot; +
+                &quot;INNER JOIN `groups` g on plan.groupId = g.groupID &quot; +
+                &quot;INNER JOIN rooms r on plan.roomId = r.roomID &quot; +
+                &quot;INNER JOIN location_room AS lr ON lr.roomID = r.roomID &quot; +
+                &quot;INNER JOIN group_field gf on g.groupID = gf.groupID &quot;+
+                &quot;INNER JOIN fields f on gf.fieldID = f.fieldID &quot; +
+                &quot;WHERE locationID = (SELECT locationID FROM location WHERE location.name = ?) &quot; +
+                &quot;GROUP BY date, hourRange ORDER BY date, hourRange&quot;
+
+
+<span class="fc" id="L78">        val connection = DBConnection.getConnection()</span>
+<span class="fc" id="L79">        val statement = connection.prepareStatement(query)</span>
+<span class="fc" id="L80">        statement.setString(1,location)</span>
+
+<span class="fc" id="L82">        val resultSet = statement.executeQuery()</span>
+
+<span class="fc" id="L84">        val resultList = FXCollections.observableArrayList&lt;PlanForRooms&gt;()</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        while(resultSet.next()) {</span>
+
+<span class="fc" id="L88">            val list: ObservableList&lt;String&gt; = FXCollections.observableArrayList()</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            repeat(rooms.size) {</span>
+<span class="fc" id="L90">                list.add(&quot;&quot;)</span>
+<span class="fc" id="L91">            }</span>
+
+            //IIA:Aula|IB:Aula
+<span class="fc" id="L94">            val pairs = resultSet.getString(&quot;pairs&quot;).split(&quot;|&quot;)</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            for (pair in pairs)</span>
+            {
+                //mamy pare np IIA:Aula
+<span class="fc" id="L98">                val shortcut = pair.split(&quot;:&quot;)[0].trim()</span>
+<span class="fc" id="L99">                val index = rooms.indexOf(pair.split(&quot;:&quot;)[1].trim())</span>
+<span class="fc" id="L100">                list[index] = shortcut</span>
+            }
+
+<span class="fc" id="L103">            val loc = PlanForRooms(</span>
+<span class="fc" id="L104">                date = LocalDate.parse(resultSet.getString(&quot;date&quot;)),</span>
+<span class="fc" id="L105">                hour = resultSet.getString(&quot;hourRange&quot;),</span>
+<span class="fc" id="L106">                rooms = list)</span>
+
+<span class="fc" id="L108">            resultList.add(loc)</span>
+        }
+
+<span class="fc" id="L111">        statement.close()</span>
+<span class="fc" id="L112">        DBConnection.closeConnection()</span>
+<span class="fc" id="L113">        return resultList</span>
+    }
+
+    /**
+     * Pobiera plan zajęć dla platformy wirtualnej.
+     * @return Rozpiska zajęć dla sali wirtualnej.
+     */
+    override fun getPlanForPlatform(): ObservableList&lt;PlanForRooms&gt; {
+
+<span class="fc" id="L122">        val query = &quot;SELECT plan.date, hourRange, GROUP_CONCAT(CONCAT(SUBSTRING(groupName, 1, LENGTH(groupName)-1), fieldShort, SUBSTRING(groupName, LENGTH(groupName), 1)) SEPARATOR ', ') AS `groups` from plan &quot; +</span>
+                &quot;INNER JOIN hours h on plan.hourId = h.hourId \n&quot; +
+                &quot;INNER JOIN `groups` g on plan.groupId = g.groupID \n&quot; +
+                &quot;INNER JOIN rooms r on plan.roomId = r.roomID \n&quot; +
+                &quot;INNER JOIN location_room AS lr ON lr.roomID = r.roomID \n&quot; +
+                &quot;INNER JOIN group_field gf on g.groupID = gf.groupID \n&quot; +
+                &quot;INNER JOIN fields f on gf.fieldID = f.fieldID\n&quot; +
+                &quot;WHERE locationID = (SELECT locationID FROM location WHERE location.name = 'Platform')\n&quot; +
+                &quot;GROUP BY date, hourRange ORDER BY date, hourRange&quot;
+
+<span class="fc" id="L132">        val connection = DBConnection.getConnection()</span>
+<span class="fc" id="L133">        val statement = connection.prepareStatement(query)</span>
+
+<span class="fc" id="L135">        val resultSet = statement.executeQuery()</span>
+
+<span class="fc" id="L137">        val resultList = FXCollections.observableArrayList&lt;PlanForRooms&gt;()</span>
+
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        while(resultSet.next()) {</span>
+
+<span class="fc" id="L141">            val list: ObservableList&lt;String&gt; = FXCollections.observableArrayList()</span>
+<span class="fc" id="L142">            val groups = resultSet.getString(&quot;groups&quot;)</span>
+<span class="fc" id="L143">            list.add(groups)</span>
+
+<span class="fc" id="L145">            val loc = PlanForRooms(</span>
+<span class="fc" id="L146">                date = LocalDate.parse(resultSet.getString(&quot;date&quot;)),</span>
+<span class="fc" id="L147">                hour = resultSet.getString(&quot;hourRange&quot;),</span>
+<span class="fc" id="L148">                rooms = list)</span>
+
+<span class="fc" id="L150">            resultList.add(loc)</span>
+        }
+
+<span class="fc" id="L153">        statement.close()</span>
+<span class="fc" id="L154">        DBConnection.closeConnection()</span>
+<span class="fc" id="L155">        return resultList</span>
+    }
+
+    /**
+     * Pobiera plan lekcji nauczyciela dla określonego dnia.
+     *
+     * @param teacher Imię i nazwisko nauczyciela.
+     * @param day Dzień, dla którego pobierany jest plan lekcji.
+     * @return Plan zajęć nauczyciela w formie listy obiektów ClassesRead.
+     */
+    override fun getPlanTeacher(teacher: String, day: String): ObservableList&lt;ClassesToRead&gt; {
+
+<span class="fc" id="L167">        var query  = &quot;SELECT date, hourRange, subjectName, CONCAT(roomName, ', ', location.name) AS roomName, CONCAT(teachers.lastname, ' ', teachers.name) AS teacher, CONCAT(groupName, ', ', fieldName) AS `group` FROM plan\n&quot; +</span>
+                &quot;INNER JOIN hours ON hours.hourID = plan.hourId\n&quot; +
+                &quot;INNER JOIN subjects ON subjects.subjectID = plan.subjectId\n&quot; +
+                &quot;INNER JOIN rooms ON rooms.roomID = plan.roomId\n&quot; +
+                &quot;INNER JOIN location_room AS lr ON lr.roomID  = rooms.roomID\n&quot; +
+                &quot;INNER JOIN location ON location.locationID = lr.locationID\n&quot; +
+                &quot;INNER JOIN teachers ON teachers.teacherID = plan.teacherId\n&quot; +
+                &quot;INNER JOIN `groups` g on plan.groupId = g.groupID\n&quot; +
+                &quot;INNER JOIN group_field gf on g.groupID = gf.groupID\n&quot; +
+                &quot;INNER JOIN fields f on gf.fieldID = f.fieldID\n&quot; +
+                &quot;WHERE teachers.name = ? AND teachers.lastname = ? \n&quot;
+
+<span class="fc" id="L179">        val name = teacher.split(&quot; &quot;)[1]</span>
+<span class="fc" id="L180">        val lastname = teacher.split(&quot; &quot;)[0]</span>
+
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if (day != MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+        {
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            val englishDay = if(MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(day)!!.uppercase() else day.uppercase()</span>
+<span class="nc" id="L185">            val subquery = &quot;AND DAYNAME(date) = ? ORDER BY plan.date, hours.hourID&quot;</span>
+<span class="nc" id="L186">            query += subquery</span>
+
+<span class="nc" id="L188">            return DBQueryExecutor.executeQuery(query, name, lastname, englishDay){</span>
+                    resultSet -&gt;
+<span class="nc" id="L190">                ClassesToRead(</span>
+<span class="nc" id="L191">                    date = LocalDate.parse(resultSet.getString(1)),</span>
+<span class="nc" id="L192">                    hour = resultSet.getString(2),</span>
+<span class="nc" id="L193">                    subject = resultSet.getString(3),</span>
+<span class="nc" id="L194">                    room = resultSet.getString(4),</span>
+<span class="nc" id="L195">                    teacher = resultSet.getString(5),</span>
+<span class="nc" id="L196">                    group = resultSet.getString(6))</span>
+            }
+        }
+        else{
+<span class="fc" id="L200">            val subquery =&quot;ORDER BY plan.date, hours.hourID&quot;</span>
+<span class="fc" id="L201">            query += subquery</span>
+
+<span class="fc" id="L203">            return DBQueryExecutor.executeQuery(query, name, lastname){</span>
+                    resultSet -&gt;
+<span class="fc" id="L205">                ClassesToRead(</span>
+<span class="fc" id="L206">                    date = LocalDate.parse(resultSet.getString(1)),</span>
+<span class="fc" id="L207">                    hour = resultSet.getString(2),</span>
+<span class="fc" id="L208">                    subject = resultSet.getString(3),</span>
+<span class="fc" id="L209">                    room = resultSet.getString(4),</span>
+<span class="fc" id="L210">                    teacher = resultSet.getString(5),</span>
+<span class="fc" id="L211">                    group = resultSet.getString(6))</span>
+            }
+        }
+    }
+
+
+    /**
+     * Pobiera plan lekcji grupy dla określonego dnia.
+     *
+     * @param field Nazwa kierunku kształcenia grupy.
+     * @param group Nazwa grupy.
+     * @param day Dzień, dla którego pobierany jest plan lekcji.
+     * @return Plan zajęć grupy w formie listy obiektów ClassesRead.
+     */
+    override fun getPlanGroup(field: String, group: String,day: String): ObservableList&lt;ClassesToRead&gt; {
+
+<span class="fc" id="L227">        var query  = &quot;SELECT date, hourRange, subjectName, CONCAT(roomName, ', ', location.name) AS roomName, CONCAT(teachers.lastname, ' ', teachers.name) AS teacher, CONCAT(g.groupName, ', ', fieldName) AS `group` FROM plan\n&quot; +</span>
+                &quot;INNER JOIN hours ON hours.hourID = plan.hourId\n&quot; +
+                &quot;INNER JOIN subjects ON subjects.subjectID = plan.subjectId\n&quot; +
+                &quot;INNER JOIN rooms ON rooms.roomID = plan.roomId\n&quot; +
+                &quot;INNER JOIN location_room AS lr ON lr.roomID = rooms.roomID\n&quot; +
+                &quot;INNER JOIN location ON location.locationID = lr.locationID\n&quot; +
+                &quot;INNER JOIN teachers ON teachers.teacherID = plan.teacherId\n&quot; +
+                &quot;INNER JOIN `groups` g on plan.groupId = g.groupID\n&quot; +
+                &quot;INNER JOIN group_field gf on g.groupID = gf.groupID\n&quot; +
+                &quot;INNER JOIN fields f on gf.fieldID = f.fieldID\n&quot; +
+                &quot;WHERE plan.groupId = (SELECT `groups`.groupID FROM `groups`&quot; +
+                &quot;INNER JOIN group_field gf on `groups`.groupID = gf.groupID\n &quot; +
+                &quot;INNER JOIN fields f on gf.fieldID = f.fieldID WHERE fieldName = ? AND groupName = ?)\n&quot;
+
+
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (day!= MessageBundle.getMess(&quot;label.wholePlan&quot;)) {</span>
+<span class="pc bpc" id="L243" title="1 of 2 branches missed.">            val englishDay = if (MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(day)!!.uppercase() else day.uppercase()</span>
+<span class="fc" id="L244">            val subquery = &quot; AND DAYNAME(date) = ? ORDER BY plan.date, hours.hourID&quot;</span>
+<span class="fc" id="L245">            query += subquery</span>
+
+<span class="fc" id="L247">            return DBQueryExecutor.executeQuery(query, field, group, englishDay){</span>
+<span class="fc" id="L248">                    resultSet -&gt; ClassesToRead(</span>
+<span class="fc" id="L249">                date = LocalDate.parse(resultSet.getString(1)),</span>
+<span class="fc" id="L250">                hour = resultSet.getString(2),</span>
+<span class="fc" id="L251">                subject = resultSet.getString(3),</span>
+<span class="fc" id="L252">                room = resultSet.getString(4),</span>
+<span class="fc" id="L253">                teacher = resultSet.getString(5),</span>
+<span class="fc" id="L254">                group = resultSet.getString(6))</span>
+            }
+        }
+
+<span class="fc" id="L258">        val subquery = &quot; ORDER BY plan.date, hours.hourID&quot;</span>
+<span class="fc" id="L259">        query += subquery</span>
+<span class="fc" id="L260">        return DBQueryExecutor.executeQuery(query, field, group){</span>
+<span class="fc" id="L261">                resultSet -&gt; ClassesToRead(</span>
+<span class="fc" id="L262">            date = LocalDate.parse(resultSet.getString(1)),</span>
+<span class="fc" id="L263">            hour = resultSet.getString(2),</span>
+<span class="fc" id="L264">            subject = resultSet.getString(3),</span>
+<span class="fc" id="L265">            room = resultSet.getString(4),</span>
+<span class="fc" id="L266">            teacher = resultSet.getString(5),</span>
+<span class="fc" id="L267">            group = resultSet.getString(6))</span>
+        }
+    }
+
+    /**
+     * Usuwa wszystkie zajęcia z aktualnego planu oraz ustawia tabelę z godzinami, które
+     * pozostały do ułożenia pełnego planu na wartości domyślne (takie jak w szkolnym planie nauczania).
+     */
+    @Throws(SQLException::class)
+    override fun refillHours() {
+<span class="fc" id="L277">        val query = &quot;{ CALL refillHours() }&quot;</span>
+<span class="fc" id="L278">        DBQueryExecutor.executePreparedStatement(query)</span>
+<span class="fc" id="L279">    }</span>
+
+    /**
+     * Tworzy (kopiuje) lub aktualizuje tabelę w bazie danych na podstawie podanej nazwy tabeli.
+     *
+     * @param tableName   Nazwa tworzonej lub aktualizowanej tabeli.
+     * @param fromTable   Nazwa źródłowej tabeli, na podstawie której ma być utworzona lub zaktualizowana tabela.
+     */
+    @Throws(SQLException::class)
+    override fun createTable(tableName: String, fromTable: String) {
+<span class="fc" id="L289">        val query = &quot;{ CALL createOrUpdateTable(?,?) }&quot;</span>
+
+<span class="fc" id="L291">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="fc" id="L292">            query,</span>
+<span class="fc" id="L293">            tableName,</span>
+<span class="fc" id="L294">            fromTable</span>
+        )
+<span class="fc" id="L296">    }</span>
+
+    /**
+     * Sprawdza, czy należy zapisać aktualny plan (Czy istnieją zajęcia w planie).
+     *
+     * @return true, jeśli należy zapisać aktualny plan, false w przeciwnym razie.
+     */
+    override fun shouldSaveOldPlan(): Boolean {
+<span class="fc" id="L304">        val query = &quot;SELECT COUNT(*)&gt;0 FROM plan&quot;</span>
+<span class="fc" id="L305">        return DBQueryExecutor.executeQuery(query){ resultSet -&gt; resultSet.getBoolean(1)}.first()</span>
+    }
+
+    /**
+     * Sprawdza, czy istnieje już plan w podanym terminie, czyli czy istnieje odpowiadająca mu tabela w bazie danych.
+     *
+     * @param day Data, dla której ma być sprawdzone czy plan istnieje.
+     * @return true, jeśli istnieje plan w podanym terminie, false w przeciwnym razie.
+     */
+    override fun checkIfPlanExists(day: LocalDate): Boolean{
+
+<span class="fc" id="L316">        val planStart = CommonUtils.getPlanStartDay(day)</span>
+<span class="fc" id="L317">        val planName = &quot;plan_$planStart&quot;</span>
+
+<span class="fc" id="L319">        val query = &quot;SELECT SUM(table_exists) FROM (\n&quot; +</span>
+                &quot;SELECT COUNT(*) &gt; 0 AS table_exists FROM information_schema.tables WHERE table_name = ?\n&quot; +
+                &quot;UNION \n&quot; +
+                &quot;SELECT COUNT(*) FROM plan WHERE plan.date IN (?,?,?)) AS unitedTable&quot;
+
+<span class="fc" id="L324">        return DBQueryExecutor.executeQuery(query,planName, planStart, planStart.plusDays(1), planStart.plusDays(2)){ resultSet -&gt; resultSet.getBoolean(1) }.first()</span>
+    }
+
+    /**
+     * Metoda, sprawdzająca czy plan jest pełny (wszystkie godziny ze szkolnego planu nauczania są realizowane)
+     */
+    override fun isPlanFull(): Boolean {
+<span class="fc" id="L331">        val query = &quot;SELECT sum(weekHoursLeft)=0 FROM group_subject_hours_left&quot;</span>
+<span class="fc" id="L332">        return DBQueryExecutor.executeQuery(query){ resultSet -&gt; resultSet.getBoolean(1) }.first()</span>
+    }
+
+
+    /**
+     * Uzupełnia plan (przywraca) zajęć na podstawie istniejącego planu
+     * o podanej nazwie z bazy danych i odpowiadającej mu tabeli z godzinami.
+     *
+     * @param tablePlan Nazwa istniejącego planu, który chcemy przywrócić.
+     * @param tableHoursLeft Nazwa odpowiadającej tabeli z godzinami.
+     */
+    @Throws(SQLException::class)
+    override fun refillFromOldPlan(tablePlan: String, tableHoursLeft: String) {
+<span class="fc" id="L345">        val query = &quot;{ CALL refillFromOldPlan(?,?) }&quot;</span>
+
+<span class="fc" id="L347">        DBQueryExecutor.executePreparedStatement(</span>
+<span class="fc" id="L348">            query,</span>
+<span class="fc" id="L349">            tablePlan,</span>
+<span class="fc" id="L350">            tableHoursLeft</span>
+        )
+<span class="fc" id="L352">    }</span>
+
+    /**
+     * Kopiuje zawartość jednej tabeli do innej w bazie danych (kopiuje plany).
+     *
+     * @param tableTo Nazwa tabeli docelowej, do której zostanie skopiowana zawartość.
+     * @param tableFrom Nazwa tabeli źródłowej, z której zostanie skopiowana zawartość.
+     * @param oldFriday Piątkowa data z tabeli, z której plan jest kopiowany.
+     * @param oldSaturday Sobotnia data z tabeli, z której plan jest kopiowany.
+     * @param oldSunday Niedzielna data z tabeli, z której plan jest kopiowany.
+     * @param newFriday Piątkowa data z tabeli, do której plan jest kopiowany.
+     * @param newSaturday Sobotnia data z tabeli, do której plan jest kopiowany.
+     * @param newSunday Niedzielna data z tabeli, do której plan jest kopiowany.
+     */
+    @Throws(SQLException::class)
+    override fun copyTable(tableTo: String, tableFrom: String, oldFriday: String, oldSaturday: String, oldSunday: String, newFriday: String, newSaturday: String, newSunday: String) {
+<span class="fc" id="L368">        val query = &quot;{ CALL copyTable(?,?,?,?,?,?,?,?) }&quot;</span>
+<span class="fc" id="L369">        DBQueryExecutor.executePreparedStatement(query, tableTo, tableFrom, oldFriday, oldSaturday, oldSunday, newFriday, newSaturday, newSunday)</span>
+<span class="fc" id="L370">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:41" hostname="DESKTOP-DVH4IG9" time="17.684">
+  <properties/>
+  <testcase name="showGroupTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.852"/>
+  <testcase name="deleteFromPlanTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.776"/>
+  <testcase name="createChangeHourVBox()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.512"/>
+  <testcase name="createChangeRoomVBox()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.491"/>
+  <testcase name="exportPlanForGroupTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="3.654"/>
+  <testcase name="exportAllTeachersTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="2.746"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.533"/>
+  <testcase name="testCreateChangeTeacherVbox()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.477"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.542"/>
+  <testcase name="showTeacherTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.681"/>
+  <testcase name="getPlanTeacherAndChangeHourTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="1.507"/>
+  <testcase name="createChangeHourPlatformVbox()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.552"/>
+  <testcase name="setUpTableTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="0.503"/>
+  <testcase name="exportAllGroupsFromFieldTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanControllerTest" time="3.845"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

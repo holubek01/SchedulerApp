@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CopyPlanModuleController.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Scheduler</a> &gt; <a href="index.source.html" class="el_package">com.example.scheduler.controller</a> &gt; <span class="el_source">CopyPlanModuleController.kt</span></div><h1>CopyPlanModuleController.kt</h1><pre class="source lang-java linenums">package com.example.scheduler.controller
+
+
+import com.example.scheduler.controller.observers.AdminTabsObserver
+import com.example.scheduler.controller.observers.PlansObserver
+import com.example.scheduler.controller.observers.TabsObserver
+import com.example.scheduler.models.PlansModel
+import com.example.scheduler.utils.*
+import io.github.palexdev.materialfx.controls.MFXButton
+import io.github.palexdev.materialfx.controls.MFXCheckListView
+import io.github.palexdev.materialfx.controls.MFXDatePicker
+import io.github.palexdev.materialfx.controls.cell.MFXDateCell
+import io.github.palexdev.materialfx.dialogs.MFXStageDialog
+import javafx.fxml.FXML
+import javafx.scene.control.Label
+import javafx.stage.Stage
+import java.sql.SQLException
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.util.function.Function
+
+/**
+ * Klasa kontrolera modułu CopyPlanModule do zarządzania planami (kopiowanie i usuwanie)
+ */
+<span class="fc" id="L25">class CopyPlanModuleController: ICopyPlanModuleController, PlansObserver, AdminTabsObserver, TabsObserver{</span>
+
+    /**
+     * Przycisk służący do kopiowania aktualnego planu na wybraną datę.
+     */
+    @FXML
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">    internal lateinit var copyCurrentPlan: MFXButton</span>
+
+    /**
+     * Etykieta informująca o kopiowaniu planu na wybraną datę.
+     */
+    @FXML
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">    internal lateinit var copySinglePlanLabel: Label</span>
+
+    /**
+     * Kontrolka służąca do wyboru daty, na którą ma zostać skopiowany plan.
+     */
+    @FXML
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">    internal lateinit var datepicker: MFXDatePicker</span>
+
+    /**
+     * Przycisk do usuwania wybranych na liście planów.
+     */
+    @FXML
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">    internal lateinit var deleteChosenPlansButton: MFXButton</span>
+
+    /**
+     * Pomocnicze okno dialogowe.
+     */
+    private lateinit var dialog: MFXStageDialog
+
+    /**
+     * Lista służąca do wyboru planów do usunięcia.
+     */
+    @FXML
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">    internal lateinit var allPlansListView: MFXCheckListView&lt;String&gt;</span>
+
+    /**
+     * Przycisk do kopiowania aktualnego planu na wybrany zakres dni.
+     */
+    @FXML
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">    internal lateinit var copyCurrentPlanMulti: MFXButton</span>
+
+
+    /**
+     * Etykieta informująca o kopiowaniu wielu planów.
+     */
+    @FXML
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    internal lateinit var copyMultiplePlanLabel: Label</span>
+
+    /**
+     * Kontrolka do wyboru początkowej daty zakresu do kopiowania planów.
+     */
+    @FXML
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">    internal lateinit var datepickerFrom: MFXDatePicker</span>
+
+    /**
+     * Flaga informująca o chęci usunięcia planów.
+     */
+<span class="pc" id="L84">    var wantToDelete = false</span>
+
+    /**
+     * Kontrolka do wyboru końcowej daty zakresu do kopiowania planów.
+     */
+    @FXML
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">    internal lateinit var datepickerTo: MFXDatePicker</span>
+<span class="fc" id="L91">    val plansModel = PlansModel()</span>
+
+    /**
+     * Inicjalizacja kontrolera
+     */
+    @FXML
+    fun initialize() {
+<span class="fc" id="L98">        AdminTabObserver.addObserver(this)</span>
+<span class="fc" id="L99">        PlansModel.addObserver(this)</span>
+<span class="fc" id="L100">        TabObserver.addObserver(this)</span>
+<span class="fc" id="L101">        setActions()</span>
+<span class="fc" id="L102">        setLabels()</span>
+<span class="fc" id="L103">        allPlansListView.items= plansModel.getAllPlansExceptCurrent()</span>
+<span class="fc" id="L104">        datepicker.locale = MessageBundle.bundle.locale</span>
+<span class="fc" id="L105">        datepickerFrom.locale = MessageBundle.bundle.locale</span>
+<span class="fc" id="L106">        datepickerTo.locale = MessageBundle.bundle.locale</span>
+<span class="fc" id="L107">    }</span>
+
+    /**
+     * Ustawia teksty na przyciskach i kontrolkach.
+     */
+    override fun setLabels() {
+<span class="fc" id="L113">        deleteChosenPlansButton.text = MessageBundle.getMess(&quot;label.deletePlans&quot;)</span>
+<span class="fc" id="L114">        copySinglePlanLabel.text = MessageBundle.getMess(&quot;label.copyPlan&quot;)</span>
+<span class="fc" id="L115">        copyMultiplePlanLabel.text = MessageBundle.getMess(&quot;label.copyPlans&quot;)</span>
+<span class="fc" id="L116">        copyCurrentPlan.text = MessageBundle.getMess(&quot;label.copyPlanButton&quot;)</span>
+<span class="fc" id="L117">        copyCurrentPlanMulti.text = MessageBundle.getMess(&quot;label.copyPlansButton&quot;)</span>
+<span class="fc" id="L118">        datepicker.promptText = MessageBundle.getMess(&quot;label.chooseDay&quot;)</span>
+<span class="fc" id="L119">        datepickerFrom.promptText=MessageBundle.getMess(&quot;label.chooseStartRange&quot;)</span>
+<span class="fc" id="L120">        datepickerTo.promptText=MessageBundle.getMess(&quot;label.chooseEndRange&quot;)</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Ustawia akcje komponentów.
+     */
+    override fun setActions() {
+<span class="pc" id="L127">        datepicker.setOnMouseClicked { setupDatePickers() }</span>
+<span class="pc" id="L128">        copyCurrentPlanMulti.setOnAction { copyPlanMulti() }</span>
+<span class="pc" id="L129">        datepickerFrom.setOnMouseClicked { setupDatePickers() }</span>
+<span class="pc" id="L130">        datepickerTo.setOnMouseClicked { setupDatePickers() }</span>
+<span class="fc" id="L131">        deleteChosenPlansButton.setOnAction {</span>
+<span class="nc" id="L132">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.plans.askBeforeDelete&quot;))</span>
+<span class="nc" id="L133">            deleteChosenPlans(allPlansListView.selectionModel.selectedValues) }</span>
+<span class="fc" id="L134">        copyCurrentPlan.setOnAction {</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">            if (datepicker.value == null) MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.copyPlansError&quot;), MessageBundle.getMess(&quot;warning.noData&quot;))</span>
+<span class="nc" id="L136">            else copyPlan(datepicker.value)</span>
+<span class="nc" id="L137">        }</span>
+<span class="fc" id="L138">    }</span>
+
+    /**
+     * Usuwa wybrane plany.
+     * @param selectedValues Lista planów do usunięcia.
+     */
+    override fun deleteChosenPlans(selectedValues: MutableList&lt;String&gt;)
+    {
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (wantToDelete)</span>
+        {
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            for (plan in selectedValues)</span>
+            {
+<span class="fc" id="L150">                val hoursLeftTable = &quot;group_subject_hours_left_${plan.split(&quot;_&quot;).last()}&quot;</span>
+<span class="fc" id="L151">                try {</span>
+<span class="fc" id="L152">                    plansModel.deletePlan(plan, hoursLeftTable)</span>
+<span class="fc" id="L153">                    MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.plan.correctlyDeletedPlan&quot;)}: $plan&quot;)</span>
+<span class="nc" id="L154">                }catch (e: SQLException) {</span>
+<span class="nc" id="L155">                    MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), &quot;${MessageBundle.getMess(&quot;warning.deletePlanError&quot;)}: $plan&quot;)</span>
+                }
+            }
+        }
+<span class="fc" id="L159">    }</span>
+
+
+    /**
+     * Kopiuje plan na podany zakres dat.
+     */
+    override fun copyPlanMulti() {
+<span class="fc" id="L166">        val from = datepickerFrom.value</span>
+<span class="fc" id="L167">        val to = datepickerTo.value</span>
+
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">        if (from==null || to == null) MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.copyPlansError&quot;), MessageBundle.getMess(&quot;warning.noRangeSelected&quot;))</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        else if (!to.isBefore(from))</span>
+        {
+<span class="fc" id="L172">            val daysArray = plansModel.createArrayOfDays(from, to)</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">            for (day in daysArray) copyPlan(day)</span>
+        }
+        else{
+<span class="fc" id="L176">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.copyPlansError&quot;), MessageBundle.getMess(&quot;warning.copyPlansErrorContent&quot;))</span>
+        }
+
+<span class="fc" id="L179">        CommonUtils.clearDatePicker(datepickerTo)</span>
+<span class="fc" id="L180">        CommonUtils.clearDatePicker(datepickerFrom)</span>
+<span class="fc" id="L181">    }</span>
+
+
+    /**
+     * Kopiuje aktualny plan na podaną datę.
+     *
+     * @param value      Początek tygodnia, na który ma zostać skopiowany plan.
+     */
+    override fun copyPlan(value: LocalDate) {
+        //Najpierw upewnij się, że aktualny plan nie jest pusty
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        val currentPlanIsEmpty = !plansModel.shouldSaveOldPlan()</span>
+
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        if (currentPlanIsEmpty) MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.copyPlanError&quot;), &quot;${MessageBundle.getMess(&quot;warning.currentPlanEmpty&quot;)}: plan_$value&quot;)</span>
+        else {
+            //Plan istnieje i nie jest pusty
+<span class="fc" id="L196">            val day = CommonUtils.getPlanStartDay(plansModel.getMaxDateFromTable())</span>
+<span class="fc" id="L197">            try {</span>
+<span class="fc" id="L198">                plansModel.copyTable(&quot;plan_$value&quot;, &quot;plan&quot;, day.toString(), day.plusDays(1).toString(), day.plusDays(2).toString(), value.toString(), value.plusDays(1).toString(), value.plusDays(2).toString())</span>
+<span class="fc" id="L199">                plansModel.createTable(&quot;group_subject_hours_left_$value&quot;, &quot;group_subject_hours_left&quot;)</span>
+<span class="fc" id="L200">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.plan.correctlyCopiedPlan&quot;)}: plan_$value&quot;)</span>
+<span class="nc" id="L201">            }catch (e: SQLException) {</span>
+<span class="nc" id="L202">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), &quot;${MessageBundle.getMess(&quot;warning.copyPlanError&quot;)}: plan_$value&quot;)</span>
+            }
+        }
+<span class="fc" id="L205">        CommonUtils.clearDatePicker(datepicker)</span>
+<span class="fc" id="L206">    }</span>
+
+    /**
+     * Konfiguruje kontrolki wyboru dat w zależności od tego, które plany już istnieją.
+     * Blokuje wybór dat, dla których plany już istnieją oraz daty przeszłe
+     */
+    override fun setupDatePickers() {
+<span class="nc" id="L213">        val allDatepickers = listOf(datepicker,datepickerFrom,datepickerTo)</span>
+
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        for (picker in allDatepickers)</span>
+        {
+<span class="nc" id="L217">            picker.cellFactory = Function { t -&gt;</span>
+<span class="nc" id="L218">                object : MFXDateCell(picker, t) {</span>
+                    override fun updateItem(item: LocalDate) {
+<span class="nc" id="L220">                        super.updateItem(item)</span>
+<span class="nc bnc" id="L221" title="All 6 branches missed.">                        isDisable = item.dayOfWeek != DayOfWeek.FRIDAY || plansModel.checkIfPlanExists(item) || item.isBefore(LocalDate.now())</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">                        styleClass.setAll(if (isDisable) &quot;disabled-date&quot; else &quot;enabled-date&quot;)</span>
+<span class="nc" id="L223">                    }</span>
+                }
+            }
+        }
+<span class="nc" id="L227">    }</span>
+
+    /**
+     * Metoda wywoływana po zmianie (dodanie lub usunięcie) planów zajęć.
+     */
+    override fun onPlansChanged() {
+<span class="fc" id="L233">        allPlansListView.selectionModel.clearSelection()</span>
+<span class="fc" id="L234">        allPlansListView.items= plansModel.getAllPlansExceptCurrent()</span>
+<span class="fc" id="L235">    }</span>
+
+    /**
+     * Metoda wywoływana podczas zmiany zakładek przed użytkownika - czyści planel.
+     */
+    override fun onTabsChanged() {
+<span class="nc" id="L241">        allPlansListView.selectionModel.clearSelection()</span>
+<span class="nc" id="L242">        CommonUtils.clearDatePicker(datepicker)</span>
+<span class="nc" id="L243">        CommonUtils.clearDatePicker(datepickerTo)</span>
+<span class="nc" id="L244">        CommonUtils.clearDatePicker(datepickerFrom)</span>
+<span class="nc" id="L245">    }</span>
+
+    /**
+     * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
+     *
+     * @param content Wiadomość do wyświetlenia.
+     */
+    fun showDialogYesNoMessage(content: String) {
+<span class="nc" id="L253">        val buttons = listOf(</span>
+<span class="nc" id="L254">            MessageBundle.getMess(&quot;label.yes&quot;) to { wantToDelete = true },</span>
+<span class="nc" id="L255">            MessageBundle.getMess(&quot;label.no&quot;) to { wantToDelete = false}</span>
+        )
+
+<span class="nc" id="L258">        dialog = DialogUtils.showMessageDialogWithButtons(content, deleteChosenPlansButton.scene.window as Stage, buttons)</span>
+<span class="nc bnc" id="L259" title="All 6 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
+<span class="nc" id="L260">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

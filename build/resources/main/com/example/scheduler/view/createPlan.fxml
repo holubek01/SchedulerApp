@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" prefHeight="400.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" spacing="20.0">
+         <children>
+            <VBox prefHeight="145.0" prefWidth="206.0" spacing="20.0">
+               <children>
+                  <MFXComboBox id="comboWhite" fx:id="getPlanChoiceBox" alignment="CENTER" floatingText="Plan" maxWidth="1.7976931348623157E308" prefHeight="43.0" prefWidth="143.0" selectable="true" />
+                  <MFXButton id="customButton" fx:id="getPlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="150.0" text="Przywróć plan">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </MFXButton>
+               </children>
+            </VBox>
+            <MFXButton id="customButton" fx:id="savePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" text="Zapisz plan">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton id="customButton" fx:id="closePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="150.0" text="Zamknij plan">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </MFXButton>
+            <MFXButton id="customButton" fx:id="deletePlanButton" buttonType="RAISED" depthLevel="LEVEL1" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="206.0" text="Usuń aktualny plan">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </MFXButton>
+         </children>
+         <padding>
+            <Insets left="20.0" top="60.0" />
+         </padding>
+      </VBox>
+      <VBox alignment="CENTER" layoutX="227.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="500.0" prefHeight="637.0" prefWidth="1024.0" spacing="18.0">
+         <padding>
+            <Insets right="50.0" top="50.0" />
+         </padding>
+         <children>
+            <MFXDatePicker id="comboGray" fx:id="datepicker" editable="false" prefHeight="40.0" prefWidth="420.0" promptText="Wybierz datę" />
+            <MFXComboBox id="comboWhite" fx:id="fieldOfStudyChoiceBox" floatingText="Kierunek" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+            <MFXComboBox id="comboPurple" fx:id="groupChoiceBox" floatingText="Odział" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+            <MFXComboBox id="comboWhite" fx:id="subjectChoiceBox" floatingText="Przedmiot" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+            <MFXComboBox id="comboPurple" fx:id="locationChoiceBox" floatingText="Lokalizacja" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+            <MFXComboBox id="comboWhite" fx:id="hourChoiceBox" editable="false" floatingText="Godzina" prefWidth="420.0" scrollOnOpen="true" selectable="true" />
+            <MFXFilterComboBox id="comboPurple" fx:id="roomChoicebox" floatingText="Sala" prefWidth="420.0" />
+            <MFXFilterComboBox id="comboWhite" fx:id="teacherChoiceBox" floatingText="Nauczyciel" prefWidth="420.0" />
+            <MFXButton id="customButton" fx:id="addClassesButton" buttonType="RAISED" depthLevel="LEVEL1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="150.0" text="Dodaj">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </MFXButton>
+         </children>
+      </VBox>
+   </children>
+   <stylesheets>
+      <URL value="@../css/customStyles.css" />
+   </stylesheets>
+</AnchorPane>

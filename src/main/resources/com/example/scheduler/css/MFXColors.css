@@ -1,0 +1,13 @@
+/**
+Plik css definiujący niestandardowe kolory
+ */
+
+
+* {
+	-mfx-purple: #7a0ed9;
+	-mfx-red: #cb1e1e;
+	-mfx-text-header: rgba(31, 31, 31, 0.8);
+	-mfx-textfield-color: #dededc;
+	-mfx-tablerow-even: #e5e0e0;
+	-mfx-tablerow-odd: #f5f5f5 ;
+}
