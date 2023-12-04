@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:05" hostname="DESKTOP-DVH4IG9" time="2.703">
+<testsuite name="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:41" hostname="DESKTOP-DVH4IG9" time="2.57">
   <properties/>
-  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.361"/>
-  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.398"/>
-  <testcase name="addAndDeleteGroupTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.785"/>
-  <testcase name="setOnTabsChangedTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.357"/>
-  <testcase name="clearBoxesTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.348"/>
-  <testcase name="showWarningsTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.449"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.343"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.358"/>
+  <testcase name="addAndDeleteGroupTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.765"/>
+  <testcase name="setOnTabsChangedTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.356"/>
+  <testcase name="clearBoxesTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.34"/>
+  <testcase name="showWarningsTest()" classname="com.example.scheduler.tests.controllersAdmin.GroupModuleControllerTest" time="0.407"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

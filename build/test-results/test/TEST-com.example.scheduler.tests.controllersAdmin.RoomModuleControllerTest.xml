@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:13" hostname="DESKTOP-DVH4IG9" time="2.494">
+<testsuite name="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:49" hostname="DESKTOP-DVH4IG9" time="2.399">
   <properties/>
-  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="0.717"/>
-  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="0.703"/>
-  <testcase name="addAndcheckDBAndEditTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="1.072"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="0.686"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="0.702"/>
+  <testcase name="addAndcheckDBAndEditTest()" classname="com.example.scheduler.tests.controllersAdmin.RoomModuleControllerTest" time="1.01"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

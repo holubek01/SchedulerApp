@@ -75,9 +75,9 @@ import java.sql.SQLException
      */
     @Throws(SQLException::class)
     override fun updateTeacherAvailability(teacherID: Int, day: String, hoursJSON: String) {
-<span class="nc" id="L78">        val query = &quot;{ CALL updateTeacherAvailability(?,?,?) }&quot;</span>
-<span class="nc" id="L79">        DBQueryExecutor.executePreparedStatement(query, teacherID, day, hoursJSON)</span>
-<span class="nc" id="L80">    }</span>
+<span class="fc" id="L78">        val query = &quot;{ CALL updateTeacherAvailability(?,?,?) }&quot;</span>
+<span class="fc" id="L79">        DBQueryExecutor.executePreparedStatement(query, teacherID, day, hoursJSON)</span>
+<span class="fc" id="L80">    }</span>
 
     /**
      * Metoda, która dodaje dyspozycyjność nauczycielowi na określony dzień przy użyciu procedury z bazy danych.

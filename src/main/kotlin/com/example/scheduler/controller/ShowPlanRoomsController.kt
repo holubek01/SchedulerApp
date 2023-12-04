@@ -276,7 +276,6 @@ class ShowPlanRoomsController: IShowPlanRoomsController, LocationObserver, TabsO
                     var fos: FileOutputStream? = null
                     val prop = ExcelUtils.loadConfigProps()
                     val path = System.getProperty("user.home") + prop.getProperty("excel.plans.locations.path")
-                    println(path)
 
                     val filePath = "$path/sale${locationChoiceBox.value}.xlsx"
                     val folder = File(path)

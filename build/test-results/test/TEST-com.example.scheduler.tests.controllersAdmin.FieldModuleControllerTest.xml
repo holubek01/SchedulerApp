@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:41:52" hostname="DESKTOP-DVH4IG9" time="12.771">
+<testsuite name="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:28" hostname="DESKTOP-DVH4IG9" time="12.779">
   <properties/>
-  <testcase name="addAndDeleteFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.928"/>
+  <testcase name="addAndDeleteFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.927"/>
   <testcase name="createStepperTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.619"/>
-  <testcase name="editFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.782"/>
-  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.539"/>
-  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="6.006"/>
-  <testcase name="checkDBWhileAddingTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.862"/>
-  <testcase name="checkWhileEditingTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="1.086"/>
-  <testcase name="createAndShowSPNtableTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.681"/>
-  <testcase name="createFieldEditDialogTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.547"/>
-  <testcase name="deleteFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.709"/>
+  <testcase name="editFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.701"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.52"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="6.228"/>
+  <testcase name="checkDBWhileAddingTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.835"/>
+  <testcase name="checkWhileEditingTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="1.033"/>
+  <testcase name="createAndShowSPNtableTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.679"/>
+  <testcase name="createFieldEditDialogTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.551"/>
+  <testcase name="deleteFieldTest()" classname="com.example.scheduler.tests.controllersAdmin.FieldModuleControllerTest" time="0.681"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

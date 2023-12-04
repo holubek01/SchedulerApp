@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-12-02T17:42:59" hostname="DESKTOP-DVH4IG9" time="4.841">
+<testsuite name="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:46:34" hostname="DESKTOP-DVH4IG9" time="4.802">
   <properties/>
-  <testcase name="exportPlanForRoomsTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="3.607"/>
-  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.334"/>
-  <testcase name="setUpTableTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.297"/>
-  <testcase name="showPlanForRoomsTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.599"/>
+  <testcase name="exportPlanForRoomsTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="3.584"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.354"/>
+  <testcase name="setUpTableTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.306"/>
+  <testcase name="showPlanForRoomsTest()" classname="com.example.scheduler.tests.controllersDirector.ShowPlanForRoomsControllerTest" time="0.557"/>
   <system-out><![CDATA[C:\Users\tomek/plany/sale
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

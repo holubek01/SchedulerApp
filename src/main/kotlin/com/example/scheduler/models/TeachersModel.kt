@@ -85,7 +85,7 @@ class TeachersModel {
     fun updateTeacherAvailability(availabilityList: MutableMap<String, MutableList<String>>, teacherID: Int) {
 
         val objectMapper = ObjectMapper()
-        availabilityList.filterNot { it.value.isEmpty() }.forEach { (key, value) ->
+        availabilityList.forEach { (key, value) ->
             val hoursJSON = objectMapper.writeValueAsString(value)
             dao.updateTeacherAvailability(teacherID, key.uppercase(), hoursJSON)
         }

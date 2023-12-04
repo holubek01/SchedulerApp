@@ -578,10 +578,9 @@ import kotlin.reflect.KProperty1
 <span class="nc" id="L578">        }</span>
 
 <span class="fc" id="L580">        stepper.setOnLastNext {</span>
-<span class="nc bnc" id="L581" title="All 2 branches missed.">            if (!inEditMode) {availabilityList.values.forEach { it.clear() }}</span>
-<span class="nc" id="L582">            checkLastStep(firstName, lastName, phone, email, subjects, days, hours, completedLabel, step3, resetButton, stepper)</span>
-<span class="nc" id="L583">        }</span>
-<span class="fc" id="L584">    }</span>
+<span class="nc" id="L581">            checkLastStep(firstName, lastName, phone, email, subjects, days, hours, completedLabel, step3, resetButton, stepper)</span>
+<span class="nc" id="L582">        }</span>
+<span class="fc" id="L583">    }</span>
 
 
     /**
@@ -591,71 +590,71 @@ import kotlin.reflect.KProperty1
     fun checkLastStep(firstName: MFXTextField, lastName: MFXTextField, phone: MFXTextField, email: MFXTextField, subjects: MFXCheckListView&lt;String&gt;, days: MFXComboBox&lt;String&gt;, hours: MFXCheckListView&lt;String&gt;, completedLabel: Label, step3: MFXStepperToggle, resetButton: MFXButton, stepper: MFXStepper)
     {
         //Jeśli dzień został wybrany to dodaj godziny
-<span class="pc bpc" id="L594" title="1 of 6 branches missed.">        if (!days.value.isNullOrEmpty()) {</span>
-<span class="pc bpc" id="L595" title="1 of 2 branches missed.">            val dayValue = if (MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(days.value) else days.value</span>
-<span class="fc" id="L596">            availabilityList[dayValue]!!.clear()</span>
-<span class="fc bfc" id="L597" title="All 2 branches covered.">            for (hour in hours.selectionModel.selectedValues) {</span>
-<span class="fc" id="L598">                availabilityList[dayValue]!!.add(hour)</span>
+<span class="pc bpc" id="L593" title="1 of 6 branches missed.">        if (!days.value.isNullOrEmpty()) {</span>
+<span class="pc bpc" id="L594" title="1 of 2 branches missed.">            val dayValue = if (MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(days.value) else days.value</span>
+<span class="fc" id="L595">            availabilityList[dayValue]!!.clear()</span>
+<span class="fc bfc" id="L596" title="All 2 branches covered.">            for (hour in hours.selectionModel.selectedValues) {</span>
+<span class="fc" id="L597">                availabilityList[dayValue]!!.add(hour)</span>
             }
         }
 
         //Jeśli nie dodano dyspozycyjności
-<span class="fc bfc" id="L603" title="All 4 branches covered.">        if (availabilityList.values.all { it.isEmpty() }) {</span>
-<span class="fc" id="L604">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.availabilityError&quot;), MessageBundle.getMess(&quot;warning.noAvailabilityChosen&quot;))</span>
+<span class="fc bfc" id="L602" title="All 4 branches covered.">        if (availabilityList.values.all { it.isEmpty() }) {</span>
+<span class="fc" id="L603">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.availabilityError&quot;), MessageBundle.getMess(&quot;warning.noAvailabilityChosen&quot;))</span>
         }
 
-<span class="fc bfc" id="L607" title="All 6 branches covered.">        if (availabilityList.values.any { it.isNotEmpty() }) {</span>
-<span class="fc" id="L608">            val teacher = Teacher(firstName.text,lastName.text, email.text, phone.text)</span>
+<span class="fc bfc" id="L606" title="All 6 branches covered.">        if (availabilityList.values.any { it.isNotEmpty() }) {</span>
+<span class="fc" id="L607">            val teacher = Teacher(firstName.text,lastName.text, email.text, phone.text)</span>
 
-<span class="pc bpc" id="L610" title="1 of 2 branches missed.">            if (inEditMode) {</span>
-<span class="nc" id="L611">                completedLabel.text = MessageBundle.getMess(&quot;label.teacherUpdated&quot;)</span>
-<span class="nc" id="L612">                val deletedAvailability = getDeletedAvailability()</span>
+<span class="pc bpc" id="L609" title="1 of 2 branches missed.">            if (inEditMode) {</span>
+<span class="nc" id="L610">                completedLabel.text = MessageBundle.getMess(&quot;label.teacherUpdated&quot;)</span>
+<span class="nc" id="L611">                val deletedAvailability = getDeletedAvailability()</span>
 
-<span class="nc bnc" id="L614" title="All 4 branches missed.">                if (deletedAvailability.values.all { it.isEmpty() })</span>
+<span class="nc bnc" id="L613" title="All 4 branches missed.">                if (deletedAvailability.values.all { it.isEmpty() })</span>
                 {
-<span class="nc" id="L616">                    updateTeacher(teacher, subjectCheckListEdit.selectionModel.selectedValues, deletedAvailability)</span>
-<span class="nc" id="L617">                    val vbox = step3.content as VBox</span>
-<span class="nc" id="L618">                    vbox.children.setAll(completedLabel, resetButton)</span>
+<span class="nc" id="L615">                    updateTeacher(teacher, subjectCheckListEdit.selectionModel.selectedValues, deletedAvailability)</span>
+<span class="nc" id="L616">                    val vbox = step3.content as VBox</span>
+<span class="nc" id="L617">                    vbox.children.setAll(completedLabel, resetButton)</span>
                 }
                 else
                 {
-<span class="nc" id="L622">                    val translatedKeysMap = deletedAvailability.mapKeys { (key, _) -&gt;</span>
-<span class="nc bnc" id="L623" title="All 4 branches missed.">                        when (key) {</span>
-<span class="nc" id="L624">                            &quot;Friday&quot; -&gt; MessageBundle.getMess(&quot;label.friday&quot;)</span>
-<span class="nc" id="L625">                            &quot;Saturday&quot; -&gt; MessageBundle.getMess(&quot;label.saturday&quot;)</span>
-<span class="nc" id="L626">                            &quot;Sunday&quot; -&gt; MessageBundle.getMess(&quot;label.sunday&quot;)</span>
-<span class="nc" id="L627">                            else -&gt; key</span>
+<span class="nc" id="L621">                    val translatedKeysMap = deletedAvailability.mapKeys { (key, _) -&gt;</span>
+<span class="nc bnc" id="L622" title="All 4 branches missed.">                        when (key) {</span>
+<span class="nc" id="L623">                            &quot;Friday&quot; -&gt; MessageBundle.getMess(&quot;label.friday&quot;)</span>
+<span class="nc" id="L624">                            &quot;Saturday&quot; -&gt; MessageBundle.getMess(&quot;label.saturday&quot;)</span>
+<span class="nc" id="L625">                            &quot;Sunday&quot; -&gt; MessageBundle.getMess(&quot;label.sunday&quot;)</span>
+<span class="nc" id="L626">                            else -&gt; key</span>
                         }
-<span class="nc" id="L629">                    }.toMutableMap()</span>
+<span class="nc" id="L628">                    }.toMutableMap()</span>
 
-<span class="nc" id="L631">                    showDialogYesNoMessage(&quot;${MessageBundle.getMess(&quot;warning.askBeforeDeleteAvailability&quot;)} $translatedKeysMap&quot;, ActionType.EDIT)</span>
-<span class="nc bnc" id="L632" title="All 2 branches missed.">                    if (!wantToEdit)</span>
+<span class="nc" id="L630">                    showDialogYesNoMessage(&quot;${MessageBundle.getMess(&quot;warning.askBeforeDeleteAvailability&quot;)} $translatedKeysMap&quot;, ActionType.EDIT)</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">                    if (!wantToEdit)</span>
                     {
-<span class="nc" id="L634">                        stepperEdit.previous()</span>
-<span class="nc" id="L635">                        hourCheckListEdit.selectionModel.clearSelection()</span>
-<span class="nc bnc" id="L636" title="All 2 branches missed.">                        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
-<span class="nc" id="L637">                            availabilityList[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
+<span class="nc" id="L633">                        stepperEdit.previous()</span>
+<span class="nc" id="L634">                        hourCheckListEdit.selectionModel.clearSelection()</span>
+<span class="nc bnc" id="L635" title="All 2 branches missed.">                        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
+<span class="nc" id="L636">                            availabilityList[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
                         }
 
-<span class="nc" id="L640">                        CommonUtils.clearBox(dayChoiceBoxEdit)</span>
+<span class="nc" id="L639">                        CommonUtils.clearBox(dayChoiceBoxEdit)</span>
                     }
                     else
                     {
-<span class="nc" id="L644">                        updateTeacher(teacher, subjectCheckListEdit.selectionModel.selectedValues, deletedAvailability)</span>
-<span class="nc" id="L645">                        val vbox = step3.content as VBox</span>
-<span class="nc" id="L646">                        vbox.children.setAll(completedLabel, resetButton)</span>
+<span class="nc" id="L643">                        updateTeacher(teacher, subjectCheckListEdit.selectionModel.selectedValues, deletedAvailability)</span>
+<span class="nc" id="L644">                        val vbox = step3.content as VBox</span>
+<span class="nc" id="L645">                        vbox.children.setAll(completedLabel, resetButton)</span>
                     }
                 }
             } else {
-<span class="fc" id="L650">                addTeacher(teacher, subjectCheckList.selectionModel.selectedValues)</span>
+<span class="fc" id="L649">                addTeacher(teacher, subjectCheckList.selectionModel.selectedValues)</span>
             }
 
-<span class="fc" id="L653">            val vbox = step3.content as VBox</span>
-<span class="fc" id="L654">            vbox.children.setAll(completedLabel, resetButton)</span>
+<span class="fc" id="L652">            val vbox = step3.content as VBox</span>
+<span class="fc" id="L653">            vbox.children.setAll(completedLabel, resetButton)</span>
         } else {
-<span class="fc" id="L656">            stepper.previous()</span>
+<span class="fc" id="L655">            stepper.previous()</span>
         }
-<span class="fc" id="L658">    }</span>
+<span class="fc" id="L657">    }</span>
 
 
     /**
@@ -667,36 +666,36 @@ import kotlin.reflect.KProperty1
     {
         //pobierz dyspozycyjność lastTeacherSelected i porównaj z availablity
 
-<span class="nc" id="L670">        val availabilityOld = mutableMapOf&lt;String, MutableList&lt;String&gt;&gt;().apply {</span>
-<span class="nc" id="L671">            this[&quot;Friday&quot;] = mutableListOf()</span>
-<span class="nc" id="L672">            this[&quot;Saturday&quot;] = mutableListOf()</span>
-<span class="nc" id="L673">            this[&quot;Sunday&quot;] = mutableListOf()</span>
-<span class="nc" id="L674">        }</span>
+<span class="nc" id="L669">        val availabilityOld = mutableMapOf&lt;String, MutableList&lt;String&gt;&gt;().apply {</span>
+<span class="nc" id="L670">            this[&quot;Friday&quot;] = mutableListOf()</span>
+<span class="nc" id="L671">            this[&quot;Saturday&quot;] = mutableListOf()</span>
+<span class="nc" id="L672">            this[&quot;Sunday&quot;] = mutableListOf()</span>
+<span class="nc" id="L673">        }</span>
 
-<span class="nc" id="L676">        var availabilityDeleted = mutableMapOf&lt;String, MutableList&lt;String&gt;&gt;().apply {</span>
-<span class="nc" id="L677">            this[&quot;Friday&quot;] = mutableListOf()</span>
-<span class="nc" id="L678">            this[&quot;Saturday&quot;] = mutableListOf()</span>
-<span class="nc" id="L679">            this[&quot;Sunday&quot;] = mutableListOf()</span>
-<span class="nc" id="L680">        }</span>
+<span class="nc" id="L675">        var availabilityDeleted = mutableMapOf&lt;String, MutableList&lt;String&gt;&gt;().apply {</span>
+<span class="nc" id="L676">            this[&quot;Friday&quot;] = mutableListOf()</span>
+<span class="nc" id="L677">            this[&quot;Saturday&quot;] = mutableListOf()</span>
+<span class="nc" id="L678">            this[&quot;Sunday&quot;] = mutableListOf()</span>
+<span class="nc" id="L679">        }</span>
 
-<span class="nc bnc" id="L682" title="All 2 branches missed.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
-<span class="nc" id="L683">            availabilityOld[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
+<span class="nc bnc" id="L681" title="All 2 branches missed.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
+<span class="nc" id="L682">            availabilityOld[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
         }
 
-<span class="nc bnc" id="L686" title="All 2 branches missed.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
-<span class="nc" id="L687">            availabilityDeleted[day] = availabilityOld[day]!!.subtract(availabilityList[day]!!).toMutableList()</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
+<span class="nc" id="L686">            availabilityDeleted[day] = availabilityOld[day]!!.subtract(availabilityList[day]!!).toMutableList()</span>
         }
 
-<span class="nc" id="L690">        var wasAvailabilityDeleted = false</span>
-<span class="nc bnc" id="L691" title="All 4 branches missed.">        if (availabilityDeleted.values.any { it.isEmpty() }) {</span>
-<span class="nc" id="L692">            wasAvailabilityDeleted = true</span>
+<span class="nc" id="L689">        var wasAvailabilityDeleted = false</span>
+<span class="nc bnc" id="L690" title="All 4 branches missed.">        if (availabilityDeleted.values.any { it.isEmpty() }) {</span>
+<span class="nc" id="L691">            wasAvailabilityDeleted = true</span>
         }
 
-<span class="nc bnc" id="L695" title="All 2 branches missed.">        if (wasAvailabilityDeleted)</span>
+<span class="nc bnc" id="L694" title="All 2 branches missed.">        if (wasAvailabilityDeleted)</span>
         {
-<span class="nc bnc" id="L697" title="All 4 branches missed.">            availabilityDeleted = availabilityDeleted.filterValues { it.isNotEmpty() }.toMutableMap()</span>
+<span class="nc bnc" id="L696" title="All 4 branches missed.">            availabilityDeleted = availabilityDeleted.filterValues { it.isNotEmpty() }.toMutableMap()</span>
         }
-<span class="nc" id="L699">        return availabilityDeleted</span>
+<span class="nc" id="L698">        return availabilityDeleted</span>
 
 
     }
@@ -718,12 +717,12 @@ import kotlin.reflect.KProperty1
      * @param stepper           Stepper dodawania lub edycji nauczyciela.
      */
     override fun setOnResetButton(firstName: MFXTextField, lastName: MFXTextField, phone: MFXTextField, email: MFXTextField, subjects: MFXCheckListView&lt;String&gt;, days: MFXComboBox&lt;String&gt;, hours: MFXCheckListView&lt;String&gt;, labelTeacher: Label, labelSubjects: Label, labelAvailability: Label, allHoursToggle: MFXToggleButton, stepper: MFXStepper) {
-<span class="pc bpc" id="L721" title="1 of 2 branches missed.">        if (this::dialog.isInitialized) dialog.close()</span>
-<span class="fc" id="L722">        CommonUtils.removeStepDependencies(stepper, firstName, lastName, phone, email)</span>
-<span class="fc" id="L723">        createSteps(firstName, lastName, phone, email, subjects, days, hours, stepper, labelTeacher, labelSubjects, labelAvailability, allHoursToggle)</span>
-<span class="pc bpc" id="L724" title="1 of 2 branches missed.">        if (!inEditMode) clearBoxes()</span>
-<span class="fc" id="L725">        inEditMode = false</span>
-<span class="fc" id="L726">    }</span>
+<span class="pc bpc" id="L720" title="1 of 2 branches missed.">        if (this::dialog.isInitialized) dialog.close()</span>
+<span class="fc" id="L721">        CommonUtils.removeStepDependencies(stepper, firstName, lastName, phone, email)</span>
+<span class="fc" id="L722">        createSteps(firstName, lastName, phone, email, subjects, days, hours, stepper, labelTeacher, labelSubjects, labelAvailability, allHoursToggle)</span>
+<span class="pc bpc" id="L723" title="1 of 2 branches missed.">        if (!inEditMode) clearBoxes()</span>
+<span class="fc" id="L724">        inEditMode = false</span>
+<span class="fc" id="L725">    }</span>
 
     /**
      * Tworzy kroki dla stepper procesu dodawania lub edycji nauczyciela.
@@ -743,25 +742,25 @@ import kotlin.reflect.KProperty1
      */
     override fun createSteps(firstName: MFXTextField, lastName: MFXTextField, phone: MFXTextField, email: MFXTextField, subjects: MFXCheckListView&lt;String&gt;, days: MFXComboBox&lt;String&gt;, hours: MFXCheckListView&lt;String&gt;, stepper: MFXStepper, labelTeacher: Label, labelSubjects: Label, labelAvailability: Label, allHoursToggle: MFXToggleButton) {
 
-<span class="fc" id="L746">        val step1 = createStep1(firstName, lastName, phone, email, stepper, labelTeacher)</span>
-<span class="fc" id="L747">        val step2 = createStep2(labelSubjects, subjects)</span>
-<span class="fc" id="L748">        val step3 = createStep3(labelAvailability, days, hours, allHoursToggle)</span>
-<span class="fc" id="L749">        createCompletedStep(firstName, lastName, phone, email, subjects, days, hours, labelTeacher, labelSubjects, labelAvailability, allHoursToggle, step3, stepper)</span>
+<span class="fc" id="L745">        val step1 = createStep1(firstName, lastName, phone, email, stepper, labelTeacher)</span>
+<span class="fc" id="L746">        val step2 = createStep2(labelSubjects, subjects)</span>
+<span class="fc" id="L747">        val step3 = createStep3(labelAvailability, days, hours, allHoursToggle)</span>
+<span class="fc" id="L748">        createCompletedStep(firstName, lastName, phone, email, subjects, days, hours, labelTeacher, labelSubjects, labelAvailability, allHoursToggle, step3, stepper)</span>
 
-<span class="fc" id="L751">        stepper.stepperToggles.addAll(listOf(step1, step2, step3))</span>
-<span class="fc" id="L752">        performActionsBetweenSteps(subjects, firstName, lastName, phone, email, stepper)</span>
-<span class="fc" id="L753">    }</span>
+<span class="fc" id="L750">        stepper.stepperToggles.addAll(listOf(step1, step2, step3))</span>
+<span class="fc" id="L751">        performActionsBetweenSteps(subjects, firstName, lastName, phone, email, stepper)</span>
+<span class="fc" id="L752">    }</span>
 
 
     /**
      * Obsługuje akcje wywoływane po kliknięciu na nauczyciela w tabeli.
      */
     override fun setOnTeacherSelected() {
-<span class="fc" id="L760">        CommonUtils.setOnItemSelected(teacherTableView, menu) { selectedRowIndex -&gt;</span>
-<span class="nc" id="L761">            lastSelectedTeacher = teacherTableView.items[selectedRowIndex]</span>
-<span class="nc" id="L762">            showContextMenu(selectedRowIndex, lastSelectedTeacher)</span>
-<span class="nc" id="L763">        }</span>
-<span class="fc" id="L764">    }</span>
+<span class="fc" id="L759">        CommonUtils.setOnItemSelected(teacherTableView, menu) { selectedRowIndex -&gt;</span>
+<span class="nc" id="L760">            lastSelectedTeacher = teacherTableView.items[selectedRowIndex]</span>
+<span class="nc" id="L761">            showContextMenu(selectedRowIndex, lastSelectedTeacher)</span>
+<span class="nc" id="L762">        }</span>
+<span class="fc" id="L763">    }</span>
 
 
     /**
@@ -772,29 +771,29 @@ import kotlin.reflect.KProperty1
      */
     override fun setOnDaySelected(dayBox: MFXComboBox&lt;String&gt;, hourBox: MFXCheckListView&lt;String&gt;) {
 
-<span class="fc" id="L775">        dayBox.valueProperty().addListener { _, oldItem, newItem -&gt;</span>
-<span class="fc" id="L776">            allHoursCheckBox.isDisable = false</span>
-<span class="fc" id="L777">            allHoursCheckBoxEdit.isDisable = false</span>
+<span class="fc" id="L774">        dayBox.valueProperty().addListener { _, oldItem, newItem -&gt;</span>
+<span class="fc" id="L775">            allHoursCheckBox.isDisable = false</span>
+<span class="fc" id="L776">            allHoursCheckBoxEdit.isDisable = false</span>
 
-<span class="fc" id="L779">            allHoursCheckBox.isSelected = false</span>
-<span class="fc" id="L780">            allHoursCheckBoxEdit.isSelected = false</span>
+<span class="fc" id="L778">            allHoursCheckBox.isSelected = false</span>
+<span class="fc" id="L779">            allHoursCheckBoxEdit.isSelected = false</span>
 
             //Dodaje do listy wszystkie godziny które były zaznaczone przed zmianą dnia
-<span class="pc bpc" id="L783" title="1 of 4 branches missed.">            if (oldItem!=null &amp;&amp; newItem!=null) {</span>
-<span class="pc bpc" id="L784" title="1 of 2 branches missed.">                val englishDay = if(MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(oldItem) else oldItem</span>
-<span class="fc" id="L785">                availabilityList[englishDay]!!.clear()</span>
-<span class="fc bfc" id="L786" title="All 2 branches covered.">                for (hour in hourBox.selectionModel.selectedValues) {</span>
-<span class="fc" id="L787">                    availabilityList[englishDay]!!.add(hour)</span>
+<span class="pc bpc" id="L782" title="1 of 4 branches missed.">            if (oldItem!=null &amp;&amp; newItem!=null) {</span>
+<span class="pc bpc" id="L783" title="1 of 2 branches missed.">                val englishDay = if(MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;))) EnglishDayConverter.fromPolishName(oldItem) else oldItem</span>
+<span class="fc" id="L784">                availabilityList[englishDay]!!.clear()</span>
+<span class="fc bfc" id="L785" title="All 2 branches covered.">                for (hour in hourBox.selectionModel.selectedValues) {</span>
+<span class="fc" id="L786">                    availabilityList[englishDay]!!.add(hour)</span>
                 }
             }
-<span class="fc" id="L790">            hourBox.selectionModel.clearSelection()</span>
+<span class="fc" id="L789">            hourBox.selectionModel.clearSelection()</span>
 
-<span class="pc bpc" id="L792" title="1 of 2 branches missed.">            if (newItem!=null) {</span>
-<span class="pc bpc" id="L793" title="1 of 2 branches missed.">                val englishDay = if(MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;) )) EnglishDayConverter.fromPolishName(newItem) else newItem</span>
-<span class="pc bpc" id="L794" title="1 of 2 branches missed.">                availabilityList[englishDay]?.forEach { item -&gt; hourBox.selectionModel.selectItem(item) }</span>
+<span class="pc bpc" id="L791" title="1 of 2 branches missed.">            if (newItem!=null) {</span>
+<span class="pc bpc" id="L792" title="1 of 2 branches missed.">                val englishDay = if(MessageBundle.bundle.locale.equals(Locale(&quot;pl&quot;, &quot;PL&quot;) )) EnglishDayConverter.fromPolishName(newItem) else newItem</span>
+<span class="pc bpc" id="L793" title="1 of 2 branches missed.">                availabilityList[englishDay]?.forEach { item -&gt; hourBox.selectionModel.selectItem(item) }</span>
             }
-<span class="fc" id="L796">        }</span>
-<span class="fc" id="L797">    }</span>
+<span class="fc" id="L795">        }</span>
+<span class="fc" id="L796">    }</span>
 
     /**
      * Konfiguruje pierwszy krok formularza dodawania lub edycji nauczyciela.
@@ -807,15 +806,15 @@ import kotlin.reflect.KProperty1
      */
     override fun setUpFirstStepForm(teacherLabel: Label, firstName: MFXTextField, lastName: MFXTextField, email: MFXTextField, phone: MFXTextField)
     {
-<span class="fc" id="L810">        teacherLabel.text = MessageBundle.getMess(&quot;label.fillData&quot;)</span>
-<span class="fc" id="L811">        teacherLabel.styleClass.add(&quot;header-label&quot;)</span>
-<span class="fc" id="L812">        firstName.floatingText = MessageBundle.getMess(&quot;label.firstname&quot;)</span>
-<span class="fc" id="L813">        lastName.floatingText = MessageBundle.getMess(&quot;label.lastname&quot;)</span>
-<span class="fc" id="L814">        email.floatingText = MessageBundle.getMess(&quot;label.email&quot;)</span>
-<span class="fc" id="L815">        phone.floatingText = MessageBundle.getMess(&quot;label.phone&quot;)</span>
-<span class="fc" id="L816">        phone.textLimit = 9</span>
-<span class="fc" id="L817">        teacherLabel.text = MessageBundle.getMess(&quot;label.fillData&quot;)</span>
-<span class="fc" id="L818">    }</span>
+<span class="fc" id="L809">        teacherLabel.text = MessageBundle.getMess(&quot;label.fillData&quot;)</span>
+<span class="fc" id="L810">        teacherLabel.styleClass.add(&quot;header-label&quot;)</span>
+<span class="fc" id="L811">        firstName.floatingText = MessageBundle.getMess(&quot;label.firstname&quot;)</span>
+<span class="fc" id="L812">        lastName.floatingText = MessageBundle.getMess(&quot;label.lastname&quot;)</span>
+<span class="fc" id="L813">        email.floatingText = MessageBundle.getMess(&quot;label.email&quot;)</span>
+<span class="fc" id="L814">        phone.floatingText = MessageBundle.getMess(&quot;label.phone&quot;)</span>
+<span class="fc" id="L815">        phone.textLimit = 9</span>
+<span class="fc" id="L816">        teacherLabel.text = MessageBundle.getMess(&quot;label.fillData&quot;)</span>
+<span class="fc" id="L817">    }</span>
 
     /**
      * Konfiguruje drugi krok formularza dodawania lub edycji nauczyciela.
@@ -825,14 +824,14 @@ import kotlin.reflect.KProperty1
      */
     override fun setUpSecondStepForm(subjects: MFXCheckListView&lt;String&gt;, subjectLabel: Label)
     {
-<span class="fc" id="L828">        subjects.items = subjectsModel.getSubjectsNames()</span>
-<span class="fc" id="L829">        subjectLabel.text = MessageBundle.getMess(&quot;label.chooseSubjects&quot;)</span>
-<span class="fc" id="L830">        subjectLabel.styleClass.add(&quot;header-label&quot;)</span>
-<span class="fc" id="L831">        subjects.features().enableBounceEffect()</span>
-<span class="fc" id="L832">        subjects.features().enableSmoothScrolling(0.5)</span>
-<span class="fc" id="L833">        subjects.prefWidth = 450.0</span>
-<span class="fc" id="L834">        subjects.depthLevel = DepthLevel.LEVEL0</span>
-<span class="fc" id="L835">    }</span>
+<span class="fc" id="L827">        subjects.items = subjectsModel.getSubjectsNames()</span>
+<span class="fc" id="L828">        subjectLabel.text = MessageBundle.getMess(&quot;label.chooseSubjects&quot;)</span>
+<span class="fc" id="L829">        subjectLabel.styleClass.add(&quot;header-label&quot;)</span>
+<span class="fc" id="L830">        subjects.features().enableBounceEffect()</span>
+<span class="fc" id="L831">        subjects.features().enableSmoothScrolling(0.5)</span>
+<span class="fc" id="L832">        subjects.prefWidth = 450.0</span>
+<span class="fc" id="L833">        subjects.depthLevel = DepthLevel.LEVEL0</span>
+<span class="fc" id="L834">    }</span>
 
     /**
      * Konfiguruje trzeci krok formularza dodawania lub edycji nauczyciela.
@@ -844,26 +843,26 @@ import kotlin.reflect.KProperty1
      */
     override fun setUpThirdStepForm(days: MFXComboBox&lt;String&gt;, availabilityLabel: Label, hours: MFXCheckListView&lt;String&gt;, allHours: MFXToggleButton)
     {
-<span class="fc" id="L847">        days.floatingText = MessageBundle.getMess(&quot;label.chooseDay&quot;)</span>
-<span class="fc" id="L848">        days.prefWidth = 150.0</span>
-<span class="fc" id="L849">        days.prefHeight = 60.0</span>
+<span class="fc" id="L846">        days.floatingText = MessageBundle.getMess(&quot;label.chooseDay&quot;)</span>
+<span class="fc" id="L847">        days.prefWidth = 150.0</span>
+<span class="fc" id="L848">        days.prefHeight = 60.0</span>
 
-<span class="fc" id="L851">        availabilityLabel.text = MessageBundle.getMess(&quot;label.addTeacherAvailability&quot;)</span>
-<span class="fc" id="L852">        availabilityLabel.styleClass.add(&quot;header-label&quot;)</span>
-<span class="fc" id="L853">        availabilityLabel.style = subjectLabelEdit.style</span>
+<span class="fc" id="L850">        availabilityLabel.text = MessageBundle.getMess(&quot;label.addTeacherAvailability&quot;)</span>
+<span class="fc" id="L851">        availabilityLabel.styleClass.add(&quot;header-label&quot;)</span>
+<span class="fc" id="L852">        availabilityLabel.style = subjectLabelEdit.style</span>
 
-<span class="fc" id="L855">        days.items = FXCollections.observableArrayList(</span>
-<span class="fc" id="L856">            MessageBundle.getMess(&quot;label.friday&quot;),</span>
-<span class="fc" id="L857">            MessageBundle.getMess(&quot;label.saturday&quot;),</span>
-<span class="fc" id="L858">            MessageBundle.getMess(&quot;label.sunday&quot;)</span>
+<span class="fc" id="L854">        days.items = FXCollections.observableArrayList(</span>
+<span class="fc" id="L855">            MessageBundle.getMess(&quot;label.friday&quot;),</span>
+<span class="fc" id="L856">            MessageBundle.getMess(&quot;label.saturday&quot;),</span>
+<span class="fc" id="L857">            MessageBundle.getMess(&quot;label.sunday&quot;)</span>
         )
-<span class="fc" id="L860">        hours.items = hoursModel.getHours()</span>
-<span class="fc" id="L861">        hours.features().enableBounceEffect()</span>
-<span class="fc" id="L862">        hours.features().enableSmoothScrolling(0.5)</span>
-<span class="fc" id="L863">        hours.depthLevel = DepthLevel.LEVEL0</span>
+<span class="fc" id="L859">        hours.items = hoursModel.getHours()</span>
+<span class="fc" id="L860">        hours.features().enableBounceEffect()</span>
+<span class="fc" id="L861">        hours.features().enableSmoothScrolling(0.5)</span>
+<span class="fc" id="L862">        hours.depthLevel = DepthLevel.LEVEL0</span>
 
-<span class="fc" id="L865">        allHours.text = MessageBundle.getMess(&quot;label.allHours&quot;)</span>
-<span class="fc" id="L866">    }</span>
+<span class="fc" id="L864">        allHours.text = MessageBundle.getMess(&quot;label.allHours&quot;)</span>
+<span class="fc" id="L865">    }</span>
 
 
     /**
@@ -883,11 +882,11 @@ import kotlin.reflect.KProperty1
      */
     override fun setupTeacherForm(teacherLabel: Label, firstName: MFXTextField, lastName: MFXTextField, email: MFXTextField, phone: MFXTextField, subjects: MFXCheckListView&lt;String&gt;, subjectLabel: Label, availabilityLabel: Label, hours: MFXCheckListView&lt;String&gt;, days: MFXComboBox&lt;String&gt;, allHours: MFXToggleButton) {
 
-<span class="fc" id="L886">        setUpFirstStepForm(teacherLabel, firstName, lastName, email, phone)</span>
-<span class="fc" id="L887">        setUpSecondStepForm(subjects,subjectLabel)</span>
-<span class="fc" id="L888">        setUpThirdStepForm(days, availabilityLabel, hours, allHours)</span>
-<span class="fc" id="L889">        CommonUtils.setTextFieldStyle(firstName, lastName, email, phone, days)</span>
-<span class="fc" id="L890">    }</span>
+<span class="fc" id="L885">        setUpFirstStepForm(teacherLabel, firstName, lastName, email, phone)</span>
+<span class="fc" id="L886">        setUpSecondStepForm(subjects,subjectLabel)</span>
+<span class="fc" id="L887">        setUpThirdStepForm(days, availabilityLabel, hours, allHours)</span>
+<span class="fc" id="L888">        CommonUtils.setTextFieldStyle(firstName, lastName, email, phone, days)</span>
+<span class="fc" id="L889">    }</span>
 
     /**
      * Ustawia ograniczenia na pola tekstowe walidujące poprawność danych.
@@ -898,102 +897,102 @@ import kotlin.reflect.KProperty1
      * @param phone             Pole tekstowe do wprowadzania numeru telefonu.
      */
     override fun setConstraints(firstName: MFXTextField, lastName: MFXTextField, phone: MFXTextField, email: MFXTextField) {
-<span class="fc" id="L901">        firstName.validator.constraint(</span>
-<span class="fc" id="L902">            ValidatorUtil.createMoreThanOneLetterConstraint(</span>
-<span class="fc" id="L903">                firstName.textProperty(),</span>
-<span class="fc" id="L904">                MessageBundle.getMess(&quot;firstname.validation.moreThanOneLetter&quot;)</span>
+<span class="fc" id="L900">        firstName.validator.constraint(</span>
+<span class="fc" id="L901">            ValidatorUtil.createMoreThanOneLetterConstraint(</span>
+<span class="fc" id="L902">                firstName.textProperty(),</span>
+<span class="fc" id="L903">                MessageBundle.getMess(&quot;firstname.validation.moreThanOneLetter&quot;)</span>
             )
         )
-<span class="fc" id="L907">        firstName.validator.constraint(</span>
-<span class="fc" id="L908">            ValidatorUtil.createLettersSmallExceptFirstConstraint(</span>
-<span class="fc" id="L909">                firstName.textProperty(),</span>
-<span class="fc" id="L910">                MessageBundle.getMess(&quot;firstname.validation.allLettersLowercaseExceptFirst&quot;)</span>
+<span class="fc" id="L906">        firstName.validator.constraint(</span>
+<span class="fc" id="L907">            ValidatorUtil.createLettersSmallExceptFirstConstraint(</span>
+<span class="fc" id="L908">                firstName.textProperty(),</span>
+<span class="fc" id="L909">                MessageBundle.getMess(&quot;firstname.validation.allLettersLowercaseExceptFirst&quot;)</span>
             )
         )
-<span class="fc" id="L913">        firstName.validator.constraint(</span>
-<span class="fc" id="L914">            ValidatorUtil.createFirstLetterBigConstraint(</span>
-<span class="fc" id="L915">                firstName.textProperty(),</span>
-<span class="fc" id="L916">                MessageBundle.getMess(&quot;firstname.validation.startWithUppercase&quot;)</span>
+<span class="fc" id="L912">        firstName.validator.constraint(</span>
+<span class="fc" id="L913">            ValidatorUtil.createFirstLetterBigConstraint(</span>
+<span class="fc" id="L914">                firstName.textProperty(),</span>
+<span class="fc" id="L915">                MessageBundle.getMess(&quot;firstname.validation.startWithUppercase&quot;)</span>
             )
         )
-<span class="fc" id="L919">        firstName.validator.constraint(</span>
-<span class="fc" id="L920">            ValidatorUtil.createNoSpecialCharsConstraint(</span>
-<span class="fc" id="L921">                firstName.textProperty(),</span>
-<span class="fc" id="L922">                MessageBundle.getMess(&quot;firstname.validation.noSpecialChars&quot;)</span>
-            )
-        )
-
-<span class="fc" id="L926">        lastName.validator.constraint(</span>
-<span class="fc" id="L927">            ValidatorUtil.createMoreThanOneLetterConstraint(</span>
-<span class="fc" id="L928">                lastName.textProperty(),</span>
-<span class="fc" id="L929">                MessageBundle.getMess(&quot;lastname.validation.moreThanOneLetter&quot;)</span>
-            )
-        )
-<span class="fc" id="L932">        lastName.validator.constraint(</span>
-<span class="fc" id="L933">            ValidatorUtil.createFirstLetterBigConstraint(</span>
-<span class="fc" id="L934">                lastName.textProperty(),</span>
-<span class="fc" id="L935">                MessageBundle.getMess(&quot;lastname.validation.startWithUppercase&quot;)</span>
-            )
-        )
-<span class="fc" id="L938">        lastName.validator.constraint(</span>
-<span class="fc" id="L939">            ValidatorUtil.createNoSpecialCharsConstraint(</span>
-<span class="fc" id="L940">                lastName.textProperty(),</span>
-<span class="fc" id="L941">                MessageBundle.getMess(&quot;lastname.validation.noSpecialChars&quot;)</span>
+<span class="fc" id="L918">        firstName.validator.constraint(</span>
+<span class="fc" id="L919">            ValidatorUtil.createNoSpecialCharsConstraint(</span>
+<span class="fc" id="L920">                firstName.textProperty(),</span>
+<span class="fc" id="L921">                MessageBundle.getMess(&quot;firstname.validation.noSpecialChars&quot;)</span>
             )
         )
 
-<span class="fc" id="L945">        phone.validator.constraint(</span>
-<span class="fc" id="L946">            ValidatorUtil.createOnlyDigitsAllowedConstraint(</span>
-<span class="fc" id="L947">                phone.textProperty(),</span>
-<span class="fc" id="L948">                MessageBundle.getMess(&quot;phone.validation.onlyNumbers&quot;)</span>
+<span class="fc" id="L925">        lastName.validator.constraint(</span>
+<span class="fc" id="L926">            ValidatorUtil.createMoreThanOneLetterConstraint(</span>
+<span class="fc" id="L927">                lastName.textProperty(),</span>
+<span class="fc" id="L928">                MessageBundle.getMess(&quot;lastname.validation.moreThanOneLetter&quot;)</span>
             )
         )
-<span class="fc" id="L951">        phone.validator.constraint(</span>
-<span class="fc" id="L952">            ValidatorUtil.createExactlyNineDigitsConstraint(</span>
-<span class="fc" id="L953">                phone.textProperty(),</span>
-<span class="fc" id="L954">                MessageBundle.getMess(&quot;phone.validation.nineDigits&quot;)</span>
+<span class="fc" id="L931">        lastName.validator.constraint(</span>
+<span class="fc" id="L932">            ValidatorUtil.createFirstLetterBigConstraint(</span>
+<span class="fc" id="L933">                lastName.textProperty(),</span>
+<span class="fc" id="L934">                MessageBundle.getMess(&quot;lastname.validation.startWithUppercase&quot;)</span>
             )
         )
-
-<span class="fc" id="L958">        email.validator.constraint(</span>
-<span class="fc" id="L959">            ValidatorUtil.createIncorrectEmailConstraint(</span>
-<span class="fc" id="L960">                email.textProperty(),</span>
-<span class="fc" id="L961">                MessageBundle.getMess(&quot;email.validation.incorrectEmail&quot;)</span>
-            )
-        )
-<span class="fc" id="L964">        email.validator.constraint(</span>
-<span class="fc" id="L965">            ValidatorUtil.createNotEmptyConstraint(</span>
-<span class="fc" id="L966">                email.textProperty(),</span>
-<span class="fc" id="L967">                MessageBundle.getMess(&quot;email.validation.notEmpty&quot;)</span>
+<span class="fc" id="L937">        lastName.validator.constraint(</span>
+<span class="fc" id="L938">            ValidatorUtil.createNoSpecialCharsConstraint(</span>
+<span class="fc" id="L939">                lastName.textProperty(),</span>
+<span class="fc" id="L940">                MessageBundle.getMess(&quot;lastname.validation.noSpecialChars&quot;)</span>
             )
         )
 
-<span class="fc" id="L971">    }</span>
+<span class="fc" id="L944">        phone.validator.constraint(</span>
+<span class="fc" id="L945">            ValidatorUtil.createOnlyDigitsAllowedConstraint(</span>
+<span class="fc" id="L946">                phone.textProperty(),</span>
+<span class="fc" id="L947">                MessageBundle.getMess(&quot;phone.validation.onlyNumbers&quot;)</span>
+            )
+        )
+<span class="fc" id="L950">        phone.validator.constraint(</span>
+<span class="fc" id="L951">            ValidatorUtil.createExactlyNineDigitsConstraint(</span>
+<span class="fc" id="L952">                phone.textProperty(),</span>
+<span class="fc" id="L953">                MessageBundle.getMess(&quot;phone.validation.nineDigits&quot;)</span>
+            )
+        )
+
+<span class="fc" id="L957">        email.validator.constraint(</span>
+<span class="fc" id="L958">            ValidatorUtil.createIncorrectEmailConstraint(</span>
+<span class="fc" id="L959">                email.textProperty(),</span>
+<span class="fc" id="L960">                MessageBundle.getMess(&quot;email.validation.incorrectEmail&quot;)</span>
+            )
+        )
+<span class="fc" id="L963">        email.validator.constraint(</span>
+<span class="fc" id="L964">            ValidatorUtil.createNotEmptyConstraint(</span>
+<span class="fc" id="L965">                email.textProperty(),</span>
+<span class="fc" id="L966">                MessageBundle.getMess(&quot;email.validation.notEmpty&quot;)</span>
+            )
+        )
+
+<span class="fc" id="L970">    }</span>
 
     /**
      * Metoda wywoływana podczas zmiany zakładek przez użytkownika - czyści panel.
      */
     override fun onTabsChanged() {
-<span class="fc" id="L977">        CommonUtils.removeStepDependencies(stepper, firstNameTextField, lastNameTextField, phoneTextField, emailTextField)</span>
-<span class="fc" id="L978">        createSteps(firstNameTextField, lastNameTextField, phoneTextField, emailTextField, subjectCheckList, dayChoiceBox, hourCheckList, stepper, teacherLabel, subjectLabel, availabilityLabel, allHoursCheckBox)</span>
-<span class="fc" id="L979">        clearBoxes()</span>
-<span class="fc" id="L980">        teacherTableView.update()</span>
-<span class="fc" id="L981">        teacherTableView.selectionModel.clearSelection()</span>
-<span class="fc" id="L982">        teacherTableView.items.clear()</span>
-<span class="fc" id="L983">    }</span>
+<span class="fc" id="L976">        CommonUtils.removeStepDependencies(stepper, firstNameTextField, lastNameTextField, phoneTextField, emailTextField)</span>
+<span class="fc" id="L977">        createSteps(firstNameTextField, lastNameTextField, phoneTextField, emailTextField, subjectCheckList, dayChoiceBox, hourCheckList, stepper, teacherLabel, subjectLabel, availabilityLabel, allHoursCheckBox)</span>
+<span class="fc" id="L978">        clearBoxes()</span>
+<span class="fc" id="L979">        teacherTableView.update()</span>
+<span class="fc" id="L980">        teacherTableView.selectionModel.clearSelection()</span>
+<span class="fc" id="L981">        teacherTableView.items.clear()</span>
+<span class="fc" id="L982">    }</span>
 
     /**
      * Czyści pola tekstowe formularza.
      */
     override fun clearBoxes() {
-<span class="fc" id="L989">        firstNameTextField.clear()</span>
-<span class="fc" id="L990">        lastNameTextField.clear()</span>
-<span class="fc" id="L991">        phoneTextField.clear()</span>
-<span class="fc" id="L992">        emailTextField.clear()</span>
-<span class="fc" id="L993">        subjectCheckList.selectionModel.clearSelection()</span>
-<span class="fc" id="L994">        hourCheckList.selectionModel.clearSelection()</span>
-<span class="fc" id="L995">        CommonUtils.clearBox(dayChoiceBox)</span>
-<span class="fc" id="L996">    }</span>
+<span class="fc" id="L988">        firstNameTextField.clear()</span>
+<span class="fc" id="L989">        lastNameTextField.clear()</span>
+<span class="fc" id="L990">        phoneTextField.clear()</span>
+<span class="fc" id="L991">        emailTextField.clear()</span>
+<span class="fc" id="L992">        subjectCheckList.selectionModel.clearSelection()</span>
+<span class="fc" id="L993">        hourCheckList.selectionModel.clearSelection()</span>
+<span class="fc" id="L994">        CommonUtils.clearBox(dayChoiceBox)</span>
+<span class="fc" id="L995">    }</span>
 
     /**
      * Obsługuje akcje wywoływane po drugim kroku podczas dodawania lub edycji nauczyciela.
@@ -1003,21 +1002,25 @@ import kotlin.reflect.KProperty1
      */
     override fun handleActionsAfterSecondStep(stepper: MFXStepper, subjects: MFXCheckListView&lt;String&gt;)
     {
-<span class="nc bnc" id="L1006" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[2])</span>
+<span class="nc bnc" id="L1005" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[2])</span>
         {
             //Cofnij jeśli nie wybrano przedmiotów dla nauczyciela
-<span class="nc bnc" id="L1009" title="All 2 branches missed.">            if (subjects.selectionModel.selectedValues.isEmpty())</span>
+<span class="nc bnc" id="L1008" title="All 2 branches missed.">            if (subjects.selectionModel.selectedValues.isEmpty())</span>
             {
-<span class="nc" id="L1011">                stepper.previous()</span>
-<span class="nc" id="L1012">                MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherAddingError&quot;), MessageBundle.getMess(&quot;warning.shouldChooseSubjects&quot;))</span>
+<span class="nc" id="L1010">                stepper.previous()</span>
+<span class="nc" id="L1011">                MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherAddingError&quot;), MessageBundle.getMess(&quot;warning.shouldChooseSubjects&quot;))</span>
             }
 
-<span class="nc bnc" id="L1015" title="All 4 branches missed.">            else if (stepper == stepperEdit &amp;&amp; !messageShownSubjects)</span>
+<span class="nc bnc" id="L1014" title="All 4 branches missed.">            else if (stepper == stepperEdit &amp;&amp; !messageShownSubjects)</span>
             {
-<span class="nc" id="L1017">                checkIfOldSubjectWasDeleted(subjects)</span>
+<span class="nc" id="L1016">                checkIfOldSubjectWasDeleted(subjects)</span>
+            }
+<span class="nc bnc" id="L1018" title="All 2 branches missed.">            else if (stepper == this.stepper)</span>
+            {
+<span class="nc" id="L1020">                availabilityList.values.forEach { it.clear() }</span>
             }
         }
-<span class="nc" id="L1020">    }</span>
+<span class="nc" id="L1023">    }</span>
 
     /**
      * Sprawdza, które przedmioty z listy przedmiotów nauczyciela nie zostały wybrane na nowej liście
@@ -1026,25 +1029,25 @@ import kotlin.reflect.KProperty1
      */
     fun checkIfOldSubjectWasDeleted(subjects: MFXCheckListView&lt;String&gt;)
     {
-<span class="fc" id="L1029">        val newSubjects = subjects.selectionModel.selectedValues</span>
-<span class="fc" id="L1030">        val oldSubjects = teachersModel.getTeacherSubjects(lastSelectedTeacher)</span>
-<span class="fc" id="L1031">        val deletedSubjects = oldSubjects-newSubjects.toSet()</span>
-<span class="pc bpc" id="L1032" title="2 of 4 branches missed.">        if (deletedSubjects.isNotEmpty())</span>
+<span class="fc" id="L1032">        val newSubjects = subjects.selectionModel.selectedValues</span>
+<span class="fc" id="L1033">        val oldSubjects = teachersModel.getTeacherSubjects(lastSelectedTeacher)</span>
+<span class="fc" id="L1034">        val deletedSubjects = oldSubjects-newSubjects.toSet()</span>
+<span class="pc bpc" id="L1035" title="2 of 4 branches missed.">        if (deletedSubjects.isNotEmpty())</span>
         {
-<span class="fc" id="L1034">            showDialogYesNoMessage(&quot;${MessageBundle.getMess(&quot;warning.askBeforeDeleteSubject&quot;)} $deletedSubjects&quot;, ActionType.EDIT)</span>
-<span class="pc bpc" id="L1035" title="1 of 2 branches missed.">            if (!wantToEdit)</span>
+<span class="fc" id="L1037">            showDialogYesNoMessage(&quot;${MessageBundle.getMess(&quot;warning.askBeforeDeleteSubject&quot;)} $deletedSubjects&quot;, ActionType.EDIT)</span>
+<span class="pc bpc" id="L1038" title="1 of 2 branches missed.">            if (!wantToEdit)</span>
             {
-<span class="fc" id="L1037">                stepperEdit.previous()</span>
-<span class="fc" id="L1038">                subjectCheckListEdit.selectionModel.clearSelection()</span>
+<span class="fc" id="L1040">                stepperEdit.previous()</span>
+<span class="fc" id="L1041">                subjectCheckListEdit.selectionModel.clearSelection()</span>
 
-<span class="fc bfc" id="L1040" title="All 2 branches covered.">                for (item in oldSubjects)</span>
+<span class="fc bfc" id="L1043" title="All 2 branches covered.">                for (item in oldSubjects)</span>
                 {
-<span class="fc" id="L1042">                    subjectCheckListEdit.selectionModel.selectItem(item)</span>
+<span class="fc" id="L1045">                    subjectCheckListEdit.selectionModel.selectItem(item)</span>
                 }
             }
-<span class="nc" id="L1045">            else messageShownSubjects = true</span>
+<span class="nc" id="L1048">            else messageShownSubjects = true</span>
         }
-<span class="fc" id="L1047">    }</span>
+<span class="fc" id="L1050">    }</span>
 
     /**
      * Sprawdza czy w bazie danych nie ma już podobnych lub takich samych danych podczas dodawania nauczyciela.
@@ -1053,14 +1056,14 @@ import kotlin.reflect.KProperty1
      */
     override fun checkDBWhileAdding(teacher: Teacher)
     {
-<span class="fc" id="L1056">        try {</span>
-<span class="nc" id="L1057">            teachersModel.checkDBwhileAdding(teacher)</span>
-<span class="fc" id="L1058">        }catch (e:DuplicatesException)</span>
+<span class="fc" id="L1059">        try {</span>
+<span class="nc" id="L1060">            teachersModel.checkDBwhileAdding(teacher)</span>
+<span class="fc" id="L1061">        }catch (e:DuplicatesException)</span>
         {
-<span class="fc" id="L1060">            stepper.previous()</span>
-<span class="fc" id="L1061">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherAddingError&quot;), e.message!!)</span>
+<span class="fc" id="L1063">            stepper.previous()</span>
+<span class="fc" id="L1064">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherAddingError&quot;), e.message!!)</span>
         }
-<span class="fc" id="L1063">    }</span>
+<span class="fc" id="L1066">    }</span>
 
     /**
      * Sprawdza czy w bazie danych nie ma już podobnych lub takich samych danych podczas edycji nauczyciela.
@@ -1069,20 +1072,20 @@ import kotlin.reflect.KProperty1
      */
     override fun checkDBWhileEditing(teacher: Teacher)
     {
-<span class="fc" id="L1072">        try {</span>
-<span class="nc" id="L1073">            teachersModel.checkDBwhileEditing(teacher, lastSelectedTeacher, messageShown)</span>
-<span class="fc" id="L1074">        }catch (e:DuplicatesException)</span>
+<span class="fc" id="L1075">        try {</span>
+<span class="nc" id="L1076">            teachersModel.checkDBwhileEditing(teacher, lastSelectedTeacher, messageShown)</span>
+<span class="fc" id="L1077">        }catch (e:DuplicatesException)</span>
         {
-<span class="fc" id="L1076">            stepperEdit.previous()</span>
-<span class="fc" id="L1077">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherEditingError&quot;), e.message!!)</span>
+<span class="fc" id="L1079">            stepperEdit.previous()</span>
+<span class="fc" id="L1080">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.teacherEditingError&quot;), e.message!!)</span>
         }
-<span class="nc" id="L1079">        catch (e:IdenticalObjectExistsException)</span>
+<span class="nc" id="L1082">        catch (e:IdenticalObjectExistsException)</span>
         {
-<span class="nc" id="L1081">            showDialogYesNoMessage(e.message!!, ActionType.EDIT)</span>
-<span class="nc bnc" id="L1082" title="All 2 branches missed.">            if (!wantToEdit) stepperEdit.previous()</span>
-<span class="nc" id="L1083">            else messageShown = true</span>
+<span class="nc" id="L1084">            showDialogYesNoMessage(e.message!!, ActionType.EDIT)</span>
+<span class="nc bnc" id="L1085" title="All 2 branches missed.">            if (!wantToEdit) stepperEdit.previous()</span>
+<span class="nc" id="L1086">            else messageShown = true</span>
         }
-<span class="fc" id="L1085">    }</span>
+<span class="fc" id="L1088">    }</span>
 
 
     /**
@@ -1096,19 +1099,19 @@ import kotlin.reflect.KProperty1
      */
     override fun handleActionsAfterFirstStep(stepper: MFXStepper, firstname: MFXTextField, lastname: MFXTextField, phone: MFXTextField, email: MFXTextField)
     {
-<span class="nc bnc" id="L1099" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[1])</span>
+<span class="nc bnc" id="L1102" title="All 2 branches missed.">        if (stepper.currentStepperNode == stepper.stepperToggles[1])</span>
         {
-<span class="nc" id="L1101">            val teacher = Teacher(</span>
-<span class="nc" id="L1102">                firstname = firstname.text,</span>
-<span class="nc" id="L1103">                lastname = lastname.text,</span>
-<span class="nc" id="L1104">                email = email.text,</span>
-<span class="nc" id="L1105">                phone = phone.text</span>
+<span class="nc" id="L1104">            val teacher = Teacher(</span>
+<span class="nc" id="L1105">                firstname = firstname.text,</span>
+<span class="nc" id="L1106">                lastname = lastname.text,</span>
+<span class="nc" id="L1107">                email = email.text,</span>
+<span class="nc" id="L1108">                phone = phone.text</span>
             )
 
-<span class="nc bnc" id="L1108" title="All 2 branches missed.">            if (!inEditMode) checkDBWhileAdding(teacher)</span>
-<span class="nc" id="L1109">            else checkDBWhileEditing(teacher)</span>
+<span class="nc bnc" id="L1111" title="All 2 branches missed.">            if (!inEditMode) checkDBWhileAdding(teacher)</span>
+<span class="nc" id="L1112">            else checkDBWhileEditing(teacher)</span>
         }
-<span class="nc" id="L1111">    }</span>
+<span class="nc" id="L1114">    }</span>
 
 
     /**
@@ -1123,18 +1126,18 @@ import kotlin.reflect.KProperty1
      */
     override fun performActionsBetweenSteps(subjects: MFXCheckListView&lt;String&gt;, firstname: MFXTextField, lastname: MFXTextField, phone: MFXTextField, email: MFXTextField, stepper: MFXStepper)
     {
-<span class="fc" id="L1126">        stepper.addEventHandler(MFXStepper.MFXStepperEvent.NEXT_EVENT) {</span>
-<span class="nc" id="L1127">            handleActionsAfterFirstStep(stepper, firstname, lastname, phone, email)</span>
-<span class="nc" id="L1128">            handleActionsAfterSecondStep(stepper, subjects)</span>
-<span class="nc" id="L1129">        }</span>
+<span class="fc" id="L1129">        stepper.addEventHandler(MFXStepper.MFXStepperEvent.NEXT_EVENT) {</span>
+<span class="nc" id="L1130">            handleActionsAfterFirstStep(stepper, firstname, lastname, phone, email)</span>
+<span class="nc" id="L1131">            handleActionsAfterSecondStep(stepper, subjects)</span>
+<span class="nc" id="L1132">        }</span>
 
-<span class="fc" id="L1131">        stepperEdit.addEventHandler(MFXStepper.MFXStepperEvent.BEFORE_PREVIOUS_EVENT) {</span>
-<span class="pc bpc" id="L1132" title="1 of 2 branches missed.">            if (stepperEdit.currentStepperNode == stepperEdit.stepperToggles[2])</span>
+<span class="fc" id="L1134">        stepperEdit.addEventHandler(MFXStepper.MFXStepperEvent.BEFORE_PREVIOUS_EVENT) {</span>
+<span class="pc bpc" id="L1135" title="1 of 2 branches missed.">            if (stepperEdit.currentStepperNode == stepperEdit.stepperToggles[2])</span>
             {
-<span class="nc" id="L1134">                messageShownSubjects = false</span>
+<span class="nc" id="L1137">                messageShownSubjects = false</span>
             }
-<span class="fc" id="L1136">        }</span>
-<span class="fc" id="L1137">    }</span>
+<span class="fc" id="L1139">        }</span>
+<span class="fc" id="L1140">    }</span>
 
     /**
      * Tworzy i wyświetla menu kontekstowe dla wybranego nauczyciela z tabeli.
@@ -1144,37 +1147,37 @@ import kotlin.reflect.KProperty1
      */
     override fun showContextMenu(selectedRowIndex: Int, selectedItem: Teacher) {
 
-<span class="fc" id="L1147">        val deleteButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.delete&quot;))</span>
-<span class="fc" id="L1148">        val editButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.editTeacher&quot;))</span>
-<span class="fc" id="L1149">        val showSubjectsButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.showSubjects&quot;))</span>
-<span class="fc" id="L1150">        val showAvailabilityButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.showAvailability&quot;))</span>
+<span class="fc" id="L1150">        val deleteButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.delete&quot;))</span>
+<span class="fc" id="L1151">        val editButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.editTeacher&quot;))</span>
+<span class="fc" id="L1152">        val showSubjectsButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.showSubjects&quot;))</span>
+<span class="fc" id="L1153">        val showAvailabilityButton = MFXContextMenuItem(MessageBundle.getMess(&quot;label.showAvailability&quot;))</span>
 
-<span class="fc" id="L1152">        deleteButton.graphic =  MFXFontIcon(&quot;fas-trash-can&quot;, 16.0, Color.BLACK)</span>
-<span class="fc" id="L1153">        editButton.graphic = MFXFontIcon(&quot;fas-wrench&quot;, 16.0, Color.BLACK)</span>
-<span class="fc" id="L1154">        showAvailabilityButton.graphic = MFXFontIcon(&quot;fas-clock&quot;, 16.0, Color.BLACK)</span>
-<span class="fc" id="L1155">        showSubjectsButton.graphic = MFXFontIcon(&quot;fas-file-pen&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L1155">        deleteButton.graphic =  MFXFontIcon(&quot;fas-trash-can&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L1156">        editButton.graphic = MFXFontIcon(&quot;fas-wrench&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L1157">        showAvailabilityButton.graphic = MFXFontIcon(&quot;fas-clock&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L1158">        showSubjectsButton.graphic = MFXFontIcon(&quot;fas-file-pen&quot;, 16.0, Color.BLACK)</span>
 
-<span class="fc" id="L1157">        deleteButton.setOnAction {</span>
-<span class="nc" id="L1158">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.teacher.askBeforeDelete&quot;), ActionType.DELETE)</span>
-<span class="nc" id="L1159">            deleteTeacher(selectedItem)</span>
-<span class="nc" id="L1160">        }</span>
+<span class="fc" id="L1160">        deleteButton.setOnAction {</span>
+<span class="nc" id="L1161">            showDialogYesNoMessage(MessageBundle.getMess(&quot;question.teacher.askBeforeDelete&quot;), ActionType.DELETE)</span>
+<span class="nc" id="L1162">            deleteTeacher(selectedItem)</span>
+<span class="nc" id="L1163">        }</span>
 
-<span class="fc" id="L1162">        editButton.setOnAction {</span>
-<span class="nc" id="L1163">            inEditMode = true</span>
-<span class="nc" id="L1164">            editTeacher(selectedItem)</span>
-<span class="nc" id="L1165">        }</span>
+<span class="fc" id="L1165">        editButton.setOnAction {</span>
+<span class="nc" id="L1166">            inEditMode = true</span>
+<span class="nc" id="L1167">            editTeacher(selectedItem)</span>
+<span class="nc" id="L1168">        }</span>
 
-<span class="fc" id="L1167">        showAvailabilityButton.setOnAction {</span>
-<span class="nc" id="L1168">            showAvailability(selectedItem)</span>
-<span class="nc" id="L1169">        }</span>
+<span class="fc" id="L1170">        showAvailabilityButton.setOnAction {</span>
+<span class="nc" id="L1171">            showAvailability(selectedItem)</span>
+<span class="nc" id="L1172">        }</span>
 
-<span class="fc" id="L1171">        showSubjectsButton.setOnAction {</span>
-<span class="nc" id="L1172">            showSubjects(selectedItem)</span>
-<span class="nc" id="L1173">        }</span>
+<span class="fc" id="L1174">        showSubjectsButton.setOnAction {</span>
+<span class="nc" id="L1175">            showSubjects(selectedItem)</span>
+<span class="nc" id="L1176">        }</span>
 
-<span class="fc" id="L1175">        CommonUtils.showContextMenu(selectedRowIndex, teacherTableView, menu, listOf(deleteButton, editButton, showAvailabilityButton, showSubjectsButton))</span>
+<span class="fc" id="L1178">        CommonUtils.showContextMenu(selectedRowIndex, teacherTableView, menu, listOf(deleteButton, editButton, showAvailabilityButton, showSubjectsButton))</span>
 
-<span class="fc" id="L1177">    }</span>
+<span class="fc" id="L1180">    }</span>
 
 
     /**
@@ -1183,21 +1186,21 @@ import kotlin.reflect.KProperty1
      * @param teacher Wybrany nauczyciel.
      */
     override fun showSubjects(teacher: Teacher) {
-<span class="fc" id="L1186">        val subjects = teachersModel.getTeacherSubjects(teacher)</span>
+<span class="fc" id="L1189">        val subjects = teachersModel.getTeacherSubjects(teacher)</span>
 
-<span class="pc bpc" id="L1188" title="1 of 2 branches missed.">        val labeltext = if (subjects.isEmpty())</span>
+<span class="pc bpc" id="L1191" title="1 of 2 branches missed.">        val labeltext = if (subjects.isEmpty())</span>
         {
-<span class="nc" id="L1190">            MessageBundle.getMess(&quot;label.noSubjects&quot;)</span>
+<span class="nc" id="L1193">            MessageBundle.getMess(&quot;label.noSubjects&quot;)</span>
         }
         else{
-<span class="fc" id="L1193">            MessageBundle.getMess(&quot;label.subjects&quot;)</span>
+<span class="fc" id="L1196">            MessageBundle.getMess(&quot;label.subjects&quot;)</span>
         }
 
-<span class="fc" id="L1196">        val vbox = DialogUtils.createListView(labeltext, subjects)</span>
-<span class="fc" id="L1197">        vbox.maxWidth = Double.MAX_VALUE</span>
+<span class="fc" id="L1199">        val vbox = DialogUtils.createListView(labeltext, subjects)</span>
+<span class="fc" id="L1200">        vbox.maxWidth = Double.MAX_VALUE</span>
 
-<span class="fc" id="L1199">        createAndShowDialog(vbox)</span>
-<span class="fc" id="L1200">    }</span>
+<span class="fc" id="L1202">        createAndShowDialog(vbox)</span>
+<span class="fc" id="L1203">    }</span>
 
     /**
      * Wyświetla dyspozycyjność wybranego nauczyciela.
@@ -1206,16 +1209,16 @@ import kotlin.reflect.KProperty1
      */
     override fun showAvailability(teacher: Teacher) {
 
-<span class="fc" id="L1209">        val availabilityList = teachersModel.getAvailability(teacher)</span>
-<span class="pc bpc" id="L1210" title="1 of 2 branches missed.">        val labelText = if (availabilityList.isEmpty()) {</span>
-<span class="nc" id="L1211">            MessageBundle.getMess(&quot;label.noAvailability&quot;)</span>
+<span class="fc" id="L1212">        val availabilityList = teachersModel.getAvailability(teacher)</span>
+<span class="pc bpc" id="L1213" title="1 of 2 branches missed.">        val labelText = if (availabilityList.isEmpty()) {</span>
+<span class="nc" id="L1214">            MessageBundle.getMess(&quot;label.noAvailability&quot;)</span>
         } else {
-<span class="fc" id="L1213">            MessageBundle.getMess(&quot;label.availability&quot;)</span>
+<span class="fc" id="L1216">            MessageBundle.getMess(&quot;label.availability&quot;)</span>
         }
 
-<span class="fc" id="L1216">        val vbox = DialogUtils.createListView(labelText, availabilityList, 300.0)</span>
-<span class="fc" id="L1217">        createAndShowDialog(vbox)</span>
-<span class="fc" id="L1218">    }</span>
+<span class="fc" id="L1219">        val vbox = DialogUtils.createListView(labelText, availabilityList, 300.0)</span>
+<span class="fc" id="L1220">        createAndShowDialog(vbox)</span>
+<span class="fc" id="L1221">    }</span>
 
 
     /**
@@ -1224,30 +1227,30 @@ import kotlin.reflect.KProperty1
      * @param teacherToEdit Wybrany nauczyciel.
      */
     override fun editTeacher(teacherToEdit: Teacher) {
-<span class="fc" id="L1227">        val vbox = VBox()</span>
-<span class="fc" id="L1228">        vbox.children.addAll(stepperEdit)</span>
-<span class="fc" id="L1229">        stepperEdit.styleClass.add(&quot;stepper&quot;)</span>
+<span class="fc" id="L1230">        val vbox = VBox()</span>
+<span class="fc" id="L1231">        vbox.children.addAll(stepperEdit)</span>
+<span class="fc" id="L1232">        stepperEdit.styleClass.add(&quot;stepper&quot;)</span>
 
-<span class="fc" id="L1231">        firstNameTextFieldEdit.text = teacherToEdit.firstname</span>
-<span class="fc" id="L1232">        lastNameTextFieldEdit.text = teacherToEdit.lastname</span>
-<span class="fc" id="L1233">        phoneTextFieldEdit.text = teacherToEdit.phone</span>
-<span class="fc" id="L1234">        emailTextFieldEdit.text = teacherToEdit.email</span>
+<span class="fc" id="L1234">        firstNameTextFieldEdit.text = teacherToEdit.firstname</span>
+<span class="fc" id="L1235">        lastNameTextFieldEdit.text = teacherToEdit.lastname</span>
+<span class="fc" id="L1236">        phoneTextFieldEdit.text = teacherToEdit.phone</span>
+<span class="fc" id="L1237">        emailTextFieldEdit.text = teacherToEdit.email</span>
 
-<span class="fc" id="L1236">        subjectCheckListEdit.selectionModel.clearSelection()</span>
-<span class="fc" id="L1237">        val subjectList = teachersModel.getTeacherSubjects(teacherToEdit)</span>
+<span class="fc" id="L1239">        subjectCheckListEdit.selectionModel.clearSelection()</span>
+<span class="fc" id="L1240">        val subjectList = teachersModel.getTeacherSubjects(teacherToEdit)</span>
 
-<span class="fc bfc" id="L1239" title="All 2 branches covered.">        for (item in subjectList)</span>
+<span class="fc bfc" id="L1242" title="All 2 branches covered.">        for (item in subjectList)</span>
         {
-<span class="fc" id="L1241">            subjectCheckListEdit.selectionModel.selectItem(item)</span>
+<span class="fc" id="L1244">            subjectCheckListEdit.selectionModel.selectItem(item)</span>
         }
 
         //Jeśli nie wybrano żadnej dyspozycyjności
-<span class="fc bfc" id="L1245" title="All 2 branches covered.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
-<span class="fc" id="L1246">            availabilityList[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
+<span class="fc bfc" id="L1248" title="All 2 branches covered.">        for (day in listOf(&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)) {</span>
+<span class="fc" id="L1249">            availabilityList[day] = teachersModel.getAvailabilityByDay(lastSelectedTeacher, day.uppercase(Locale.getDefault())).toMutableList()</span>
         }
 
-<span class="fc" id="L1249">        createAndShowDialog(vbox)</span>
-<span class="fc" id="L1250">    }</span>
+<span class="fc" id="L1252">        createAndShowDialog(vbox)</span>
+<span class="fc" id="L1253">    }</span>
 
     /**
      * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
@@ -1256,50 +1259,50 @@ import kotlin.reflect.KProperty1
      */
     override fun showDialogYesNoMessage(content: String, type: ActionType) {
 
-<span class="fc" id="L1259">        val buttons = listOf(</span>
-<span class="fc" id="L1260">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
-<span class="nc bnc" id="L1261" title="All 3 branches missed.">                when (type) {</span>
-<span class="nc" id="L1262">                    ActionType.EDIT -&gt; wantToEdit = true</span>
-<span class="nc" id="L1263">                    ActionType.DELETE -&gt; wantToDelete = true</span>
+<span class="fc" id="L1262">        val buttons = listOf(</span>
+<span class="fc" id="L1263">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
+<span class="nc bnc" id="L1264" title="All 3 branches missed.">                when (type) {</span>
+<span class="nc" id="L1265">                    ActionType.EDIT -&gt; wantToEdit = true</span>
+<span class="nc" id="L1266">                    ActionType.DELETE -&gt; wantToDelete = true</span>
                 }
-<span class="nc" id="L1265">            },</span>
-<span class="fc" id="L1266">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
-<span class="nc bnc" id="L1267" title="All 3 branches missed.">                when (type) {</span>
-<span class="nc" id="L1268">                    ActionType.EDIT -&gt; wantToEdit = false</span>
-<span class="nc" id="L1269">                    ActionType.DELETE -&gt; wantToDelete = false</span>
+<span class="nc" id="L1268">            },</span>
+<span class="fc" id="L1269">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
+<span class="nc bnc" id="L1270" title="All 3 branches missed.">                when (type) {</span>
+<span class="nc" id="L1271">                    ActionType.EDIT -&gt; wantToEdit = false</span>
+<span class="nc" id="L1272">                    ActionType.DELETE -&gt; wantToDelete = false</span>
                 }
-<span class="nc" id="L1271">            }</span>
+<span class="nc" id="L1274">            }</span>
         )
 
-<span class="pc bpc" id="L1274" title="1 of 2 branches missed.">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, showTeachersButton.scene.window as Stage, buttons)</span>
-<span class="pc bpc" id="L1275" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
-<span class="fc" id="L1276">    }</span>
+<span class="pc bpc" id="L1277" title="1 of 2 branches missed.">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, showTeachersButton.scene.window as Stage, buttons)</span>
+<span class="pc bpc" id="L1278" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
+<span class="fc" id="L1279">    }</span>
 
     /**
      * Tworzy layout dodawania nauczycieli z pliku
      */
     fun createAddTeacherFromFileVBox(): VBox {
-<span class="fc" id="L1282">        val uploadButton = MFXButton()</span>
-<span class="fc" id="L1283">        val uploadTeachersLabel = Label()</span>
-<span class="fc" id="L1284">        val uploadTeachersToggle = MFXRectangleToggleNode()</span>
-<span class="fc" id="L1285">        uploadTeachersLabel.styleClass.add(&quot;header-label_white&quot;)</span>
-<span class="fc" id="L1286">        uploadTeachersToggle.labelTrailingIcon = MFXFontIcon(&quot;fas-list-ul&quot;, 16.0, Color.BLACK)</span>
-<span class="fc" id="L1287">        uploadTeachersToggle.text = MessageBundle.getMess(&quot;label.chooseFile&quot;)</span>
-<span class="fc" id="L1288">        uploadButton.text = MessageBundle.getMess(&quot;label.upload&quot;)</span>
-<span class="fc" id="L1289">        uploadTeachersLabel.text = MessageBundle.getMess(&quot;label.loadFileWithTeachers&quot;)</span>
-<span class="fc" id="L1290">        uploadTeachersToggle.id = &quot;comboWhite&quot;</span>
-<span class="fc" id="L1291">        uploadButton.id = &quot;customButton&quot;</span>
-<span class="fc" id="L1292">        MFXTooltip.of(uploadTeachersToggle, MessageBundle.getMess(&quot;label.patternInfo&quot;)).install()</span>
-<span class="fc" id="L1293">        uploadTeachersLabel.prefWidth = 700.0</span>
-<span class="fc" id="L1294">        uploadTeachersLabel.alignment = Pos.CENTER</span>
-<span class="fc" id="L1295">        uploadTeachersToggle.prefWidth = 380.0</span>
-<span class="pc bnc" id="L1296" title="All 2 branches missed.">        uploadTeachersToggle.setOnAction { ExcelUtils.searchFile(uploadTeachersToggle, showTeachersButton.scene.window as Stage) }</span>
-<span class="pc" id="L1297">        uploadButton.setOnAction { uploadFileTeachers(uploadTeachersToggle.text) }</span>
+<span class="fc" id="L1285">        val uploadButton = MFXButton()</span>
+<span class="fc" id="L1286">        val uploadTeachersLabel = Label()</span>
+<span class="fc" id="L1287">        val uploadTeachersToggle = MFXRectangleToggleNode()</span>
+<span class="fc" id="L1288">        uploadTeachersLabel.styleClass.add(&quot;header-label_white&quot;)</span>
+<span class="fc" id="L1289">        uploadTeachersToggle.labelTrailingIcon = MFXFontIcon(&quot;fas-list-ul&quot;, 16.0, Color.BLACK)</span>
+<span class="fc" id="L1290">        uploadTeachersToggle.text = MessageBundle.getMess(&quot;label.chooseFile&quot;)</span>
+<span class="fc" id="L1291">        uploadButton.text = MessageBundle.getMess(&quot;label.upload&quot;)</span>
+<span class="fc" id="L1292">        uploadTeachersLabel.text = MessageBundle.getMess(&quot;label.loadFileWithTeachers&quot;)</span>
+<span class="fc" id="L1293">        uploadTeachersToggle.id = &quot;comboWhite&quot;</span>
+<span class="fc" id="L1294">        uploadButton.id = &quot;customButton&quot;</span>
+<span class="fc" id="L1295">        MFXTooltip.of(uploadTeachersToggle, MessageBundle.getMess(&quot;label.patternInfo&quot;)).install()</span>
+<span class="fc" id="L1296">        uploadTeachersLabel.prefWidth = 700.0</span>
+<span class="fc" id="L1297">        uploadTeachersLabel.alignment = Pos.CENTER</span>
+<span class="fc" id="L1298">        uploadTeachersToggle.prefWidth = 380.0</span>
+<span class="pc bnc" id="L1299" title="All 2 branches missed.">        uploadTeachersToggle.setOnAction { ExcelUtils.searchFile(uploadTeachersToggle, showTeachersButton.scene.window as Stage) }</span>
+<span class="pc" id="L1300">        uploadButton.setOnAction { uploadFileTeachers(uploadTeachersToggle.text) }</span>
 
-<span class="fc" id="L1299">        val vbox = VBox(30.0, uploadTeachersLabel, uploadTeachersToggle, uploadButton)</span>
-<span class="fc" id="L1300">        vbox.alignment = Pos.CENTER</span>
+<span class="fc" id="L1302">        val vbox = VBox(30.0, uploadTeachersLabel, uploadTeachersToggle, uploadButton)</span>
+<span class="fc" id="L1303">        vbox.alignment = Pos.CENTER</span>
 
-<span class="fc" id="L1302">        return vbox</span>
+<span class="fc" id="L1305">        return vbox</span>
     }
 
     /**
@@ -1308,68 +1311,68 @@ import kotlin.reflect.KProperty1
      * @param vBox Kontener z zawartością okna dialogowego.
      */
     override fun createAndShowDialog(vBox: VBox) {
-<span class="fc" id="L1311">        vBox.alignment = Pos.CENTER</span>
+<span class="fc" id="L1314">        vBox.alignment = Pos.CENTER</span>
 
-<span class="fc" id="L1313">        val shouldBeBigger = vBox.children.contains(stepperEdit)</span>
-<span class="pc bpc" id="L1314" title="1 of 2 branches missed.">        dialog = DialogUtils.showCustomDialog(showTeachersButton.scene.window as Stage, vBox, shouldBeBigger) {</span>
-<span class="nc" id="L1315">            setOnDialogClosing()</span>
-<span class="nc" id="L1316">        }</span>
+<span class="fc" id="L1316">        val shouldBeBigger = vBox.children.contains(stepperEdit)</span>
+<span class="pc bpc" id="L1317" title="1 of 2 branches missed.">        dialog = DialogUtils.showCustomDialog(showTeachersButton.scene.window as Stage, vBox, shouldBeBigger) {</span>
+<span class="nc" id="L1318">            setOnDialogClosing()</span>
+<span class="nc" id="L1319">        }</span>
 
-<span class="pc bpc" id="L1318" title="1 of 2 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
-<span class="fc" id="L1319">    }</span>
+<span class="pc bpc" id="L1321" title="1 of 2 branches missed.">        if (dialog.owner.isShowing) dialog.showAndWait()</span>
+<span class="fc" id="L1322">    }</span>
 
     /**
      * Obsługuje zdarzenie zamknięcia okna dialogowego.
      */
     override fun setOnDialogClosing()
     {
-<span class="nc" id="L1326">        teacherTableView.selectionModel.clearSelection()</span>
-<span class="nc" id="L1327">        menu.hide()</span>
-<span class="nc" id="L1328">        messageShown=false</span>
-<span class="nc" id="L1329">        messageShownSubjects=false</span>
-<span class="nc" id="L1330">        inEditMode=false</span>
-<span class="nc" id="L1331">        CommonUtils.removeStepDependencies(stepperEdit, firstNameTextFieldEdit, lastNameTextFieldEdit, phoneTextFieldEdit, emailTextFieldEdit)</span>
-<span class="nc" id="L1332">        createSteps(firstNameTextFieldEdit, lastNameTextFieldEdit, phoneTextFieldEdit, emailTextFieldEdit, subjectCheckListEdit, dayChoiceBoxEdit, hourCheckListEdit, stepperEdit, teacherLabelEdit, subjectLabelEdit, availabilityLabelEdit, allHoursCheckBoxEdit)</span>
-<span class="nc" id="L1333">    }</span>
+<span class="nc" id="L1329">        teacherTableView.selectionModel.clearSelection()</span>
+<span class="nc" id="L1330">        menu.hide()</span>
+<span class="nc" id="L1331">        messageShown=false</span>
+<span class="nc" id="L1332">        messageShownSubjects=false</span>
+<span class="nc" id="L1333">        inEditMode=false</span>
+<span class="nc" id="L1334">        CommonUtils.removeStepDependencies(stepperEdit, firstNameTextFieldEdit, lastNameTextFieldEdit, phoneTextFieldEdit, emailTextFieldEdit)</span>
+<span class="nc" id="L1335">        createSteps(firstNameTextFieldEdit, lastNameTextFieldEdit, phoneTextFieldEdit, emailTextFieldEdit, subjectCheckListEdit, dayChoiceBoxEdit, hourCheckListEdit, stepperEdit, teacherLabelEdit, subjectLabelEdit, availabilityLabelEdit, allHoursCheckBoxEdit)</span>
+<span class="nc" id="L1336">    }</span>
 
 
     /**
      * Tworzy i konfiguruje tabelę z nauczycielami.
      */
     override fun setupTable() {
-<span class="fc" id="L1340">        val columns = mapOf&lt;MFXTableColumn&lt;Teacher&gt;, KProperty1&lt;Teacher, *&gt;&gt;(</span>
-<span class="pc" id="L1341">            MFXTableColumn(MessageBundle.getMess(&quot;label.firstname&quot;), false, Comparator.comparing(Teacher::firstname)) to Teacher::firstname,</span>
-<span class="pc" id="L1342">            MFXTableColumn(MessageBundle.getMess(&quot;label.lastname&quot;), false, Comparator.comparing(Teacher::lastname)) to Teacher::lastname,</span>
-<span class="pc" id="L1343">            MFXTableColumn(MessageBundle.getMess(&quot;label.email&quot;), false, Comparator.comparing(Teacher::email)) to Teacher::email,</span>
-<span class="pc" id="L1344">            MFXTableColumn(MessageBundle.getMess(&quot;label.phone&quot;), false, Comparator.comparing(Teacher::phone)) to Teacher::phone</span>
+<span class="fc" id="L1343">        val columns = mapOf&lt;MFXTableColumn&lt;Teacher&gt;, KProperty1&lt;Teacher, *&gt;&gt;(</span>
+<span class="pc" id="L1344">            MFXTableColumn(MessageBundle.getMess(&quot;label.firstname&quot;), false, Comparator.comparing(Teacher::firstname)) to Teacher::firstname,</span>
+<span class="pc" id="L1345">            MFXTableColumn(MessageBundle.getMess(&quot;label.lastname&quot;), false, Comparator.comparing(Teacher::lastname)) to Teacher::lastname,</span>
+<span class="pc" id="L1346">            MFXTableColumn(MessageBundle.getMess(&quot;label.email&quot;), false, Comparator.comparing(Teacher::email)) to Teacher::email,</span>
+<span class="pc" id="L1347">            MFXTableColumn(MessageBundle.getMess(&quot;label.phone&quot;), false, Comparator.comparing(Teacher::phone)) to Teacher::phone</span>
         )
         
-<span class="fc" id="L1347">        columns.forEach{ column -&gt;</span>
-<span class="fc" id="L1348">            column.key.rowCellFactory = Function&lt;Teacher, MFXTableRowCell&lt;Teacher?, *&gt;&gt;</span>
+<span class="fc" id="L1350">        columns.forEach{ column -&gt;</span>
+<span class="fc" id="L1351">            column.key.rowCellFactory = Function&lt;Teacher, MFXTableRowCell&lt;Teacher?, *&gt;&gt;</span>
             {
-<span class="nc" id="L1350">                val cell = MFXTableRowCell&lt;Teacher?, Any?&gt;(column.value)</span>
-<span class="nc" id="L1351">                cell.styleClass.add(&quot;table-cell&quot;)</span>
-<span class="nc" id="L1352">                cell</span>
+<span class="nc" id="L1353">                val cell = MFXTableRowCell&lt;Teacher?, Any?&gt;(column.value)</span>
+<span class="nc" id="L1354">                cell.styleClass.add(&quot;table-cell&quot;)</span>
+<span class="nc" id="L1355">                cell</span>
             }
-<span class="fc" id="L1354">        }</span>
+<span class="fc" id="L1357">        }</span>
 
         //Ustawia filtry
-<span class="fc" id="L1357">        teacherTableView.filters.addAll(</span>
-<span class="pc" id="L1358">            StringFilter(MessageBundle.getMess(&quot;label.firstname&quot;), Teacher::firstname),</span>
-<span class="pc" id="L1359">            StringFilter(MessageBundle.getMess(&quot;label.lastname&quot;), Teacher::lastname),</span>
-<span class="pc" id="L1360">            StringFilter(MessageBundle.getMess(&quot;label.email&quot;), Teacher::email),</span>
-<span class="pc" id="L1361">            StringFilter(MessageBundle.getMess(&quot;label.phone&quot;), Teacher::phone)</span>
+<span class="fc" id="L1360">        teacherTableView.filters.addAll(</span>
+<span class="pc" id="L1361">            StringFilter(MessageBundle.getMess(&quot;label.firstname&quot;), Teacher::firstname),</span>
+<span class="pc" id="L1362">            StringFilter(MessageBundle.getMess(&quot;label.lastname&quot;), Teacher::lastname),</span>
+<span class="pc" id="L1363">            StringFilter(MessageBundle.getMess(&quot;label.email&quot;), Teacher::email),</span>
+<span class="pc" id="L1364">            StringFilter(MessageBundle.getMess(&quot;label.phone&quot;), Teacher::phone)</span>
         )
 
-<span class="fc" id="L1364">        teacherTableView.tableColumns.addAll(columns.keys)</span>
+<span class="fc" id="L1367">        teacherTableView.tableColumns.addAll(columns.keys)</span>
 
-<span class="fc bfc" id="L1366" title="All 2 branches covered.">        for (i in 0 until teacherTableView.tableColumns.size) {</span>
-<span class="fc" id="L1367">            teacherTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+<span class="fc bfc" id="L1369" title="All 2 branches covered.">        for (i in 0 until teacherTableView.tableColumns.size) {</span>
+<span class="fc" id="L1370">            teacherTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
         }
 
-<span class="fc" id="L1370">        teacherTableView.tableColumns[2].minWidth = 150.0</span>
-<span class="fc" id="L1371">        teacherTableView.tableColumns[1].minWidth = 150.0</span>
-<span class="fc" id="L1372">        teacherTableView.isFooterVisible = true</span>
-<span class="fc" id="L1373">    }</span>
+<span class="fc" id="L1373">        teacherTableView.tableColumns[2].minWidth = 150.0</span>
+<span class="fc" id="L1374">        teacherTableView.tableColumns[1].minWidth = 150.0</span>
+<span class="fc" id="L1375">        teacherTableView.isFooterVisible = true</span>
+<span class="fc" id="L1376">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

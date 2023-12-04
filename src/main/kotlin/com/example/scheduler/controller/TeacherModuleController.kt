@@ -578,7 +578,6 @@ class TeacherModuleController: ITeacherModuleController, AdminTabsObserver, Tabs
         }
 
         stepper.setOnLastNext {
-            if (!inEditMode) {availabilityList.values.forEach { it.clear() }}
             checkLastStep(firstName, lastName, phone, email, subjects, days, hours, completedLabel, step3, resetButton, stepper)
         }
     }
@@ -1015,6 +1014,10 @@ class TeacherModuleController: ITeacherModuleController, AdminTabsObserver, Tabs
             else if (stepper == stepperEdit && !messageShownSubjects)
             {
                 checkIfOldSubjectWasDeleted(subjects)
+            }
+            else if (stepper == this.stepper)
+            {
+                availabilityList.values.forEach { it.clear() }
             }
         }
     }
