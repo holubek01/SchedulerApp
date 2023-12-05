@@ -290,13 +290,13 @@ class ShowPlanRoomsController: IShowPlanRoomsController, LocationObserver, TabsO
 
                         val sheet = ExcelUtils.createSheet(myWorkBook, planName)
 
-                        ExcelUtils.createTitle(sheet, headerCellStyle!!, locationChoiceBox.value, planTableView.tableColumns.size)
+                        ExcelUtils.createTitle(sheet, headerCellStyle, locationChoiceBox.value, planTableView.tableColumns.size)
                         ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)
-                        fillTable(sheet, cellStyle!!)
+                        fillTable(sheet, cellStyle)
                         ExcelUtils.setColumnsSize(sheet, planTableView)
 
                         fos = FileOutputStream(File(filePath))
-                        MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), MessageBundle.getMess("success.planForRooms.correctlyExported"))
+                        MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), "${MessageBundle.getMess("success.planForRooms.correctlyExported")}: $path")
                         myWorkBook.write(fos)
                     }
                     catch (e: IOException) {

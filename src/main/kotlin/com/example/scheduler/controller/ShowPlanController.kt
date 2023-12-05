@@ -868,7 +868,7 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
 
             }
 
-            MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), MessageBundle.getMess("success.teacher.correctlyExportedAll"))
+            MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), "${MessageBundle.getMess("success.teacher.correctlyExportedAll")}: $path")
         }
     }
 
@@ -904,7 +904,7 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
                         fos = FileOutputStream(File(filePath))
                         myWorkBook.write(fos)
 
-                        MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), MessageBundle.getMess("success.teacher.correctlyExported"))
+                        MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), "${MessageBundle.getMess("success.teacher.correctlyExported")}: $path")
                     } catch (e: IOException) {
                         MessageUtil.showErrorMessage(MessageBundle.getMess("warning.noSave"), MessageBundle.getMess("warning.fileAlreadyOpened"))
                     }
@@ -1017,7 +1017,7 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
                     }
                 }
 
-                MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), MessageBundle.getMess("success.plan.correctlyExportedAll"))
+                MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), "${MessageBundle.getMess("success.plan.correctlyExportedAll")} $path")
             }
 
             else{
@@ -1088,7 +1088,7 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
                             fos = FileOutputStream(File(filePath))
                             myWorkBook.write(fos)
 
-                            MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), MessageBundle.getMess("success.group.correctlyExported"))
+                            MessageUtil.showInfoMessage(MessageBundle.getMess("label.operationSucceed"), "${MessageBundle.getMess("success.group.correctlyExported")}: $path")
 
                         }
                         catch (e: IOException) {

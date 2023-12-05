@@ -399,6 +399,7 @@ class TeacherModuleController: ITeacherModuleController, AdminTabsObserver, Tabs
      * @return               Drugi krok formularza.
      */
     override fun createStep2(labelSubjects: Label, subjects: MFXCheckListView<String>): MFXStepperToggle {
+        subjects.items = subjectsModel.getSubjectsNames()
         val step = MFXStepperToggle(MessageBundle.getMess("label.subjects"), MFXFontIcon("fas-pen", 16.0, Color.web("#40F6F6")))
         val step2Box = VBox(30.0, labelSubjects, subjects)
 
