@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:43" hostname="DESKTOP-DVH4IG9" time="5.71">
+<testsuite name="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-12-13T09:07:56" hostname="DESKTOP-DVH4IG9" time="4.598">
   <properties/>
-  <testcase name="roomsUploadFromFileTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.895"/>
-  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.744"/>
-  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.7"/>
-  <testcase name="checkDBAddAndEditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.994"/>
-  <testcase name="removeDuplicatesAndAddRoomsTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.924"/>
-  <testcase name="createFormeditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.7"/>
-  <testcase name="createUpdateButtonTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.749"/>
+  <testcase name="roomsUploadFromFileTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.685"/>
+  <testcase name="showMenuTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.531"/>
+  <testcase name="messageTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.574"/>
+  <testcase name="checkDBAddAndEditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.895"/>
+  <testcase name="removeDuplicatesAndAddRoomsTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.65"/>
+  <testcase name="createFormeditLocationTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.64"/>
+  <testcase name="createUpdateButtonTest()" classname="com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest" time="0.619"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

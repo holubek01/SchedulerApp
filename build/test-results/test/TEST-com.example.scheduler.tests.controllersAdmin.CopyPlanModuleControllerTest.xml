@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:20" hostname="DESKTOP-DVH4IG9" time="7.67">
+<testsuite name="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2023-12-13T09:07:37" hostname="DESKTOP-DVH4IG9" time="7.112">
   <properties/>
-  <testcase name="checkCreateArrayOfDay()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="1.229"/>
-  <testcase name="copyPlanTest()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="5.787"/>
-  <testcase name="deleteSelectedPlans()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="0.652"/>
+  <testcase name="checkCreateArrayOfDay()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="1.183"/>
+  <testcase name="copyPlanTest()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="5.347"/>
+  <testcase name="deleteSelectedPlans()" classname="com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest" time="0.581"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

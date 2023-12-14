@@ -266,7 +266,7 @@ class TeachersModel {
      * Metoda obsługująca zdarzenia, gdy nowa lista przedmiotów nauczyciela nie obejmuje wszystkich starych przedmiotów
      * @param teacherID ID edytowanego nauczyciela
      * @param lastSelectedTeacher Ostatni wybrany nauczyciel z tabeli nauczycieli
-     * @param Nowa lista przedmiotów
+     * @param subjects Nowa lista przedmiotów
      */
     fun handleDeleteSubjects(teacherID: Int, lastSelectedTeacher: Teacher, subjects: List<String>) {
         val oldSubjects = getTeacherSubjects(lastSelectedTeacher)

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.scheduler.tests.Utils.ExcelUtilsTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2023-12-04T12:45:10" hostname="DESKTOP-DVH4IG9" time="5.152">
+<testsuite name="com.example.scheduler.tests.Utils.ExcelUtilsTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2023-12-13T09:07:27" hostname="DESKTOP-DVH4IG9" time="4.779">
   <properties/>
-  <testcase name="uploadSPNtest()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="1.63"/>
-  <testcase name="testLoadConfigProps()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.237"/>
-  <testcase name="testCreateOrGetSheet()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.264"/>
-  <testcase name="testCreateSheet()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.237"/>
-  <testcase name="testCreateTitle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.296"/>
-  <testcase name="testCreateHeaderStyle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.239"/>
+  <testcase name="uploadSPNtest()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="1.257"/>
+  <testcase name="testLoadConfigProps()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.231"/>
+  <testcase name="testCreateOrGetSheet()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.258"/>
+  <testcase name="testCreateSheet()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.239"/>
+  <testcase name="testCreateTitle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.275"/>
+  <testcase name="testCreateHeaderStyle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.232"/>
   <testcase name="testGroupPlacement()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.235"/>
-  <testcase name="testSetColumnsSize()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.439"/>
-  <testcase name="testCreateCellStyle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.233"/>
-  <testcase name="testGroupPlacement2()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.368"/>
-  <testcase name="testGroupPlacement3()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.251"/>
-  <testcase name="testGroupPlacement4()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.23"/>
-  <testcase name="testFillHeaders()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.251"/>
-  <testcase name="createPlanNameTest()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.228"/>
+  <testcase name="testSetColumnsSize()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.494"/>
+  <testcase name="testCreateCellStyle()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.232"/>
+  <testcase name="testGroupPlacement2()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.34"/>
+  <testcase name="testGroupPlacement3()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.249"/>
+  <testcase name="testGroupPlacement4()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.233"/>
+  <testcase name="testFillHeaders()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.257"/>
+  <testcase name="createPlanNameTest()" classname="com.example.scheduler.tests.Utils.ExcelUtilsTest" time="0.237"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

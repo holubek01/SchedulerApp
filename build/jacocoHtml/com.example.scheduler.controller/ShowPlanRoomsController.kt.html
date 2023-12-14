@@ -276,58 +276,57 @@ import java.util.function.Function
 <span class="fc" id="L276">                    var fos: FileOutputStream? = null</span>
 <span class="fc" id="L277">                    val prop = ExcelUtils.loadConfigProps()</span>
 <span class="fc" id="L278">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.locations.path&quot;)</span>
-<span class="fc" id="L279">                    println(path)</span>
 
-<span class="fc" id="L281">                    val filePath = &quot;$path/sale${locationChoiceBox.value}.xlsx&quot;</span>
-<span class="fc" id="L282">                    val folder = File(path)</span>
+<span class="fc" id="L280">                    val filePath = &quot;$path/sale${locationChoiceBox.value}.xlsx&quot;</span>
+<span class="fc" id="L281">                    val folder = File(path)</span>
 
-<span class="pc bpc" id="L284" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
 
-<span class="fc" id="L286">                    try {</span>
-<span class="fc" id="L287">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
-<span class="fc" id="L288">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
-<span class="fc" id="L289">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
-<span class="fc" id="L290">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+<span class="fc" id="L285">                    try {</span>
+<span class="fc" id="L286">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L287">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="fc" id="L288">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+<span class="fc" id="L289">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
 
-<span class="fc" id="L292">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="fc" id="L291">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
 
-<span class="fc" id="L294">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, locationChoiceBox.value, planTableView.tableColumns.size)</span>
-<span class="fc" id="L295">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
-<span class="fc" id="L296">                        fillTable(sheet, cellStyle!!)</span>
-<span class="fc" id="L297">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="fc" id="L293">                        ExcelUtils.createTitle(sheet, headerCellStyle, locationChoiceBox.value, planTableView.tableColumns.size)</span>
+<span class="fc" id="L294">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="fc" id="L295">                        fillTable(sheet, cellStyle)</span>
+<span class="fc" id="L296">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
 
-<span class="fc" id="L299">                        fos = FileOutputStream(File(filePath))</span>
-<span class="fc" id="L300">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.planForRooms.correctlyExported&quot;))</span>
-<span class="fc" id="L301">                        myWorkBook.write(fos)</span>
+<span class="fc" id="L298">                        fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L299">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.planForRooms.correctlyExported&quot;)}: $path&quot;)</span>
+<span class="fc" id="L300">                        myWorkBook.write(fos)</span>
                     }
-<span class="nc" id="L303">                    catch (e: IOException) {</span>
-<span class="nc" id="L304">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L302">                    catch (e: IOException) {</span>
+<span class="nc" id="L303">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
                     }
                     finally {
-<span class="pc bpc" id="L307" title="3 of 4 branches missed.">                        myWorkBook?.close()</span>
-<span class="pc bnc" id="L308" title="All 2 branches missed.">                        fos?.close()</span>
-<span class="fc" id="L309">                    }</span>
+<span class="pc bpc" id="L306" title="3 of 4 branches missed.">                        myWorkBook?.close()</span>
+<span class="pc bnc" id="L307" title="All 2 branches missed.">                        fos?.close()</span>
+<span class="fc" id="L308">                    }</span>
 
                 }
             }
-<span class="pc" id="L313">        }</span>
-<span class="fc" id="L314">    }</span>
+<span class="pc" id="L312">        }</span>
+<span class="fc" id="L313">    }</span>
 
     /**
      * Metoda wywoływana po zmianie lokalizacji w bazie danych (dodanie, usunięcie lub edycja lokalizacji).
      */
     override fun onLocationsChanged() {
-<span class="nc" id="L320">        locationChoiceBox.items = locationsModel.getLocationsNames()</span>
-<span class="nc" id="L321">    }</span>
+<span class="nc" id="L319">        locationChoiceBox.items = locationsModel.getLocationsNames()</span>
+<span class="nc" id="L320">    }</span>
 
     /**
      * Metoda wywoływana po zmianie zakładek - czyści kontrolki
      */
     override fun onTabsChanged() {
-<span class="nc" id="L327">        exportPlanButton.isDisable = true</span>
-<span class="nc" id="L328">        planTableView.items.clear()</span>
-<span class="nc" id="L329">        planTableView.tableColumns.clear()</span>
-<span class="nc" id="L330">        CommonUtils.clearBox(locationChoiceBox)</span>
-<span class="nc" id="L331">    }</span>
+<span class="nc" id="L326">        exportPlanButton.isDisable = true</span>
+<span class="nc" id="L327">        planTableView.items.clear()</span>
+<span class="nc" id="L328">        planTableView.tableColumns.clear()</span>
+<span class="nc" id="L329">        CommonUtils.clearBox(locationChoiceBox)</span>
+<span class="nc" id="L330">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

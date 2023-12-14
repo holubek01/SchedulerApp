@@ -610,19 +610,18 @@ import kotlin.reflect.KProperty1
     override fun setOnTeacherToChangeSelected(
         freeTeachers: MFXListView&lt;String&gt;,
         busyTeachers: MFXListView&lt;String&gt;,
-        classesToEdit: ClassesToRead
-    )
+        classesToEdit: ClassesToRead)
     {
-<span class="nc" id="L616">        freeTeachers.setOnMouseClicked {</span>
-<span class="nc" id="L617">            val selectedItem = freeTeachers.selectionModel.selectedValue</span>
-<span class="nc" id="L618">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected-&gt; classesToEdit.setAnotherTeacher(teacher,selected)}</span>
-<span class="nc" id="L619">        }</span>
+<span class="nc" id="L615">        freeTeachers.setOnMouseClicked {</span>
+<span class="nc" id="L616">            val selectedItem = freeTeachers.selectionModel.selectedValue</span>
+<span class="nc" id="L617">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected-&gt; classesToEdit.setAnotherTeacher(teacher,selected)}</span>
+<span class="nc" id="L618">        }</span>
 
-<span class="nc" id="L621">        busyTeachers.setOnMouseClicked {</span>
-<span class="nc" id="L622">            val selectedItem = busyTeachers.selectionModel.selectedValue</span>
-<span class="nc" id="L623">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected -&gt; classesToEdit.changeTeachers(teacher,selected)}</span>
-<span class="nc" id="L624">        }</span>
-<span class="nc" id="L625">    }</span>
+<span class="nc" id="L620">        busyTeachers.setOnMouseClicked {</span>
+<span class="nc" id="L621">            val selectedItem = busyTeachers.selectionModel.selectedValue</span>
+<span class="nc" id="L622">            handleTeacherSelection(selectedItem,classesToEdit) { teacher, selected -&gt; classesToEdit.changeTeachers(teacher,selected)}</span>
+<span class="nc" id="L623">        }</span>
+<span class="nc" id="L624">    }</span>
 
 
     /**
@@ -631,10 +630,10 @@ import kotlin.reflect.KProperty1
      */
     fun showPlanAfterChange(classesToEdit: ClassesToRead)
     {
-<span class="fc" id="L634">        dialog.close()</span>
-<span class="fc bfc" id="L635" title="All 2 branches covered.">        if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToEdit.group.split(&quot;, &quot;)[1], classesToEdit.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
-<span class="pc bpc" id="L636" title="1 of 2 branches missed.">        else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToEdit.teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
-<span class="fc" id="L637">    }</span>
+<span class="fc" id="L633">        dialog.close()</span>
+<span class="fc bfc" id="L634" title="All 2 branches covered.">        if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToEdit.group.split(&quot;, &quot;)[1], classesToEdit.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="pc bpc" id="L635" title="1 of 2 branches missed.">        else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToEdit.teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="fc" id="L636">    }</span>
 
     /**
      * Tworzy VBox dla okna zmiany nauczyciela.
@@ -644,36 +643,36 @@ import kotlin.reflect.KProperty1
      */
     override fun createChangeTeacherVbox(freeTeachers: MFXListView&lt;String&gt;, busyTeachers: MFXListView&lt;String&gt;): VBox
     {
-<span class="fc" id="L647">        val freeTeachersLabel = Label(MessageBundle.getMess(&quot;label.freeTeachers&quot;))</span>
-<span class="fc" id="L648">        val busyTeachersLabel = Label(MessageBundle.getMess(&quot;label.busyTeachers&quot;))</span>
-<span class="fc" id="L649">        freeTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
-<span class="fc" id="L650">        busyTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
-<span class="fc" id="L651">        freeTeachers.styleClass.add(&quot;customList2&quot;)</span>
-<span class="fc" id="L652">        busyTeachers.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L646">        val freeTeachersLabel = Label(MessageBundle.getMess(&quot;label.freeTeachers&quot;))</span>
+<span class="fc" id="L647">        val busyTeachersLabel = Label(MessageBundle.getMess(&quot;label.busyTeachers&quot;))</span>
+<span class="fc" id="L648">        freeTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L649">        busyTeachersLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="fc" id="L650">        freeTeachers.styleClass.add(&quot;customList2&quot;)</span>
+<span class="fc" id="L651">        busyTeachers.styleClass.add(&quot;customList2&quot;)</span>
 
-<span class="pc bpc" id="L654" title="3 of 4 branches missed.">        val vbox = if (freeTeachers.items.isEmpty() &amp;&amp; busyTeachers.items.isEmpty())</span>
+<span class="pc bpc" id="L653" title="3 of 4 branches missed.">        val vbox = if (freeTeachers.items.isEmpty() &amp;&amp; busyTeachers.items.isEmpty())</span>
         {
-<span class="nc" id="L656">            val noAvailabilityLabel = Label(MessageBundle.getMess(&quot;warning.noTeachers&quot;))</span>
-<span class="nc" id="L657">            noAvailabilityLabel.styleClass.add(&quot;header-label-big&quot;)</span>
-<span class="nc" id="L658">            VBox(noAvailabilityLabel)</span>
+<span class="nc" id="L655">            val noAvailabilityLabel = Label(MessageBundle.getMess(&quot;warning.noTeachers&quot;))</span>
+<span class="nc" id="L656">            noAvailabilityLabel.styleClass.add(&quot;header-label-big&quot;)</span>
+<span class="nc" id="L657">            VBox(noAvailabilityLabel)</span>
         }
         else{
-<span class="fc" id="L661">            val v1 = VBox(15.0, freeTeachersLabel, freeTeachers)</span>
-<span class="fc" id="L662">            v1.alignment = Pos.CENTER</span>
+<span class="fc" id="L660">            val v1 = VBox(15.0, freeTeachersLabel, freeTeachers)</span>
+<span class="fc" id="L661">            v1.alignment = Pos.CENTER</span>
 
-<span class="fc" id="L664">            val v2 = VBox(15.0, busyTeachersLabel, busyTeachers)</span>
-<span class="fc" id="L665">            v2.alignment = Pos.CENTER</span>
+<span class="fc" id="L663">            val v2 = VBox(15.0, busyTeachersLabel, busyTeachers)</span>
+<span class="fc" id="L664">            v2.alignment = Pos.CENTER</span>
 
-<span class="fc" id="L667">            val h1 = HBox(20.0, v1,v2)</span>
-<span class="fc" id="L668">            v1.prefWidth = 350.0</span>
-<span class="fc" id="L669">            v2.prefWidth = 350.0</span>
-<span class="fc" id="L670">            VBox(h1)</span>
+<span class="fc" id="L666">            val h1 = HBox(20.0, v1,v2)</span>
+<span class="fc" id="L667">            v1.prefWidth = 350.0</span>
+<span class="fc" id="L668">            v2.prefWidth = 350.0</span>
+<span class="fc" id="L669">            VBox(h1)</span>
         }
 
-<span class="fc" id="L673">        vbox.maxWidth = Double.MAX_VALUE</span>
-<span class="fc" id="L674">        vbox.alignment = Pos.CENTER</span>
+<span class="fc" id="L672">        vbox.maxWidth = Double.MAX_VALUE</span>
+<span class="fc" id="L673">        vbox.alignment = Pos.CENTER</span>
 
-<span class="fc" id="L676">        return vbox</span>
+<span class="fc" id="L675">        return vbox</span>
     }
 
 
@@ -687,21 +686,21 @@ import kotlin.reflect.KProperty1
      * @param classesToEdit Zajęcia, które mają zostać edytowane.
      */
     override fun changeTeacher(classesToEdit: ClassesToRead) {
-<span class="nc" id="L690">        val freeTeachers = MFXListView&lt;String&gt;()</span>
-<span class="nc" id="L691">        val busyTeachers = MFXListView&lt;String&gt;()</span>
+<span class="nc" id="L689">        val freeTeachers = MFXListView&lt;String&gt;()</span>
+<span class="nc" id="L690">        val busyTeachers = MFXListView&lt;String&gt;()</span>
 
         //Przedmiot którego aktualnie uczy nauczyciel musi być nauczany przez nauczyciela do zmiany
-<span class="nc" id="L694">        val subjects = teachersModel.getTeacherSubjectsByName(classesToEdit.teacher)</span>
-<span class="nc" id="L695">        freeTeachers.items = classesToEdit.getFreeTeachers()</span>
-<span class="nc" id="L696">        busyTeachers.items = classesToEdit.getBusyTeachers(subjects)</span>
+<span class="nc" id="L693">        val subjects = teachersModel.getTeacherSubjectsByName(classesToEdit.teacher)</span>
+<span class="nc" id="L694">        freeTeachers.items = classesToEdit.getFreeTeachers()</span>
+<span class="nc" id="L695">        busyTeachers.items = classesToEdit.getBusyTeachers(subjects)</span>
 
-<span class="nc" id="L698">        createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
-<span class="nc" id="L699">        setOnTeacherToChangeSelected(freeTeachers, busyTeachers, classesToEdit)</span>
-<span class="nc" id="L700">        val vbox = createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
+<span class="nc" id="L697">        createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
+<span class="nc" id="L698">        setOnTeacherToChangeSelected(freeTeachers, busyTeachers, classesToEdit)</span>
+<span class="nc" id="L699">        val vbox = createChangeTeacherVbox(freeTeachers, busyTeachers)</span>
 
-<span class="nc" id="L702">        createAndShowDialog(vbox)</span>
+<span class="nc" id="L701">        createAndShowDialog(vbox)</span>
 
-<span class="nc" id="L704">    }</span>
+<span class="nc" id="L703">    }</span>
 
     /**
      * Tworzy i wyświetla customowe okno dialogowe.
@@ -709,35 +708,35 @@ import kotlin.reflect.KProperty1
      * @param vbox Kontener z zawartością okna dialogowego.
      */
     override fun createAndShowDialog(vbox: VBox) {
-<span class="nc" id="L712">        vbox.alignment = Pos.CENTER</span>
-<span class="nc" id="L713">        dialog = DialogUtils.showCustomDialog(stage, vbox) {</span>
-<span class="nc" id="L714">            planTableView.selectionModel.clearSelection(); menu.hide(); messageShown=false</span>
-<span class="nc" id="L715">        }</span>
+<span class="nc" id="L711">        vbox.alignment = Pos.CENTER</span>
+<span class="nc" id="L712">        dialog = DialogUtils.showCustomDialog(stage, vbox) {</span>
+<span class="nc" id="L713">            planTableView.selectionModel.clearSelection(); menu.hide(); messageShown=false</span>
+<span class="nc" id="L714">        }</span>
 
-<span class="nc" id="L717">        dialog.showAndWait()</span>
+<span class="nc" id="L716">        dialog.showAndWait()</span>
 
-<span class="nc" id="L719">    }</span>
+<span class="nc" id="L718">    }</span>
 
     /**
      * Metoda usuwająca wybrane zajęcia z planu
      */
     override fun deleteFromPlan(classesToDelete: ClassesToRead) {
-<span class="fc" id="L725">        planTableView.selectionModel.clearSelection()</span>
-<span class="fc" id="L726">        menu.hide()</span>
+<span class="fc" id="L724">        planTableView.selectionModel.clearSelection()</span>
+<span class="fc" id="L725">        menu.hide()</span>
 
-<span class="pc bpc" id="L728" title="1 of 2 branches missed.">        if (wantToDelete)</span>
+<span class="pc bpc" id="L727" title="1 of 2 branches missed.">        if (wantToDelete)</span>
         {
-<span class="fc" id="L730">            try {</span>
-<span class="fc" id="L731">                classesToDelete.deleteClasses()</span>
-<span class="fc" id="L732">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyDeletedClassesFromPlan&quot;))</span>
-<span class="pc bpc" id="L733" title="1 of 2 branches missed.">                if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToDelete.group.split(&quot;, &quot;)[1], classesToDelete.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
-<span class="nc bnc" id="L734" title="All 2 branches missed.">                else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToDelete.teacher,  MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
-<span class="nc" id="L735">            }catch (e: SQLException) {</span>
-<span class="nc" id="L736">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.deleteClassesFromPlanError&quot;))</span>
+<span class="fc" id="L729">            try {</span>
+<span class="fc" id="L730">                classesToDelete.deleteClasses()</span>
+<span class="fc" id="L731">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyDeletedClassesFromPlan&quot;))</span>
+<span class="pc bpc" id="L732" title="1 of 2 branches missed.">                if (showGroupPlanPressed) planTableView.items = plansModel.getPlanGroup(classesToDelete.group.split(&quot;, &quot;)[1], classesToDelete.group.split(&quot;, &quot;)[0], MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="nc bnc" id="L733" title="All 2 branches missed.">                else if (showTeacherPlanPressed) planTableView.items = plansModel.getPlanTeacher(classesToDelete.teacher,  MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="nc" id="L734">            }catch (e: SQLException) {</span>
+<span class="nc" id="L735">                MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.deleteClassesFromPlanError&quot;))</span>
             }
 
         }
-<span class="fc" id="L740">    }</span>
+<span class="fc" id="L739">    }</span>
 
     /**
      * Wyświetla okno dialogowe z przyciskami &quot;Tak&quot; lub &quot;Nie&quot;.
@@ -747,176 +746,176 @@ import kotlin.reflect.KProperty1
      */
     fun showDialogYesNoMessage(content: String, type: ActionType) {
 
-<span class="fc" id="L750">        val buttons = listOf(</span>
-<span class="fc" id="L751">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
-<span class="nc bnc" id="L752" title="All 4 branches missed.">                when (type) {</span>
-<span class="nc" id="L753">                    ActionType.EXPORT -&gt; wantToExport = true</span>
-<span class="nc" id="L754">                    ActionType.EDIT -&gt; wantToEdit = true</span>
-<span class="nc" id="L755">                    ActionType.DELETE -&gt; wantToDelete = true</span>
+<span class="fc" id="L749">        val buttons = listOf(</span>
+<span class="fc" id="L750">            MessageBundle.getMess(&quot;label.yes&quot;) to {</span>
+<span class="nc bnc" id="L751" title="All 4 branches missed.">                when (type) {</span>
+<span class="nc" id="L752">                    ActionType.EXPORT -&gt; wantToExport = true</span>
+<span class="nc" id="L753">                    ActionType.EDIT -&gt; wantToEdit = true</span>
+<span class="nc" id="L754">                    ActionType.DELETE -&gt; wantToDelete = true</span>
                 }
-<span class="nc" id="L757">            },</span>
-<span class="fc" id="L758">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
-<span class="nc bnc" id="L759" title="All 4 branches missed.">                when (type) {</span>
-<span class="nc" id="L760">                    ActionType.EXPORT -&gt; wantToExport = false</span>
-<span class="nc" id="L761">                    ActionType.EDIT -&gt; wantToEdit = false</span>
-<span class="nc" id="L762">                    ActionType.DELETE -&gt; wantToDelete = false</span>
+<span class="nc" id="L756">            },</span>
+<span class="fc" id="L757">            MessageBundle.getMess(&quot;label.no&quot;) to {</span>
+<span class="nc bnc" id="L758" title="All 4 branches missed.">                when (type) {</span>
+<span class="nc" id="L759">                    ActionType.EXPORT -&gt; wantToExport = false</span>
+<span class="nc" id="L760">                    ActionType.EDIT -&gt; wantToEdit = false</span>
+<span class="nc" id="L761">                    ActionType.DELETE -&gt; wantToDelete = false</span>
                 }
-<span class="nc" id="L764">            }</span>
+<span class="nc" id="L763">            }</span>
         )
 
-<span class="fc" id="L767">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, stage, buttons)</span>
-<span class="pc bpc" id="L768" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
-<span class="fc" id="L769">    }</span>
+<span class="fc" id="L766">        dialogMess = DialogUtils.showMessageDialogWithButtons(content, stage, buttons)</span>
+<span class="pc bpc" id="L767" title="1 of 2 branches missed.">        if (dialogMess.owner.isShowing) dialogMess.showAndWait()</span>
+<span class="fc" id="L768">    }</span>
 
 
     /**
      * Metoda wyświetlająca plan dla wybranej grupy
      */
     override fun showGroupPlan() {
-<span class="fc" id="L776">        showGroupPlanPressed = true</span>
-<span class="fc" id="L777">        showTeacherPlanPressed = false</span>
-<span class="pc bpc" id="L778" title="9 of 18 branches missed.">        if(!fieldOfStudyChoiceBox.value.isNullOrBlank() &amp;&amp; !groupChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxGroup.value.isNullOrBlank())</span>
+<span class="fc" id="L775">        showGroupPlanPressed = true</span>
+<span class="fc" id="L776">        showTeacherPlanPressed = false</span>
+<span class="pc bpc" id="L777" title="9 of 18 branches missed.">        if(!fieldOfStudyChoiceBox.value.isNullOrBlank() &amp;&amp; !groupChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxGroup.value.isNullOrBlank())</span>
         {
-<span class="fc" id="L780">            planTableView.items = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, groupChoiceBox.value, dayChoiceBoxGroup.value)</span>
+<span class="fc" id="L779">            planTableView.items = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, groupChoiceBox.value, dayChoiceBoxGroup.value)</span>
 
-<span class="pc bpc" id="L782" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
+<span class="pc bpc" id="L781" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
             else{
-<span class="fc" id="L784">                CommonUtils.clearBox(fieldOfStudyChoiceBox)</span>
-<span class="fc" id="L785">                CommonUtils.clearBox(groupChoiceBox)</span>
-<span class="fc" id="L786">                CommonUtils.clearBox(dayChoiceBoxGroup)</span>
+<span class="fc" id="L783">                CommonUtils.clearBox(fieldOfStudyChoiceBox)</span>
+<span class="fc" id="L784">                CommonUtils.clearBox(groupChoiceBox)</span>
+<span class="fc" id="L785">                CommonUtils.clearBox(dayChoiceBoxGroup)</span>
             }
         }
         else{
-<span class="nc" id="L790">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
+<span class="nc" id="L789">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
         }
-<span class="fc" id="L792">    }</span>
+<span class="fc" id="L791">    }</span>
 
     /**
      * Metoda wyświetlająca plan dla wybranego nauczyciela.
      */
     override fun showTeacherPlan() {
-<span class="fc" id="L798">        showGroupPlanPressed = false</span>
-<span class="fc" id="L799">        showTeacherPlanPressed = true</span>
+<span class="fc" id="L797">        showGroupPlanPressed = false</span>
+<span class="fc" id="L798">        showTeacherPlanPressed = true</span>
 
-<span class="pc bpc" id="L801" title="6 of 12 branches missed.">        if(!teacherChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxTeacher.value.isNullOrBlank())</span>
+<span class="pc bpc" id="L800" title="6 of 12 branches missed.">        if(!teacherChoiceBox.value.isNullOrBlank() &amp;&amp; !dayChoiceBoxTeacher.value.isNullOrBlank())</span>
         {
-<span class="fc" id="L803">            planTableView.items = plansModel.getPlanTeacher(teacherChoiceBox.value, dayChoiceBoxTeacher.value)</span>
+<span class="fc" id="L802">            planTableView.items = plansModel.getPlanTeacher(teacherChoiceBox.value, dayChoiceBoxTeacher.value)</span>
 
-<span class="pc bpc" id="L805" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
+<span class="pc bpc" id="L804" title="1 of 2 branches missed.">            if (planTableView.items.size == 0) showEmptyPlanMessage()</span>
             else{
-<span class="fc" id="L807">                CommonUtils.clearBox(teacherChoiceBox)</span>
-<span class="fc" id="L808">                CommonUtils.clearBox(dayChoiceBoxTeacher)</span>
+<span class="fc" id="L806">                CommonUtils.clearBox(teacherChoiceBox)</span>
+<span class="fc" id="L807">                CommonUtils.clearBox(dayChoiceBoxTeacher)</span>
             }
 
         }
         else{
-<span class="nc" id="L813">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
+<span class="nc" id="L812">            MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.showPlanError&quot;), MessageBundle.getMess(&quot;warning.valuesCanNotBeEmpty&quot;))</span>
         }
-<span class="fc" id="L815">    }</span>
+<span class="fc" id="L814">    }</span>
 
     /**
      * Metoda wyświetlająca wiadomość informującą o pustym planie
      */
     override fun showEmptyPlanMessage() {
-<span class="nc" id="L821">        MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.noPlanInGivenDay&quot;))</span>
-<span class="nc" id="L822">        planTableView.items.clear()</span>
-<span class="nc" id="L823">    }</span>
+<span class="nc" id="L820">        MessageUtil.showWarningMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.noPlanInGivenDay&quot;))</span>
+<span class="nc" id="L821">        planTableView.items.clear()</span>
+<span class="nc" id="L822">    }</span>
 
     /**
      * Metoda do eksportowania planów zajęć dla wszystkich nauczycieli.
      */
     override fun exportAllTeachers() {
-<span class="pc bpc" id="L829" title="1 of 2 branches missed.">        if (wantToExport)</span>
+<span class="pc bpc" id="L828" title="1 of 2 branches missed.">        if (wantToExport)</span>
         {
-<span class="fc" id="L831">            val prop = ExcelUtils.loadConfigProps()</span>
-<span class="fc" id="L832">            val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
+<span class="fc" id="L830">            val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L831">            val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
 
-<span class="fc bfc" id="L834" title="All 2 branches covered.">            for(teacher in teacherChoiceBox.items)</span>
+<span class="fc bfc" id="L833" title="All 2 branches covered.">            for(teacher in teacherChoiceBox.items)</span>
             {
-<span class="fc" id="L836">                val filePath = &quot;$path/$teacher.xlsx&quot;</span>
-<span class="fc" id="L837">                val folder = File(path)</span>
-<span class="fc" id="L838">                var myWorkBook:Workbook? = null</span>
-<span class="pc bpc" id="L839" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
-<span class="fc" id="L840">                var fos: FileOutputStream? = null</span>
+<span class="fc" id="L835">                val filePath = &quot;$path/$teacher.xlsx&quot;</span>
+<span class="fc" id="L836">                val folder = File(path)</span>
+<span class="fc" id="L837">                var myWorkBook:Workbook? = null</span>
+<span class="pc bpc" id="L838" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
+<span class="fc" id="L839">                var fos: FileOutputStream? = null</span>
 
-<span class="fc" id="L842">                try {</span>
+<span class="fc" id="L841">                try {</span>
                     //Dla każdego nauczyciela pobierz plan
-<span class="fc" id="L844">                    val plan = plansModel.getPlanTeacher(teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="fc" id="L843">                    val plan = plansModel.getPlanTeacher(teacher, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
 
-<span class="pc bpc" id="L846" title="1 of 2 branches missed.">                    if (plan.size!=0)</span>
+<span class="pc bpc" id="L845" title="1 of 2 branches missed.">                    if (plan.size!=0)</span>
                     {
-<span class="nc" id="L848">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
-<span class="nc" id="L849">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
-<span class="nc" id="L850">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
-<span class="nc" id="L851">                        val planName = ExcelUtils.createPlanName(plan[0].date)</span>
-<span class="nc" id="L852">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
-<span class="nc" id="L853">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, teacher, planTableView.tableColumns.size)</span>
-<span class="nc" id="L854">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
-<span class="nc" id="L855">                        fillTableAllGroups(sheet, cellStyle!!, plan)</span>
-<span class="nc" id="L856">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
-<span class="nc" id="L857">                        fos = FileOutputStream(File(filePath))</span>
-<span class="nc" id="L858">                        myWorkBook.write(fos)</span>
+<span class="nc" id="L847">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="nc" id="L848">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="nc" id="L849">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+<span class="nc" id="L850">                        val planName = ExcelUtils.createPlanName(plan[0].date)</span>
+<span class="nc" id="L851">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="nc" id="L852">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, teacher, planTableView.tableColumns.size)</span>
+<span class="nc" id="L853">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="nc" id="L854">                        fillTableAllGroups(sheet, cellStyle!!, plan)</span>
+<span class="nc" id="L855">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="nc" id="L856">                        fos = FileOutputStream(File(filePath))</span>
+<span class="nc" id="L857">                        myWorkBook.write(fos)</span>
                     }
                 }
-<span class="nc" id="L861">                catch (e: IOException) {</span>
-<span class="nc" id="L862">                    MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L860">                catch (e: IOException) {</span>
+<span class="nc" id="L861">                    MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
                 }
                 finally {
-<span class="pc bpc" id="L865" title="1 of 2 branches missed.">                    myWorkBook?.close()</span>
-<span class="pc bpc" id="L866" title="1 of 2 branches missed.">                    fos?.close()</span>
+<span class="pc bpc" id="L864" title="1 of 2 branches missed.">                    myWorkBook?.close()</span>
+<span class="pc bpc" id="L865" title="1 of 2 branches missed.">                    fos?.close()</span>
                 }
 
             }
 
-<span class="fc" id="L871">            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.teacher.correctlyExportedAll&quot;))</span>
+<span class="fc" id="L870">            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.teacher.correctlyExportedAll&quot;)}: $path&quot;)</span>
         }
-<span class="fc" id="L873">    }</span>
+<span class="fc" id="L872">    }</span>
 
     /**
      * Metoda do eksportowania planu zajęć dla wybranego nauczyciela.
      */
     override fun exportTeacherPlan() {
-<span class="nc bnc" id="L879" title="All 2 branches missed.">        if (wantToExport) {</span>
-<span class="nc bnc" id="L880" title="All 2 branches missed.">            if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.teacher.noPlan&quot;))</span>
+<span class="nc bnc" id="L878" title="All 2 branches missed.">        if (wantToExport) {</span>
+<span class="nc bnc" id="L879" title="All 2 branches missed.">            if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.teacher.noPlan&quot;))</span>
             else{
-<span class="nc" id="L882">                GlobalScope.launch(Dispatchers.JavaFx)</span>
-<span class="nc bnc" id="L883" title="All 2 branches missed.">                {</span>
-<span class="nc" id="L884">                    val prop = ExcelUtils.loadConfigProps()</span>
-<span class="nc" id="L885">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
-<span class="nc" id="L886">                    val teacher = planTableView.items[0].teacher</span>
-<span class="nc" id="L887">                    val filePath = &quot;$path/$teacher.xlsx&quot;</span>
-<span class="nc" id="L888">                    val folder = File(path)</span>
-<span class="nc bnc" id="L889" title="All 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
-<span class="nc" id="L890">                    var myWorkBook:Workbook? = null</span>
-<span class="nc" id="L891">                    var fos: FileOutputStream? = null</span>
+<span class="nc" id="L881">                GlobalScope.launch(Dispatchers.JavaFx)</span>
+<span class="nc bnc" id="L882" title="All 2 branches missed.">                {</span>
+<span class="nc" id="L883">                    val prop = ExcelUtils.loadConfigProps()</span>
+<span class="nc" id="L884">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.teachers.path&quot;)</span>
+<span class="nc" id="L885">                    val teacher = planTableView.items[0].teacher</span>
+<span class="nc" id="L886">                    val filePath = &quot;$path/$teacher.xlsx&quot;</span>
+<span class="nc" id="L887">                    val folder = File(path)</span>
+<span class="nc bnc" id="L888" title="All 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+<span class="nc" id="L889">                    var myWorkBook:Workbook? = null</span>
+<span class="nc" id="L890">                    var fos: FileOutputStream? = null</span>
 
-<span class="nc" id="L893">                    try {</span>
-<span class="nc" id="L894">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
-<span class="nc" id="L895">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
-<span class="nc" id="L896">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
-<span class="nc" id="L897">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
-<span class="nc" id="L898">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
-<span class="nc" id="L899">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, planTableView.items[0].teacher, planTableView.tableColumns.size)</span>
-<span class="nc" id="L900">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
-<span class="nc" id="L901">                        fillTable(sheet, cellStyle!!, sheet.lastRowNum)</span>
-<span class="nc" id="L902">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="nc" id="L892">                    try {</span>
+<span class="nc" id="L893">                        myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="nc" id="L894">                        val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
+<span class="nc" id="L895">                        val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
+<span class="nc" id="L896">                        val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+<span class="nc" id="L897">                        val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="nc" id="L898">                        ExcelUtils.createTitle(sheet, headerCellStyle!!, planTableView.items[0].teacher, planTableView.tableColumns.size)</span>
+<span class="nc" id="L899">                        ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)</span>
+<span class="nc" id="L900">                        fillTable(sheet, cellStyle!!, sheet.lastRowNum)</span>
+<span class="nc" id="L901">                        ExcelUtils.setColumnsSize(sheet, planTableView)</span>
 
-<span class="nc" id="L904">                        fos = FileOutputStream(File(filePath))</span>
-<span class="nc" id="L905">                        myWorkBook.write(fos)</span>
+<span class="nc" id="L903">                        fos = FileOutputStream(File(filePath))</span>
+<span class="nc" id="L904">                        myWorkBook.write(fos)</span>
 
-<span class="nc" id="L907">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.teacher.correctlyExported&quot;))</span>
-<span class="nc" id="L908">                    } catch (e: IOException) {</span>
-<span class="nc" id="L909">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L906">                        MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.teacher.correctlyExported&quot;)}: $path&quot;)</span>
+<span class="nc" id="L907">                    } catch (e: IOException) {</span>
+<span class="nc" id="L908">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
                     }
                     finally {
-<span class="nc bnc" id="L912" title="All 2 branches missed.">                        fos?.close()</span>
-<span class="nc bnc" id="L913" title="All 4 branches missed.">                        myWorkBook?.close()</span>
-<span class="nc" id="L914">                    }</span>
-<span class="nc" id="L915">                }</span>
+<span class="nc bnc" id="L911" title="All 2 branches missed.">                        fos?.close()</span>
+<span class="nc bnc" id="L912" title="All 4 branches missed.">                        myWorkBook?.close()</span>
+<span class="nc" id="L913">                    }</span>
+<span class="nc" id="L914">                }</span>
             }
 
         }
-<span class="nc" id="L919">    }</span>
+<span class="nc" id="L918">    }</span>
 
     /**
      * Wypełnia arkusz danymi planem przy eksportowaniu wszystkich grup (korzysta z planu z bazy danych a nie z tabeli w aplikacji).
@@ -926,13 +925,13 @@ import kotlin.reflect.KProperty1
      * @param plan        Plan zajęć w formie listy zajęć.
      */
     override fun fillTableAllGroups(sheet: XSSFSheet, cellStyle: XSSFCellStyle, plan:ObservableList&lt;ClassesToRead&gt;) {
-<span class="fc" id="L929">        val startRow = sheet.lastRowNum</span>
+<span class="fc" id="L928">        val startRow = sheet.lastRowNum</span>
 
-<span class="fc bfc" id="L931" title="All 2 branches covered.">        for ((rowIndex, classes) in plan.withIndex()) {</span>
-<span class="fc" id="L932">            val row = sheet.createRow(rowIndex + startRow+1)</span>
-<span class="fc" id="L933">            createCells(row, classes, cellStyle)</span>
+<span class="fc bfc" id="L930" title="All 2 branches covered.">        for ((rowIndex, classes) in plan.withIndex()) {</span>
+<span class="fc" id="L931">            val row = sheet.createRow(rowIndex + startRow+1)</span>
+<span class="fc" id="L932">            createCells(row, classes, cellStyle)</span>
         }
-<span class="fc" id="L935">    }</span>
+<span class="fc" id="L934">    }</span>
 
     /**
      * Tworzy komórki dla danego wiersza na podstawie przesłanych danych.
@@ -943,15 +942,15 @@ import kotlin.reflect.KProperty1
      */
     override fun createCells(row: XSSFRow, classes: ClassesToRead, cellStyle: XSSFCellStyle)
     {
-<span class="fc" id="L946">        row.createCell(1).setCellValue(classes.date.toString())</span>
-<span class="fc" id="L947">        row.createCell(2).setCellValue(classes.hour)</span>
-<span class="fc" id="L948">        row.createCell(3).setCellValue(classes.subject)</span>
-<span class="fc" id="L949">        row.createCell(4).setCellValue(classes.room)</span>
-<span class="fc" id="L950">        row.createCell(5).setCellValue(classes.teacher)</span>
-<span class="fc" id="L951">        row.createCell(6).setCellValue(classes.group)</span>
+<span class="fc" id="L945">        row.createCell(1).setCellValue(classes.date.toString())</span>
+<span class="fc" id="L946">        row.createCell(2).setCellValue(classes.hour)</span>
+<span class="fc" id="L947">        row.createCell(3).setCellValue(classes.subject)</span>
+<span class="fc" id="L948">        row.createCell(4).setCellValue(classes.room)</span>
+<span class="fc" id="L949">        row.createCell(5).setCellValue(classes.teacher)</span>
+<span class="fc" id="L950">        row.createCell(6).setCellValue(classes.group)</span>
 
-<span class="fc bfc" id="L953" title="All 2 branches covered.">        for (i in 1..6) row.getCell(i).cellStyle = cellStyle</span>
-<span class="fc" id="L954">    }</span>
+<span class="fc bfc" id="L952" title="All 2 branches covered.">        for (i in 1..6) row.getCell(i).cellStyle = cellStyle</span>
+<span class="fc" id="L953">    }</span>
 
     /**
      * Wypełnia arkusz planem z tabeli w aplikacji
@@ -962,146 +961,146 @@ import kotlin.reflect.KProperty1
      */
     override fun fillTable(sheet: XSSFSheet, cellStyle: XSSFCellStyle, startNr: Int) {
 
-<span class="fc bfc" id="L965" title="All 2 branches covered.">        for ((rowIndex, classes) in planTableView.items.withIndex()) {</span>
-<span class="fc" id="L966">            val row = sheet.createRow(rowIndex + startNr + 1)</span>
-<span class="fc" id="L967">            createCells(row, classes, cellStyle)</span>
-<span class="pc bpc" id="L968" title="1 of 2 branches missed.">            if (rowIndex + startNr + 2 &lt; sheet.lastRowNum) sheet.shiftRows(rowIndex + startNr + 2, sheet.lastRowNum, 1)</span>
+<span class="fc bfc" id="L964" title="All 2 branches covered.">        for ((rowIndex, classes) in planTableView.items.withIndex()) {</span>
+<span class="fc" id="L965">            val row = sheet.createRow(rowIndex + startNr + 1)</span>
+<span class="fc" id="L966">            createCells(row, classes, cellStyle)</span>
+<span class="pc bpc" id="L967" title="1 of 2 branches missed.">            if (rowIndex + startNr + 2 &lt; sheet.lastRowNum) sheet.shiftRows(rowIndex + startNr + 2, sheet.lastRowNum, 1)</span>
         }
-<span class="fc" id="L970">    }</span>
+<span class="fc" id="L969">    }</span>
 
     /**
      * Metoda do eksportowania planów zajęć dla wszystkich grup z wybranego kierunku.
      */
     override fun exportAllGroupsFromField() {
-<span class="pc bpc" id="L976" title="1 of 2 branches missed.">        if (wantToExport) {</span>
-<span class="pc bpc" id="L977" title="1 of 2 branches missed.">            if (fieldOfStudyChoiceBox.value != null)</span>
+<span class="pc bpc" id="L975" title="1 of 2 branches missed.">        if (wantToExport) {</span>
+<span class="pc bpc" id="L976" title="1 of 2 branches missed.">            if (fieldOfStudyChoiceBox.value != null)</span>
             {
-<span class="fc" id="L979">                val field = fieldOfStudyChoiceBox.value</span>
-<span class="fc" id="L980">                val prop = ExcelUtils.loadConfigProps()</span>
-<span class="fc" id="L981">                val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
-<span class="fc" id="L982">                val filePath = &quot;$path/$field.xlsx&quot;</span>
-<span class="fc" id="L983">                val folder = File(path)</span>
+<span class="fc" id="L978">                val field = fieldOfStudyChoiceBox.value</span>
+<span class="fc" id="L979">                val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L980">                val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
+<span class="fc" id="L981">                val filePath = &quot;$path/$field.xlsx&quot;</span>
+<span class="fc" id="L982">                val folder = File(path)</span>
 
                 //jeśli folder nie istnieje to go stwórz
-<span class="pc bpc" id="L986" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
+<span class="pc bpc" id="L985" title="1 of 2 branches missed.">                if (!folder.exists()) folder.mkdirs()</span>
 
-<span class="fc" id="L988">                val myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
-<span class="fc" id="L989">                val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
-<span class="fc" id="L990">                val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
+<span class="fc" id="L987">                val myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L988">                val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook) //Styl dla nagłówka</span>
+<span class="fc" id="L989">                val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki</span>
 
-<span class="fc" id="L992">                val maxDay = plansModel.getMaxDateFromTable()</span>
-<span class="fc" id="L993">                val planStart = CommonUtils.getPlanStartDay(maxDay)</span>
-<span class="fc" id="L994">                val planName = ExcelUtils.createPlanName(planStart)</span>
-<span class="fc" id="L995">                val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
+<span class="fc" id="L991">                val maxDay = plansModel.getMaxDateFromTable()</span>
+<span class="fc" id="L992">                val planStart = CommonUtils.getPlanStartDay(maxDay)</span>
+<span class="fc" id="L993">                val planName = ExcelUtils.createPlanName(planStart)</span>
+<span class="fc" id="L994">                val sheet = ExcelUtils.createSheet(myWorkBook, planName)</span>
 
-<span class="fc bfc" id="L997" title="All 2 branches covered.">                for (group in groupChoiceBox.items)</span>
+<span class="fc bfc" id="L996" title="All 2 branches covered.">                for (group in groupChoiceBox.items)</span>
                 {
-<span class="fc" id="L999">                    try {</span>
-<span class="fc" id="L1000">                        val planForGroup = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, group, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
-<span class="pc bpc" id="L1001" title="1 of 2 branches missed.">                        if (!planForGroup.isEmpty())</span>
+<span class="fc" id="L998">                    try {</span>
+<span class="fc" id="L999">                        val planForGroup = plansModel.getPlanGroup(fieldOfStudyChoiceBox.value, group, MessageBundle.getMess(&quot;label.wholePlan&quot;))</span>
+<span class="pc bpc" id="L1000" title="1 of 2 branches missed.">                        if (!planForGroup.isEmpty())</span>
                         {
-<span class="fc" id="L1003">                            val title = &quot;$group $field&quot;</span>
-<span class="fc" id="L1004">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, sheet.lastRowNum+3)</span>
-<span class="fc" id="L1005">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, sheet.lastRowNum+1)</span>
-<span class="fc" id="L1006">                            fillTableAllGroups(sheet, cellStyle!!, planForGroup)</span>
-<span class="fc" id="L1007">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="fc" id="L1002">                            val title = &quot;$group $field&quot;</span>
+<span class="fc" id="L1003">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, sheet.lastRowNum+3)</span>
+<span class="fc" id="L1004">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, sheet.lastRowNum+1)</span>
+<span class="fc" id="L1005">                            fillTableAllGroups(sheet, cellStyle!!, planForGroup)</span>
+<span class="fc" id="L1006">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
 
-<span class="fc" id="L1009">                            val fos = FileOutputStream(File(filePath))</span>
-<span class="fc" id="L1010">                            myWorkBook.write(fos)</span>
-<span class="fc" id="L1011">                            fos.close()</span>
+<span class="fc" id="L1008">                            val fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L1009">                            myWorkBook.write(fos)</span>
+<span class="fc" id="L1010">                            fos.close()</span>
                         }
 
                     }
-<span class="nc" id="L1015">                    catch (e: IOException) {</span>
-<span class="nc" id="L1016">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L1014">                    catch (e: IOException) {</span>
+<span class="nc" id="L1015">                        MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
                     }
                 }
 
-<span class="fc" id="L1020">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.plan.correctlyExportedAll&quot;))</span>
+<span class="fc" id="L1019">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.plan.correctlyExportedAll&quot;)} $path&quot;)</span>
             }
 
             else{
-<span class="nc" id="L1024">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.plan.shouldChooseField&quot;))</span>
+<span class="nc" id="L1023">                MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.operationFailed&quot;), MessageBundle.getMess(&quot;warning.plan.shouldChooseField&quot;))</span>
             }
         }
-<span class="fc" id="L1027">    }</span>
+<span class="fc" id="L1026">    }</span>
 
     /**
      * Metoda do eksportowania aktualnie wyświetlanego planu zajęć dla grupy.
      */
     override fun exportGroupPlan() {
-<span class="pc bpc" id="L1033" title="1 of 2 branches missed.">            if (wantToExport)</span>
+<span class="pc bpc" id="L1032" title="1 of 2 branches missed.">            if (wantToExport)</span>
             {
-<span class="pc bpc" id="L1035" title="1 of 2 branches missed.">                if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.group.noPlan&quot;))</span>
+<span class="pc bpc" id="L1034" title="1 of 2 branches missed.">                if (planTableView.items.isEmpty()) MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;warning.noPlan&quot;), MessageBundle.getMess(&quot;warning.group.noPlan&quot;))</span>
                 else{
-<span class="fc" id="L1037">                    val prop = ExcelUtils.loadConfigProps()</span>
-<span class="fc" id="L1038">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
-<span class="fc" id="L1039">                    val group = planTableView.items[0].group.split(&quot;, &quot;)[0]</span>
-<span class="fc" id="L1040">                    val field = planTableView.items[0].group.split(&quot;, &quot;)[1]</span>
+<span class="fc" id="L1036">                    val prop = ExcelUtils.loadConfigProps()</span>
+<span class="fc" id="L1037">                    val path = System.getProperty(&quot;user.home&quot;) + prop.getProperty(&quot;excel.plans.groups.path&quot;)</span>
+<span class="fc" id="L1038">                    val group = planTableView.items[0].group.split(&quot;, &quot;)[0]</span>
+<span class="fc" id="L1039">                    val field = planTableView.items[0].group.split(&quot;, &quot;)[1]</span>
 
                     //nazwa pliku to nazwa kierunku
-<span class="fc" id="L1043">                    val filePath = &quot;$path/$field.xlsx&quot;</span>
-<span class="fc" id="L1044">                    val folder = File(path)</span>
+<span class="fc" id="L1042">                    val filePath = &quot;$path/$field.xlsx&quot;</span>
+<span class="fc" id="L1043">                    val folder = File(path)</span>
 
-<span class="pc bpc" id="L1046" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
+<span class="pc bpc" id="L1045" title="1 of 2 branches missed.">                    if (!folder.exists()) folder.mkdirs()</span>
 
-<span class="fc" id="L1048">                    GlobalScope.launch(Dispatchers.JavaFx)</span>
-<span class="pc bpc" id="L1049" title="1 of 2 branches missed.">                    {</span>
-<span class="fc" id="L1050">                        var myWorkBook:Workbook?=null</span>
-<span class="fc" id="L1051">                        var fos:FileOutputStream?=null</span>
-<span class="fc" id="L1052">                        try {</span>
-<span class="fc" id="L1053">                            myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
-<span class="fc" id="L1054">                            val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
-<span class="fc" id="L1055">                            val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
+<span class="fc" id="L1047">                    GlobalScope.launch(Dispatchers.JavaFx)</span>
+<span class="pc bpc" id="L1048" title="1 of 2 branches missed.">                    {</span>
+<span class="fc" id="L1049">                        var myWorkBook:Workbook?=null</span>
+<span class="fc" id="L1050">                        var fos:FileOutputStream?=null</span>
+<span class="fc" id="L1051">                        try {</span>
+<span class="fc" id="L1052">                            myWorkBook = ExcelUtils.createWorkbook(filePath)</span>
+<span class="fc" id="L1053">                            val headerCellStyle = ExcelUtils.createHeaderStyle(myWorkBook)</span>
+<span class="fc" id="L1054">                            val cellStyle = ExcelUtils.createCellStyle(myWorkBook)</span>
 
 
-<span class="fc" id="L1058">                            val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
+<span class="fc" id="L1057">                            val planName = ExcelUtils.createPlanName(planTableView.items[0].date)</span>
 
                             //szukaj czy nie ma już takiej zakładki (gdy zakładka istnieje to ją pobierz)
-<span class="fc" id="L1061">                            val sheet = ExcelUtils.createOrGetSheet(myWorkBook, planName)</span>
+<span class="fc" id="L1060">                            val sheet = ExcelUtils.createOrGetSheet(myWorkBook, planName)</span>
 
-<span class="fc" id="L1063">                            val startRow = ExcelUtils.findCorrectPlaceForGroup(sheet, group).first</span>
-<span class="fc" id="L1064">                            val groupExistsaInExcel =  ExcelUtils.findCorrectPlaceForGroup(sheet, group).second</span>
+<span class="fc" id="L1062">                            val startRow = ExcelUtils.findCorrectPlaceForGroup(sheet, group).first</span>
+<span class="fc" id="L1063">                            val groupExistsaInExcel =  ExcelUtils.findCorrectPlaceForGroup(sheet, group).second</span>
 
                             //Jeśli grupa istnieje to najpierw usuń stary plan
                             //Należy przesunąć wiersze (chyba że to koniec pliku)
-<span class="pc bpc" id="L1068" title="5 of 6 branches missed.">                            if (startRow != 2 &amp;&amp; !groupExistsaInExcel &amp;&amp; startRow!=sheet.lastRowNum+3) sheet.shiftRows(startRow+1,sheet.lastRowNum, planTableView.items.size+3)</span>
-<span class="pc bpc" id="L1069" title="1 of 2 branches missed.">                            else if (groupExistsaInExcel)</span>
+<span class="pc bpc" id="L1067" title="5 of 6 branches missed.">                            if (startRow != 2 &amp;&amp; !groupExistsaInExcel &amp;&amp; startRow!=sheet.lastRowNum+3) sheet.shiftRows(startRow+1,sheet.lastRowNum, planTableView.items.size+3)</span>
+<span class="pc bpc" id="L1068" title="1 of 2 branches missed.">                            else if (groupExistsaInExcel)</span>
                             {
-<span class="pc bpc" id="L1071" title="2 of 4 branches missed.">                                for(j in startRow+1..sheet.lastRowNum)</span>
+<span class="pc bpc" id="L1070" title="2 of 4 branches missed.">                                for(j in startRow+1..sheet.lastRowNum)</span>
                                 {
-<span class="fc" id="L1073">                                    val rowToDelete = sheet.getRow(j)</span>
-<span class="fc bfc" id="L1074" title="All 2 branches covered.">                                    if (rowToDelete != null) {</span>
-<span class="fc" id="L1075">                                        sheet.removeRow(rowToDelete)</span>
-<span class="fc bfc" id="L1076" title="All 2 branches covered.">                                        if (j+1 &lt; sheet.lastRowNum) sheet.shiftRows(j + 1, sheet.lastRowNum, -1)</span>
+<span class="fc" id="L1072">                                    val rowToDelete = sheet.getRow(j)</span>
+<span class="fc bfc" id="L1073" title="All 2 branches covered.">                                    if (rowToDelete != null) {</span>
+<span class="fc" id="L1074">                                        sheet.removeRow(rowToDelete)</span>
+<span class="fc bfc" id="L1075" title="All 2 branches covered.">                                        if (j+1 &lt; sheet.lastRowNum) sheet.shiftRows(j + 1, sheet.lastRowNum, -1)</span>
                                     }
-<span class="fc" id="L1078">                                    else break</span>
+<span class="fc" id="L1077">                                    else break</span>
                                 }
                             }
 
-<span class="fc" id="L1082">                            val title = &quot;$group $field&quot;</span>
-<span class="fc" id="L1083">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, startRow)</span>
-<span class="fc" id="L1084">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, startRow+1)</span>
-<span class="fc" id="L1085">                            fillTable(sheet, cellStyle!!, startRow+1)</span>
-<span class="fc" id="L1086">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
+<span class="fc" id="L1081">                            val title = &quot;$group $field&quot;</span>
+<span class="fc" id="L1082">                            ExcelUtils.createTitle(sheet, headerCellStyle!!, title, planTableView.tableColumns.size, startRow)</span>
+<span class="fc" id="L1083">                            ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView, startRow+1)</span>
+<span class="fc" id="L1084">                            fillTable(sheet, cellStyle!!, startRow+1)</span>
+<span class="fc" id="L1085">                            ExcelUtils.setColumnsSize(sheet, planTableView)</span>
 
-<span class="fc" id="L1088">                            fos = FileOutputStream(File(filePath))</span>
-<span class="fc" id="L1089">                            myWorkBook.write(fos)</span>
+<span class="fc" id="L1087">                            fos = FileOutputStream(File(filePath))</span>
+<span class="fc" id="L1088">                            myWorkBook.write(fos)</span>
 
-<span class="fc" id="L1091">                            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), MessageBundle.getMess(&quot;success.group.correctlyExported&quot;))</span>
+<span class="fc" id="L1090">                            MessageUtil.showInfoMessage(MessageBundle.getMess(&quot;label.operationSucceed&quot;), &quot;${MessageBundle.getMess(&quot;success.group.correctlyExported&quot;)}: $path&quot;)</span>
 
                         }
-<span class="nc" id="L1094">                        catch (e: IOException) {</span>
-<span class="nc" id="L1095">                            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
+<span class="nc" id="L1093">                        catch (e: IOException) {</span>
+<span class="nc" id="L1094">                            MessageUtil.showErrorMessage(MessageBundle.getMess(&quot;warning.noSave&quot;), MessageBundle.getMess(&quot;warning.fileAlreadyOpened&quot;))</span>
                         }
                         finally {
-<span class="pc bnc" id="L1098" title="All 2 branches missed.">                            fos?.close()</span>
-<span class="pc bpc" id="L1099" title="3 of 4 branches missed.">                            myWorkBook?.close()</span>
-<span class="fc" id="L1100">                        }</span>
-<span class="pc" id="L1101">                    }</span>
+<span class="pc bnc" id="L1097" title="All 2 branches missed.">                            fos?.close()</span>
+<span class="pc bpc" id="L1098" title="3 of 4 branches missed.">                            myWorkBook?.close()</span>
+<span class="fc" id="L1099">                        }</span>
+<span class="pc" id="L1100">                    }</span>
                 }
             }
-<span class="fc" id="L1104">    }</span>
+<span class="fc" id="L1103">    }</span>
 
 
     /**
@@ -1109,66 +1108,66 @@ import kotlin.reflect.KProperty1
      */
     override fun setupTable() {
 
-<span class="fc" id="L1112">        val columns = mapOf&lt;MFXTableColumn&lt;ClassesToRead&gt;, KProperty1&lt;ClassesToRead, *&gt;&gt;(</span>
-<span class="pc" id="L1113">            MFXTableColumn(MessageBundle.getMess(&quot;label.day&quot;), false, Comparator.comparing(ClassesToRead::date)) to ClassesToRead::date,</span>
-<span class="pc" id="L1114">            MFXTableColumn(MessageBundle.getMess(&quot;label.hour&quot;), false, Comparator.comparing(ClassesToRead::hour)) to ClassesToRead::hour,</span>
-<span class="pc" id="L1115">            MFXTableColumn(MessageBundle.getMess(&quot;label.subject&quot;), false, Comparator.comparing(ClassesToRead::subject)) to ClassesToRead::subject,</span>
-<span class="pc" id="L1116">            MFXTableColumn(MessageBundle.getMess(&quot;label.room&quot;), false, Comparator.comparing(ClassesToRead::room)) to ClassesToRead::room,</span>
-<span class="pc" id="L1117">            MFXTableColumn(MessageBundle.getMess(&quot;label.teacher&quot;), false, Comparator.comparing(ClassesToRead::teacher)) to ClassesToRead::teacher,</span>
-<span class="pc" id="L1118">            MFXTableColumn(MessageBundle.getMess(&quot;label.group&quot;), false, Comparator.comparing(ClassesToRead::group)) to ClassesToRead::group</span>
+<span class="fc" id="L1111">        val columns = mapOf&lt;MFXTableColumn&lt;ClassesToRead&gt;, KProperty1&lt;ClassesToRead, *&gt;&gt;(</span>
+<span class="pc" id="L1112">            MFXTableColumn(MessageBundle.getMess(&quot;label.day&quot;), false, Comparator.comparing(ClassesToRead::date)) to ClassesToRead::date,</span>
+<span class="pc" id="L1113">            MFXTableColumn(MessageBundle.getMess(&quot;label.hour&quot;), false, Comparator.comparing(ClassesToRead::hour)) to ClassesToRead::hour,</span>
+<span class="pc" id="L1114">            MFXTableColumn(MessageBundle.getMess(&quot;label.subject&quot;), false, Comparator.comparing(ClassesToRead::subject)) to ClassesToRead::subject,</span>
+<span class="pc" id="L1115">            MFXTableColumn(MessageBundle.getMess(&quot;label.room&quot;), false, Comparator.comparing(ClassesToRead::room)) to ClassesToRead::room,</span>
+<span class="pc" id="L1116">            MFXTableColumn(MessageBundle.getMess(&quot;label.teacher&quot;), false, Comparator.comparing(ClassesToRead::teacher)) to ClassesToRead::teacher,</span>
+<span class="pc" id="L1117">            MFXTableColumn(MessageBundle.getMess(&quot;label.group&quot;), false, Comparator.comparing(ClassesToRead::group)) to ClassesToRead::group</span>
         )
 
-<span class="fc" id="L1121">        columns.forEach{ column -&gt;</span>
-<span class="fc" id="L1122">            column.key.rowCellFactory = Function&lt;ClassesToRead, MFXTableRowCell&lt;ClassesToRead?, *&gt;&gt;</span>
+<span class="fc" id="L1120">        columns.forEach{ column -&gt;</span>
+<span class="fc" id="L1121">            column.key.rowCellFactory = Function&lt;ClassesToRead, MFXTableRowCell&lt;ClassesToRead?, *&gt;&gt;</span>
             {
-<span class="nc" id="L1124">                val cell = MFXTableRowCell&lt;ClassesToRead?, Any?&gt;(column.value)</span>
-<span class="nc" id="L1125">                cell.styleClass.add(&quot;table-cell&quot;)</span>
-<span class="nc" id="L1126">                cell</span>
+<span class="nc" id="L1123">                val cell = MFXTableRowCell&lt;ClassesToRead?, Any?&gt;(column.value)</span>
+<span class="nc" id="L1124">                cell.styleClass.add(&quot;table-cell&quot;)</span>
+<span class="nc" id="L1125">                cell</span>
             }
 
-<span class="fc" id="L1129">            column.key.alignment = Pos.CENTER</span>
-<span class="fc" id="L1130">        }</span>
+<span class="fc" id="L1128">            column.key.alignment = Pos.CENTER</span>
+<span class="fc" id="L1129">        }</span>
 
-<span class="fc" id="L1132">        planTableView.filters.clear()</span>
+<span class="fc" id="L1131">        planTableView.filters.clear()</span>
         //filtry
         //Może powodować bug Invalid range for values: Min[11], Max[10] (błąd w bibliotece MaterialFX), który nie ma wpływu na działanie
-<span class="fc" id="L1135">        planTableView.filters.addAll(</span>
-<span class="pc" id="L1136">            StringFilter(MessageBundle.getMess(&quot;label.hour&quot;), ClassesToRead::hour),</span>
-<span class="pc" id="L1137">            StringFilter(MessageBundle.getMess(&quot;label.subject&quot;), ClassesToRead::subject),</span>
-<span class="pc" id="L1138">            StringFilter(MessageBundle.getMess(&quot;label.room&quot;), ClassesToRead::room),</span>
-<span class="pc" id="L1139">            StringFilter(MessageBundle.getMess(&quot;label.teacher&quot;), ClassesToRead::teacher),</span>
-<span class="pc" id="L1140">            StringFilter(MessageBundle.getMess(&quot;label.group&quot;), ClassesToRead::group)</span>
+<span class="fc" id="L1134">        planTableView.filters.addAll(</span>
+<span class="pc" id="L1135">            StringFilter(MessageBundle.getMess(&quot;label.hour&quot;), ClassesToRead::hour),</span>
+<span class="pc" id="L1136">            StringFilter(MessageBundle.getMess(&quot;label.subject&quot;), ClassesToRead::subject),</span>
+<span class="pc" id="L1137">            StringFilter(MessageBundle.getMess(&quot;label.room&quot;), ClassesToRead::room),</span>
+<span class="pc" id="L1138">            StringFilter(MessageBundle.getMess(&quot;label.teacher&quot;), ClassesToRead::teacher),</span>
+<span class="pc" id="L1139">            StringFilter(MessageBundle.getMess(&quot;label.group&quot;), ClassesToRead::group)</span>
         )
 
-<span class="fc" id="L1143">        planTableView.tableColumns.addAll(columns.keys)</span>
-<span class="fc" id="L1144">        var screenWidth = 10.0</span>
+<span class="fc" id="L1142">        planTableView.tableColumns.addAll(columns.keys)</span>
+<span class="fc" id="L1143">        var screenWidth = 10.0</span>
 
-<span class="fc" id="L1146">        val screenSizes: ObservableList&lt;Screen&gt; = Screen.getScreens()</span>
-<span class="fc" id="L1147">        screenSizes.forEach(Consumer { screen: Screen -&gt; screenWidth = screen.bounds.width })</span>
+<span class="fc" id="L1145">        val screenSizes: ObservableList&lt;Screen&gt; = Screen.getScreens()</span>
+<span class="fc" id="L1146">        screenSizes.forEach(Consumer { screen: Screen -&gt; screenWidth = screen.bounds.width })</span>
 
-<span class="fc" id="L1149">        val widths = arrayOf(2,2,4,2,3,2)</span>
+<span class="fc" id="L1148">        val widths = arrayOf(2,2,4,2,3,2)</span>
 
-<span class="fc bfc" id="L1151" title="All 2 branches covered.">        for (i in 0 until planTableView.tableColumns.size) {</span>
-<span class="fc" id="L1152">            planTableView.tableColumns[i].prefWidth = (widths[i].toDouble()/15)*screenWidth</span>
-<span class="fc" id="L1153">            planTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
+<span class="fc bfc" id="L1150" title="All 2 branches covered.">        for (i in 0 until planTableView.tableColumns.size) {</span>
+<span class="fc" id="L1151">            planTableView.tableColumns[i].prefWidth = (widths[i].toDouble()/15)*screenWidth</span>
+<span class="fc" id="L1152">            planTableView.tableColumns[i].styleClass.add(&quot;table-header&quot;)</span>
         }
 
-<span class="fc" id="L1156">        TableRowStyler.setTableStyle(planTableView)</span>
-<span class="fc" id="L1157">        planTableView.isFooterVisible = true</span>
-<span class="fc" id="L1158">    }</span>
+<span class="fc" id="L1155">        TableRowStyler.setTableStyle(planTableView)</span>
+<span class="fc" id="L1156">        planTableView.isFooterVisible = true</span>
+<span class="fc" id="L1157">    }</span>
 
     /**
      * Metoda wywoływana podczas dokonania zmiany w tabeli kierunki w bazie danych
      */
     override fun onFieldsChanged() {
-<span class="nc" id="L1164">        fieldOfStudyChoiceBox.items = fieldsModel.getFields().map { it.fieldName }.let { fieldList -&gt; FXCollections.observableArrayList(fieldList) }</span>
-<span class="nc" id="L1165">    }</span>
+<span class="nc" id="L1163">        fieldOfStudyChoiceBox.items = fieldsModel.getFields().map { it.fieldName }.let { fieldList -&gt; FXCollections.observableArrayList(fieldList) }</span>
+<span class="nc" id="L1164">    }</span>
 
     /**
      * Metoda wywoływana podczas dokonania zmiany w tabeli nauczyciele w bazie danych
      */
     override fun onTeachersChanged() {
-<span class="fc" id="L1171">        teacherChoiceBox.items = teachersModel.getTeachers().map { &quot;${it.lastname} ${it.firstname}&quot; }.let { teacherList -&gt; FXCollections.observableArrayList(teacherList) }</span>
-<span class="fc" id="L1172">    }</span>
+<span class="fc" id="L1170">        teacherChoiceBox.items = teachersModel.getTeachers().map { &quot;${it.lastname} ${it.firstname}&quot; }.let { teacherList -&gt; FXCollections.observableArrayList(teacherList) }</span>
+<span class="fc" id="L1171">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

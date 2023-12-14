@@ -610,8 +610,7 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
     override fun setOnTeacherToChangeSelected(
         freeTeachers: MFXListView<String>,
         busyTeachers: MFXListView<String>,
-        classesToEdit: ClassesToRead
-    )
+        classesToEdit: ClassesToRead)
     {
         freeTeachers.setOnMouseClicked {
             val selectedItem = freeTeachers.selectionModel.selectedValue
@@ -896,9 +895,9 @@ class ShowPlanController:IShowPlanController, FieldsObserver, TeacherObserver, T
                         val cellStyle = ExcelUtils.createCellStyle(myWorkBook) //Styl dla zwykłej komórki
                         val planName = ExcelUtils.createPlanName(planTableView.items[0].date)
                         val sheet = ExcelUtils.createSheet(myWorkBook, planName)
-                        ExcelUtils.createTitle(sheet, headerCellStyle!!, planTableView.items[0].teacher, planTableView.tableColumns.size)
+                        ExcelUtils.createTitle(sheet, headerCellStyle, planTableView.items[0].teacher, planTableView.tableColumns.size)
                         ExcelUtils.fillHeaders(sheet, headerCellStyle, planTableView)
-                        fillTable(sheet, cellStyle!!, sheet.lastRowNum)
+                        fillTable(sheet, cellStyle, sheet.lastRowNum)
                         ExcelUtils.setColumnsSize(sheet, planTableView)
 
                         fos = FileOutputStream(File(filePath))
