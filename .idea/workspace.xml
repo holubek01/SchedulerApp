@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="35ddcf22-1dd3-464a-88ee-6cc056793768" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="PARALLEL_COMPILATION" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin File" />
+        <option value="JavaFXApplication" />
+        <option value="Interface" />
+        <option value="JUnit5 Test Class" />
+        <option value="CSS File" />
+        <option value="Kotlin Sealed Interface" />
+        <option value="Kotlin Object" />
+        <option value="Class" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Enum" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="workOffline" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="PerforceDirect.Settings">
+    <option name="ENABLED" value="false" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2QKzIYCH7uWX1Zw0y0SKwuFXzSU" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_directory_selection&quot;: &quot;C:/Users/tomek/OneDrive/Pulpit/Praca/Scheduler/src/test/kotlin/com/example/scheduler&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/tomek/OneDrive/Pulpit/oldjars/Scheduler&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;sqlite&quot;,
+      &quot;hsqldb&quot;
+    ],
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;MySQL&quot;,
+      &quot;SQL92&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\kotlin\com\example\scheduler\controller" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\kotlin\com\example\scheduler\db" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\test\kotlin\com\example\scheduler\tests\testResources" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\resources\com\example\scheduler\photos" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\kotlin\com\example\scheduler\controller" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\resources\com\example\scheduler\photos" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\test\kotlin\com\example\scheduler\tests\testResources" />
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\hsqldb" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="com.example.scheduler.controller" />
+    </key>
+    <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="com.example.scheduler.models" />
+      <recent name="com.example.scheduler.tests.controllersDirector" />
+      <recent name="com.example.scheduler.tests.Utils" />
+      <recent name="com.example.scheduler.tests.admin" />
+      <recent name="com.example.scheduler.tests.controllersAdmin" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.example.scheduler.controller" />
+      <recent name="com.example.scheduler" />
+      <recent name="com.example.scheduler.tests" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.example.scheduler.controller.exceptions" />
+      <recent name="com.example.scheduler.models" />
+      <recent name="com.example.scheduler.tests.dao" />
+      <recent name="com.example.scheduler.tests.Controllers" />
+      <recent name="com.example.scheduler.tests.testResources" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="gradle build" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.Scheduler [run]">
+    <configuration name="CopyPlanModuleControllerTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.example.scheduler.tests.controllersAdmin.CopyPlanModuleControllerTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="CreatePlanControllerTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.example.scheduler.tests.controllersDirector.CreatePlanControllerTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="LocationModuleControllerTest" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;com.example.scheduler.tests.controllersAdmin.LocationModuleControllerTest&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Scheduler [build]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" value="" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Scheduler [jacocoTestReport]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jacocoTestReport" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Scheduler [jar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="jar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Scheduler [run]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="run" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="Scheduler [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.LocationModuleControllerTest" />
+      <item itemvalue="Gradle.Scheduler [build]" />
+      <item itemvalue="Gradle.Scheduler [run]" />
+      <item itemvalue="Gradle.CopyPlanModuleControllerTest" />
+      <item itemvalue="Gradle.CreatePlanControllerTest" />
+      <item itemvalue="Gradle.Scheduler [test]" />
+      <item itemvalue="Gradle.Scheduler [jacocoTestReport]" />
+      <item itemvalue="Gradle.Scheduler [jar]" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.Scheduler [test]" />
+        <item itemvalue="Gradle.Scheduler [jacocoTestReport]" />
+        <item itemvalue="Gradle.CreatePlanControllerTest" />
+        <item itemvalue="Gradle.CopyPlanModuleControllerTest" />
+        <item itemvalue="Gradle.Scheduler [jar]" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="35ddcf22-1dd3-464a-88ee-6cc056793768" name="Changes" comment="" />
+      <created>1685116983482</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1685116983482</updated>
+      <workItem from="1685116984868" duration="19631000" />
+      <workItem from="1685261613403" duration="22954000" />
+      <workItem from="1685347226500" duration="3010000" />
+      <workItem from="1685353849596" duration="3048000" />
+      <workItem from="1685387235150" duration="412000" />
+      <workItem from="1685459143141" duration="6582000" />
+      <workItem from="1685466687597" duration="43000" />
+      <workItem from="1685895010213" duration="2000" />
+      <workItem from="1685899318444" duration="4758000" />
+      <workItem from="1686069857446" duration="16155000" />
+      <workItem from="1686298454174" duration="25562000" />
+      <workItem from="1686374269831" duration="4552000" />
+      <workItem from="1686390211939" duration="20038000" />
+      <workItem from="1686462990358" duration="33932000" />
+      <workItem from="1686843319902" duration="4635000" />
+      <workItem from="1687185975891" duration="1000" />
+      <workItem from="1687253765219" duration="124000" />
+      <workItem from="1687841774061" duration="74563000" />
+      <workItem from="1688798507775" duration="45058000" />
+      <workItem from="1689358656192" duration="33490000" />
+      <workItem from="1689786053895" duration="26037000" />
+      <workItem from="1690299135830" duration="84444000" />
+      <workItem from="1691065667157" duration="24677000" />
+      <workItem from="1691209929772" duration="18066000" />
+      <workItem from="1691759024057" duration="81000" />
+      <workItem from="1691759496579" duration="1384000" />
+      <workItem from="1691862065142" duration="1900000" />
+      <workItem from="1692170152114" duration="2004000" />
+      <workItem from="1692187702803" duration="12757000" />
+      <workItem from="1692251185057" duration="20714000" />
+      <workItem from="1692300942821" duration="10647000" />
+      <workItem from="1692375081035" duration="81234000" />
+      <workItem from="1693197528666" duration="32100000" />
+      <workItem from="1693322245494" duration="6438000" />
+      <workItem from="1693368276935" duration="29000" />
+      <workItem from="1693368340835" duration="10485000" />
+      <workItem from="1693408207714" duration="4331000" />
+      <workItem from="1693460550945" duration="26379000" />
+      <workItem from="1693657366267" duration="5864000" />
+      <workItem from="1693674350069" duration="1068000" />
+      <workItem from="1693675428259" duration="2882000" />
+      <workItem from="1693720342617" duration="21082000" />
+      <workItem from="1693743491427" duration="42751000" />
+      <workItem from="1693890209309" duration="35364000" />
+      <workItem from="1694085301281" duration="7945000" />
+      <workItem from="1694094797798" duration="72945000" />
+      <workItem from="1694328264787" duration="22358000" />
+      <workItem from="1694406717709" duration="28744000" />
+      <workItem from="1694461227659" duration="17583000" />
+      <workItem from="1694524159869" duration="263000" />
+      <workItem from="1694524450889" duration="1083000" />
+      <workItem from="1694526427276" duration="1136000" />
+      <workItem from="1694527575142" duration="197000" />
+      <workItem from="1694527920076" duration="670000" />
+      <workItem from="1694531871466" duration="4361000" />
+      <workItem from="1694583912348" duration="3286000" />
+      <workItem from="1694588922493" duration="689000" />
+      <workItem from="1694611364192" duration="518000" />
+      <workItem from="1694665349974" duration="4121000" />
+      <workItem from="1694671672669" duration="1611000" />
+      <workItem from="1694674428102" duration="953000" />
+      <workItem from="1694675393827" duration="244000" />
+      <workItem from="1694675653802" duration="31000" />
+      <workItem from="1694675699747" duration="62000" />
+      <workItem from="1694675772799" duration="90000" />
+      <workItem from="1694676070344" duration="142000" />
+      <workItem from="1694679483409" duration="307000" />
+      <workItem from="1694680911798" duration="1409000" />
+      <workItem from="1694685668278" duration="17362000" />
+      <workItem from="1694778867990" duration="3954000" />
+      <workItem from="1696224270300" duration="527000" />
+      <workItem from="1696224810548" duration="372000" />
+      <workItem from="1696225203115" duration="243000" />
+      <workItem from="1696225458186" duration="202000" />
+      <workItem from="1696225671932" duration="286000" />
+      <workItem from="1696225971956" duration="25732000" />
+      <workItem from="1696266792554" duration="79000" />
+      <workItem from="1696310937265" duration="4547000" />
+      <workItem from="1696322016239" duration="29383000" />
+      <workItem from="1696407751446" duration="14555000" />
+      <workItem from="1696490304454" duration="22047000" />
+      <workItem from="1696514605754" duration="28000" />
+      <workItem from="1696515605205" duration="55239000" />
+      <workItem from="1696867561361" duration="36283000" />
+      <workItem from="1697139116050" duration="6706000" />
+      <workItem from="1697178587066" duration="6372000" />
+      <workItem from="1697184993392" duration="130000" />
+      <workItem from="1697185134982" duration="88659000" />
+      <workItem from="1697561404613" duration="3922000" />
+      <workItem from="1697701904792" duration="48026000" />
+      <workItem from="1697996547515" duration="15155000" />
+      <workItem from="1698059598963" duration="71156000" />
+      <workItem from="1698411813443" duration="13185000" />
+      <workItem from="1698476065030" duration="26243000" />
+      <workItem from="1698515054005" duration="135029000" />
+      <workItem from="1699528228557" duration="20561000" />
+      <workItem from="1699628464259" duration="1681000" />
+      <workItem from="1699783922450" duration="16580000" />
+      <workItem from="1699866783957" duration="308000" />
+      <workItem from="1699867109454" duration="583000" />
+      <workItem from="1699867935374" duration="64508000" />
+      <workItem from="1700121393309" duration="115859000" />
+      <workItem from="1700507169947" duration="190688000" />
+      <workItem from="1701454674193" duration="192000" />
+      <workItem from="1701454894263" duration="419000" />
+      <workItem from="1701455376028" duration="1224000" />
+      <workItem from="1701456840557" duration="53000" />
+      <workItem from="1701456904972" duration="2000" />
+      <workItem from="1701458817155" duration="29000" />
+      <workItem from="1701459015496" duration="4555000" />
+      <workItem from="1701518870141" duration="38401000" />
+      <workItem from="1702547730679" duration="813000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.sql.SQLIntegrityConstraintViolationException" package="java.sql" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Scheduler$ExcelUtilsTest_uploadSPNtest.ic" NAME="ExcelUtilsTest.uploadSPNtest Coverage Results" MODIFIED="1698577635059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Scheduler$Tests_in__com_example_scheduler_tests_Utils_.ic" NAME="Tests in 'com.example.scheduler.tests.Utils' Coverage Results" MODIFIED="1697793352603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Scheduler$TeacherModuleControllerTest.ic" NAME="TeacherModuleControllerTest Coverage Results" MODIFIED="1697794053749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Scheduler$SchedulerAppKt.ic" NAME="SchedulerAppKt Coverage Results" MODIFIED="1693675252468" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Scheduler$Tests_in__com_example_scheduler_tests_Controllers_.ic" NAME="Tests in 'com.example.scheduler.tests.Controllers' Coverage Results" MODIFIED="1697793466522" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
