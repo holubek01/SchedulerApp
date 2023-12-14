@@ -58,7 +58,7 @@ Jest to zakładka o podobnych funkcjonalnościach, co zakładka planów zajeć. 
 ## Exportowane plany
 Przykład wyeksportowanego planu do pliku Excel dla dwóch grup znajduje się poniżej.
 <div style="text-align:center">
-<img src="src/main/resources/com/example/scheduler/photos/ss/excel.png" alt="mainpage" width="950" height="480" style="border: 1px solid black" />
+<img src="src/main/resources/com/example/scheduler/photos/ss/excel.png" alt="mainpage" width="950" height="600" style="border: 1px solid black" />
 </div>
 
 ## Sposób uruchomienia
@@ -75,4 +75,4 @@ Aplikację można uruchomić także za pomoca polecenia:
 gradlew build -x test run
 ```
 
-W bazie danych istnieje testowy użytkownik o nazwie użytkownika *User* i haśle *Haslo1234*
+W bazie danych istnieje testowy użytkownik o nazwie użytkownika *User* i haśle *Haslo1234*.
