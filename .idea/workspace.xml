@@ -121,11 +121,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\tomek\OneDrive\Pulpit\oldjars\Scheduler" />
       <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler" />
       <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\kotlin\com\example\scheduler\controller" />
       <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\kotlin\com\example\scheduler\db" />
       <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\test\kotlin\com\example\scheduler\tests\testResources" />
-      <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler\src\main\resources\com\example\scheduler\photos" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\tomek\OneDrive\Pulpit\praca2\Praca\Scheduler" />
@@ -487,7 +487,7 @@
       <workItem from="1701458817155" duration="29000" />
       <workItem from="1701459015496" duration="4555000" />
       <workItem from="1701518870141" duration="38401000" />
-      <workItem from="1702547730679" duration="813000" />
+      <workItem from="1702547730679" duration="1164000" />
     </task>
     <servers />
   </component>
