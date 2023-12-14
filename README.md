@@ -9,6 +9,13 @@ Na etapie logowania użytkownik może wybrać język, w jakim będzie
 korzystał z aplikacji. Do dyspozycji są język angielski i polski.
 Nowy użytkownik, podczas pierwszego logowania, ma możliwość zmiany hasła tymczasowego, dostarczonego przed administratora systemu.
 
+<div style="text-align:center">
+<img src="src/main/resources/com/example/scheduler/photos/ss/logowanie.png" alt="mainpage" width="1000" height="500" style="border: 1px solid black" />
+</div>
+<div style="text-align:center">
+<img src="images/scene1.png" alt="mainpage" style="border: 1px solid black" />
+</div>
+
 Po zalogowaniu użytkownik ma do dyspozycji 4 zakładki, z których każda odpowiada za inny aspekt korzystania z aplikacji. 
 
 ## Zakładka administratora 
