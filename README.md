@@ -74,3 +74,5 @@ Aplikację można uruchomić także za pomoca polecenia:
 ```bash
 gradlew build -x test run
 ```
+
+W bazie danych istnieje testowy użytkownik o nazwie użytkownika *User* i haśle *Haslo1234*
