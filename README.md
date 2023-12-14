@@ -10,10 +10,7 @@ korzystał z aplikacji. Do dyspozycji są język angielski i polski.
 Nowy użytkownik, podczas pierwszego logowania, ma możliwość zmiany hasła tymczasowego, dostarczonego przed administratora systemu.
 
 <div style="text-align:center">
-<img src="src/main/resources/com/example/scheduler/photos/ss/logowanie.png" alt="mainpage" width="1000" height="500" style="border: 1px solid black" />
-</div>
-<div style="text-align:center">
-<img src="images/scene1.png" alt="mainpage" style="border: 1px solid black" />
+<img src="src/main/resources/com/example/scheduler/photos/ss/logowanie.png" alt="mainpage" width="750" height="395" style="border: 1px solid black" />
 </div>
 
 Po zalogowaniu użytkownik ma do dyspozycji 4 zakładki, z których każda odpowiada za inny aspekt korzystania z aplikacji. 
@@ -29,6 +26,10 @@ Przy przeglądaniu danych nauczycieli możliwa jest także ich filtracja, za pom
 
 Niektóre z pozostałych podzakładek w zakładce administratora dostarczają podobne funkcjonalności ale działają na innych obiektach takich jak kierunki kształcenia, grupy zajęciowe, loaklizacje. 
 Natomiast inne pozwalają na kopiowanie planów na inne terminy w celu modyfikacji bez ingerencji w kopiowany plan, usuwanie planów, nadpisywanie szkolnych planów nauczania i inne. 
+
+<div style="text-align:center">
+<img src="src/main/resources/com/example/scheduler/photos/ss/zakladka1.png" alt="mainpage" width="950" height="550" style="border: 1px solid black" />
+</div>
 
 ## Zakładka tworzenia planu zajęć
 Najważniejszą funkcjonalnością zakładki jest możliwość tworzenia planu zajęć.
